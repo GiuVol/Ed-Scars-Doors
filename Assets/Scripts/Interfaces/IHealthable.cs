@@ -3,20 +3,20 @@ using System;
 
 /// <summary>
 /// Interface <c>IHealthable</c>
-/// Interface for character healt management.
+/// Interface for character health management.
 /// </summary>
 interface IHealthable
 {
     /// <summary>
     /// Const <c>PointOfdead</c>
-    /// Value for which the persona can be considered dead
+    /// Value for which the character can be considered dead
     /// </summary>
-    public const int PointOfdead = 0;
+    public const int DeathThreshold  = 0;
     /// <summary>
     /// Property <c>CourrentHealth</c>
     /// properties for viewing and editing the current health of the character
     /// </summary>
-    public int CourrentHealth
+    public int CurrentHealth
     { get; set; }
 
     /// <summary>
@@ -34,7 +34,7 @@ interface IHealthable
     {
         get
         {
-            return (CourrentHealth <= PointOfdead);
+            return (CurrentHealth <= DeathThreshold );
         }
     }
 
@@ -46,7 +46,7 @@ interface IHealthable
     public void DecrementHealth(int decrement)
     {
         decrement = Math.Max(decrement, 0); // if decrement has a negative value it will assume a value of 0, otherwise it remains unchanged
-        CourrentHealth = Math.Max(CourrentHealth - decrement, PointOfdead); // if the decrement greater than CurrentHealth, the CurrentHealth will be 0, otherwise it will be equal to the difference
+        CurrentHealth = Math.Max(CurrentHealth - decrement, DeathThreshold ); // if the decrement greater than CurrentHealth, the CurrentHealth will be 0, otherwise it will be equal to the difference
         if (IsDead)
         {
             Dead();
@@ -61,7 +61,7 @@ interface IHealthable
     public void IncrementHealth(int increment)
     {
         increment = Math.Max(increment, 0); // if increment has a negative value it will assume a value of 0, otherwise it remains unchanged
-        CourrentHealth = Math.Min(increment + CourrentHealth, MaxHealth); // if the sum between the increase and the CurrentHealth is greater than the Maxhealth, then the current health will be equal to the Maxhealth, otherwise it will be equal to the sum
+        CurrentHealth = Math.Min(increment + CurrentHealth, MaxHealth); // if the sum between the increase and the CurrentHealth is greater than the Maxhealth, then the CurrentHealth will be equal to the Maxhealth, otherwise it will be equal to the sum
     }
 
     /// <summary>
