@@ -17,14 +17,14 @@ interface IHealthable
     /// properties for viewing and editing the current health of the character
     /// </summary>
     public int CurrentHealth
-    { get; set; }
+    { get; private protected set; }
 
     /// <summary>
     /// Property <c>MaxHealth</c>
     /// properties for viewing and editing the maximum health of the character
     /// </summary>
     public int MaxHealth
-    { get; set;}
+    { get; private protected set;}
 
     /// <summary>
     /// Property <c>IsDead</c>
