@@ -1,135 +1,99 @@
-
 using System;
+
 
 /// <summary>
 /// Interface <c>IStatsable</c>
-/// Interface for character stats management.
+/// Interface for character statistics management
 /// </summary>
-interface IHealthable
+interface IStatsable
 {
     /// <summary>
-    /// Const <c>PointOfNoMovement</c>
-    /// Value for which the character can be considered stopped
+    /// Property <c>CurrentSpeed</c>
+    /// properties for viewing and editing the current speed of the character
     /// </summary>
-    public const int StopThreshold = 0;
+    public int CurrentSpeed
+    { get; set; }
 
     /// <summary>
-    /// Const <c>PointOfNoDamage</c>
-    /// Value for which the character can't deal any damage
+    /// Property <c>CurrentAttack</c>
+    /// properties for viewing and editing the current attack of the character
     /// </summary>
-    public const int NoDamageThreshold = 0;
+    public int CurrentAttack
+    { get; set; }
 
     /// <summary>
-    /// Const <c>PointOfNoDefence</c>
-    /// Value for which the character can't reduce any damage recieved
+    /// Property <c>CurrentDefence</c>
+    /// properties for viewing and editing the current defence of the character
     /// </summary>
-    public const int NoDefenceThreshold = 0;
+    public int CurrentDefence
+    { get; set; }
+
+    /// <summary>
+    /// Const <c>MinSpeed</c>
+    /// Minimum speed at which a character can move
+    /// </summary>
+    private const int MinSpeed = 0;
+
+    /// <summary>
+    /// Const <c>MinDefence</c>
+    /// Minimum defence a character can have to reduce damage recieved
+    /// </summary>
+    private const int MinDefence = 0;
+
+    /// <summary>
+    /// Const <c>MinDamage</c>
+    /// Minimum damage a character can inflict
+    /// </summary>
+    private const int MinAttack = 0;
 
     /// <summary>
     /// Property <c>MaxSpeed</c>
     /// properties for viewing and editing the maximum speed of the character
     /// </summary>
     public int MaxSpeed
-    { get; private protected set; }
+    { get; set; }
 
     /// <summary>
-    /// Property <c>MaxSpeed</c>
-    /// properties for viewing and editing the maximum attack of the character
-    /// </summary>
-    public int MaxAttack
-    { get; private protected set; }
-
-    /// <summary>
-    /// Property <c>MaxSpeed</c>
+    /// Property <c>CurrentDefence</c>
     /// properties for viewing and editing the maximum defence of the character
     /// </summary>
     public int MaxDefence
-    { get; private protected set; }
+    { get; set; }
 
     /// <summary>
-    /// Property <c>CourrentSpeed</c>
-    /// properties for viewing and editing the current speed of the character
+    /// Property <c>CurrentAttack</c>
+    /// properties for viewing and editing the maximum attack of the character
     /// </summary>
-    public int CurrentSpeed
-    { get; private protected set; }
+    public int MaxAttack
+    { get; set; }
 
     /// <summary>
-    /// Property <c>CourrentAttack</c>
-    /// properties for viewing and editing the current attack of the character
+    /// Method <c>IncrementStat</c>
+    /// Method used to increment any character's statistic
     /// </summary>
-    public int CurrentAttack
-    { get; private protected set; }
-
-    /// <summary>
-    /// Property <c>CourrentDefence</c>
-    /// properties for viewing and editing the current defence of the character
-    /// </summary>
-    public int CurrentDefence
-    { get; private protected set; }
-
-    /// <summary>
-    /// Method <c>DecrementSpeed</c>
-    /// Decreases the speed of the character
-    /// </summary>
-    /// <param name="decrement">The integer value of the speed malus the character received</param>
-    public void DecrementSpeed(int decrement)
+    /// <param name="Variation">The integer value that have to be added to the statistic</param>
+    /// <param name="Stat">The character's statistic that have to be increased</param>
+    /// <param name="Threshold">The minimum threshold reachable by the statistic "Stat"</param>
+    public void IncrementStat(int Variation, ref int Stat, int Threshold)
     {
-        decrement = Math.Max(decrement, 0); // if decrement has a negative value it will assume a value of 0, otherwise it remains unchanged
-        CurrentSpeed = Math.Max(CurrentSpeed - decrement, StopThreshold); // if the decrement is greater than CurrentSpeed, the CurrentSpeed will be 0, otherwise it will be equal to the difference
+        if (Variation + Stat > Threshold)
+            Stat = Threshold;
+        else
+            Stat = Variation + Stat;
     }
 
     /// <summary>
-    /// Method <c>IncrementSpeed</c>
-    /// Increases the speed of the character
+    /// Method <c>DecrementStat</c>
+    /// Method used to decrement any character's statistic
     /// </summary>
-    /// <param name="increment">The integer value of the speed bonus the character received </param>
-    public void IncrementSpeed(int increment)
+    /// <param name="Variation">The integer value that have to be subtracted to the statistic</param>
+    /// <param name="Stat">The character's statistic that have to be decremented</param>
+    /// <param name="Threshold">The minimum threshold reachable by the statistic "Stat"</param>
+    public void DecrementStat(int Variation, ref int Stat, int Threshold)
     {
-        increment = Math.Max(increment, 0); // if increment has a negative value it will assume a value of 0, otherwise it remains unchanged
-        CurrentSpeed = Math.Min(increment + CurrentSpeed, MaxSpeed); // if the sum between the increase and the CurrentSpeed is greater than the MaxSpeed, then the CurrentSpeed will be equal to the MaxSpeed, otherwise it will be equal to the sum
-    }
-
-    /// <summary>
-    /// Method <c>DecrementAttack</c>
-    /// Decreases the attack of the character
-    /// </summary>
-    /// <param name="decrement">The integer value of the attack malus the character received</param>
-    public void DecrementAttack(int decrement)
-    {
-        decrement = Math.Max(decrement, 0); // if decrement has a negative value it will assume a value of 0, otherwise it remains unchanged
-        CurrentAttack = Math.Max(CurrentAttack - decrement, NoDamageThreshold); // if the decrement is greater than CurrentAttack, the CurrentAttack will be 0, otherwise it will be equal to the difference
-    }
-
-    /// <summary>
-    /// Method <c>IncrementAttack</c>
-    /// Increases the attack of the character
-    /// </summary>
-    /// <param name="increment">The integer value of the attack bonus the character received </param>
-    public void IncrementAttack(int increment)
-    {
-        increment = Math.Max(increment, 0); // if increment has a negative value it will assume a value of 0, otherwise it remains unchanged
-        CurrentAttack = Math.Min(increment + CurrentAttack, MaxAttack); // if the sum between the increase and the CurrentAttack is greater than the MaxAttack, then the CurrentAttack will be equal to the MaxAttack, otherwise it will be equal to the sum
-    }
-
-    /// <summary>
-    /// Method <c>DecrementDefence</c>
-    /// Decreases the defence of the character
-    /// </summary>
-    /// <param name="decrement">The integer value of the defence malus the character received</param>
-    public void DecrementDefence(int decrement)
-    {
-        decrement = Math.Max(decrement, 0); // if decrement has a negative value it will assume a value of 0, otherwise it remains unchanged
-        CurrentDefence = Math.Max(CurrentDefence - decrement, NoDefenceThreshold); // if the decrement greater is than CurrentDefence, the CurrentDefence will be 0, otherwise it will be equal to the difference
-    }
-
-    /// <summary>
-    /// Method <c>IncrementDefence</c>
-    /// Increases the defence of the character
-    /// </summary>
-    /// <param name="increment">The integer value of the defence bonus the character received </param>
-    public void IncrementDefence(int increment)
-    {
-        increment = Math.Max(increment, 0); // if increment has a negative value it will assume a value of 0, otherwise it remains unchanged
-        CurrentDefence = Math.Min(increment + CurrentDefence, MaxDefence); // if the sum between the increase and the CurrentDefence is greater than the MaxDefence, then the CurrentDefence will be equal to the MaxDefence, otherwise it will be equal to the sum
+        if (Variation - Stat < Threshold)
+            Stat = Threshold;
+        else
+            Stat = Variation + Stat;
     }
 }
