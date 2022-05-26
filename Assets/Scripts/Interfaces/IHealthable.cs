@@ -7,12 +7,16 @@ using System;
 /// </summary>
 interface IHealthable
 {
-    public HealthComponent healthComponent
-    { get; set; }
+    /// <summary>
+    /// Property <c>HealthComponent</c>
+    /// This property returns the HealthComponent attached to a character
+    /// </summary>
+    public HealthComponent Health
+    { get; }
 
     /// <summary>
-    /// Method <c>Dead</c>
+    /// Method <c>Die</c>
     /// Procedure that is called every time a character reaches 0 health
     /// </summary>
-    protected void Dead();
+    protected void Die();
 }

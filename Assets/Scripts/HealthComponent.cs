@@ -1,7 +1,8 @@
 using System;
+
 /// <summary>
 /// Class <c>HealthComponent</c>
-/// Class that each character must have as a component
+/// Class that each <c>IHealthable</c> must have
 /// </summary>
 public class HealthComponent 
 {
@@ -47,26 +48,32 @@ public class HealthComponent
         MaxHealth = Math.Max(maxHealth, 0);
         CurrentHealth = MaxHealth; // a character when created will have CurrentHealth equal to MaxHealth
     }
-    /// <summary>
-    /// Method <c>DecrementHealth</c>
-    /// Decreases the health of the character
-    /// </summary>
-    /// <param name="decrement">The integer value of the damage the character received</param>
-    public void DecrementHealth(int decrement)
-    {
-        decrement = Math.Max(decrement, 0); // if decrement has a negative value it will assume a value of 0, otherwise it remains unchanged
-        CurrentHealth = Math.Max(CurrentHealth - decrement, DeathThreshold); // if the decrement greater than CurrentHealth, the CurrentHealth will be 0, otherwise it will be equal to the difference
-    }
 
     /// <summary>
     /// Method <c>IncrementHealth</c>
     /// Increases the health of the character
     /// </summary>
     /// <param name="increment">The integer value of the healing the character received </param>
-    public void IncrementHealth(int increment)
+    public void IncreaseHealth(int increment)
     {
         increment = Math.Max(increment, 0); // if increment has a negative value it will assume a value of 0, otherwise it remains unchanged
         CurrentHealth = Math.Min(increment + CurrentHealth, MaxHealth); // if the sum between the increase and the CurrentHealth is greater than the Maxhealth, then the CurrentHealth will be equal to the Maxhealth, otherwise it will be equal to the sum
+    }
+
+    /// <summary>
+    /// Method <c>DecrementHealth</c>
+    /// Decreases the health of the character
+    /// </summary>
+    /// <param name="decrement">The integer value of the damage the character received</param>
+    public void DecreasetHealth(int decrement)
+    {
+        decrement = Math.Max(decrement, 0); // if decrement has a negative value it will assume a value of 0, otherwise it remains unchanged
+        CurrentHealth = Math.Max(CurrentHealth - decrement, DeathThreshold); // if the decrement greater than CurrentHealth, the CurrentHealth will be 0, otherwise it will be equal to the difference
+    }
+
+    public void ResetCurrentHealth()
+    {
+        CurrentHealth = MaxHealth;
     }
 
     /// <summary>
