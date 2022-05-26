@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 /// <summary>
 /// Class <c>HealthComponent</c>
@@ -40,9 +41,9 @@ public class HealthComponent
 
     /// <summary>
     /// Constructor <c>Healthable</c>
-    /// The constructor of Healthable
+    /// The constructor of <c>Healthable</c>
     /// </summary>
-    /// <param name="maxHealth">The integer value to be assigned to MaxHealth and CurrentHealth </param>
+    /// <param name="maxHealth">The integer value to be assigned to <c>MaxHealth</c> and <c>CurrentHealth</c> </param>
     public HealthComponent(int maxHealth)
     {
         MaxHealth = Math.Max(maxHealth, 0);
@@ -71,17 +72,45 @@ public class HealthComponent
         CurrentHealth = Math.Max(CurrentHealth - decrement, DeathThreshold); // if the decrement greater than CurrentHealth, the CurrentHealth will be 0, otherwise it will be equal to the difference
     }
 
+    /// <summary>
+    /// Procedure <c>IncreasePercentage</c>
+    /// Procedure that increases by a certain percentage the current value of the health
+    /// </summary>
+    /// <param name="variation"></param> the percentage of the increment
+    public void IncreasePercentage(float variation)
+    {
+        variation = Mathf.Max(variation, 0);
+        int increment = Mathf.FloorToInt(variation * (float)CurrentHealth);
+        CurrentHealth = Mathf.Min(MaxHealth, CurrentHealth + increment);
+    }
+
+    /// <summary>
+    /// Procedure <c>DecreasePercentage</c>
+    /// Procedure that decreases by a certain percentage the current value of the health
+    /// </summary>
+    /// <param name="variation"></param> the percentage of the increment
+    public void DecreasePercentage(float variation)
+    {
+        variation = Mathf.Max(variation, 0);
+        int decrement = Mathf.FloorToInt(variation * (float)CurrentHealth);
+        CurrentHealth = Mathf.Max(DeathThreshold, CurrentHealth - decrement);
+    }
+
+    /// <summary>
+    /// Method <c>ResetCurrentHealth</c>
+    /// Changes the <c>CurrentHealth</c> to <c>MaxHealth</c>
+    /// </summary>
     public void ResetCurrentHealth()
     {
         CurrentHealth = MaxHealth;
     }
 
     /// <summary>
-    /// Method <c>incrementMaxHealth</c>
+    /// Method <c>IncrementMaxHealth</c>
     /// Increases the maximum health of the character
     /// </summary>
     /// <param name="increment">The integer value of the increment the character received</param>
-    public void incrementMaxHealth(int increment)
+    public void IncreaseMaxHealth(int increment)
     {
         MaxHealth = MaxHealth + Math.Max(increment, 0);
     }
