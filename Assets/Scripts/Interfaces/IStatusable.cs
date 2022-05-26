@@ -12,7 +12,7 @@ interface IStatusable{
     /// Property to see if the characters/props has the state of blindness 
     /// and change its state
     /// </summary>
-    public bool Blindness
+    public bool IsBlinded
     { get; set; }
 
 
@@ -21,7 +21,7 @@ interface IStatusable{
     /// Properties to see if the characters/props can be given the state of blindness
     /// when it reaches its maximum value
     /// </summary>
-    public int CurrentBlindness
+    public int CurrentBlindnessLevel
     { get; set; }
 
 
@@ -30,29 +30,29 @@ interface IStatusable{
     /// Property to see if the characters/propscan be given the state of blindness
     /// when the property CurrentBlindness reaches the value of MaxBlindness 
     /// </summary>
-    public int MaxBlindness
+    public int MaxBlindnessLevel
     { get; set; }
 
 
     /// <summary>
-    /// Property <c>CoolDown</c>
+    /// Property <c>CoolDownTime</c>
     /// Properties to see if the state of blindness can be removed from characters/props that have it
     /// </summary>
-    public int CoolDown
-    { get; set;}
+    public int CoolDownTime
+    { get; set; }
 
     /// <summary>
-    /// Property <c>MaxCoolDown</c>
-    /// Property that represents the max value of CoolDown of a character/prop
+    /// Property <c>MaxCoolDownTime</c>
+    /// Property that represents the max value of CoolDownTime of a character/prop
     /// </summary>
-    public int MaxCoolDown
+    public int MaxCoolDownTime
     { get; set; }
 
     /// <super>
-    /// Constant <c>MinCoolDown</c>
-    /// Constant that represent the min value of CoolDown
+    /// Constant <c>MinCoolDownTime</c>
+    /// Constant that represent the min value of CoolDownTime
     /// </super>
-    protected const int MinCoolDown=0; 
+    protected const int MinCoolDownTime=0; 
 
     /// <summary>
     /// Property <c>Corrosion</c>
@@ -63,20 +63,20 @@ interface IStatusable{
     { get; set; }
 
     /// <summary>
-    /// Procedure <c>GiveBlindness</c>
+    /// Procedure <c>InflictBlindness</c>
     /// Gives the player a state of blindness if the current 
     /// blindness counter reaches its maximum value
     /// </summary>
-    public void GiveBlindness()
+    public void InflictBlindness()
     {
-        if(CurrentBlindness<MaxBlindness)
+        if(CurrentBlindnessLevel < MaxBlindnessLevel)
         {
-            CurrentBlindness++;
+            CurrentBlindnessLevel++;
         }
         
-        if((CurrentBlindness==MaxBlindness) && (Blindness==false))
+        if((CurrentBlindnessLevel == MaxBlindnessLevel) && (IsBlinded == false))
         {
-            Blindness=true;
+            IsBlinded=true;
         }
     }
 
@@ -86,42 +86,42 @@ interface IStatusable{
     /// </summary>
     protected void RemoveBlindness()
     {
-        if(Blindness==true)
+        if(IsBlinded==true)
         {
-            Blindness=false;
-            CurrentBlindness=0;
+            IsBlinded=false;
+            CurrentBlindnessLevel=0;
         }
         
     }
 
     /// <summary>
-    /// Procedure <c>DecrementCoolDown</c>
+    /// Procedure <c>DecrementCoolDownTime</c>
     /// decreases the cool down value
     /// </summary>
-    /// <parame name="decrement"> Decreases the CoolDown value to its minimum value </param>
-    public void DecrementCoolDown(int decrement)
+    /// <parame name="decrement"> Decreases the CoolDownTime value to its minimum value </param>
+    public void DecrementCoolDownTime(int decrement)
     {
-        if(CoolDown!=MinCoolDown)
+        if(CoolDownTime!=MinCoolDownTime)
         {
-            if((CoolDown-decrement)<MinCoolDown)
+            if((CoolDownTime-decrement)<MinCoolDownTime)
             {
-                CoolDown=0;
+                CoolDownTime=0;
                 this.RemoveBlindness();
             } else {
-                CoolDown-=decrement;
+                CoolDownTime-=decrement;
             }
         }
     }
 
     /// <summary>
-    /// Procedure <c>IncrementCoolDown</c>
+    /// Procedure <c>IncrementCoolDownTime</c>
     /// increase the cool down value
     /// </summary>
-    /// <parame name="increment"> Increase the CoolDown value to its maximum value </param>
-    public void IncrementCoolDown(int increment)
+    /// <parame name="increment"> Increase the CoolDownTime value to its maximum value </param>
+    public void IncrementCoolDownTime(int increment)
     {
         increment=Math.Max(increment,0);
-        CoolDown+=Math.Min(increment+CoolDown, MaxCoolDown);
+        CoolDownTime+=Math.Min(increment+CoolDownTime, MaxCoolDownTime);
     }
 
     /// <summary>
