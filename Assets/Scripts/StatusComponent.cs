@@ -33,7 +33,7 @@ public class StatusComponent : MonoBehaviour
     /// The greater this value is, the more it will take to increase the <c>CurrentBlindnessLevel</c>.
     /// This value should be clamped between 0 and 1.
     /// </summary>
-    public float BlindnessResistance { get; private set; }
+    public float BlindnessResistence { get; private set; }
 
     /// <summary>
     /// The greater this value is, the faster the <c>CurrentBlindnessLevel</c> will decrease.
@@ -68,7 +68,7 @@ public class StatusComponent : MonoBehaviour
     /// The greater this value is, the less the character will be damaged from corrosion.
     /// This value should be clamped between 0 and 1.
     /// </summary>
-    public float CorrosionResistance { get; private set; }
+    public float CorrosionResistence { get; private set; }
 
     /// <summary>
     /// This value represents whether the character is corroded or not.
@@ -103,8 +103,8 @@ public class StatusComponent : MonoBehaviour
     /// <param name="blindnessCooldownTime">
     /// The desired value for <c>BlindnessCooldownTime</c>
     /// </param>
-    /// <param name="blindnessResistance">
-    /// The desired value for <c>BlindnessResistance</c>
+    /// <param name="blindnessResistence">
+    /// The desired value for <c>BlindnessResistence</c>
     /// pre: this value should be clamped between 0 and 1.
     /// </param>
     /// <param name="blindnessLevelDecrementSpeed">
@@ -113,23 +113,23 @@ public class StatusComponent : MonoBehaviour
     /// <param name="maxCorrosionTime">
     /// The desired value for <c>MaxCorrosionTime</c>
     /// </param>
-    /// <param name="corrosionResistance">
-    /// The desired value for <c>CorrosionResistance</c>
+    /// <param name="corrosionResistence">
+    /// The desired value for <c>CorrosionResistence</c>
     /// pre: this value should be clamped between 0 and 1.
     /// </param>
     public void Setup(float maxBlindnesslevel, float blindnessDuration, 
-                      float blindnessCooldownTime, float blindnessResistance, 
+                      float blindnessCooldownTime, float blindnessResistence, 
                       float blindnessLevelDecrementSpeed, float maxCorrosionTime, 
-                      float corrosionResistance)
+                      float corrosionResistence)
     {
         MaxBlindnesslevel = maxBlindnesslevel;
         BlindnessDuration = Mathf.Min(blindnessDuration, maxBlindnesslevel / blindnessLevelDecrementSpeed);
         BlindnessCooldownTime = blindnessCooldownTime;
-        BlindnessResistance = blindnessResistance;
+        BlindnessResistence = blindnessResistence;
         BlindnessLevelDecrementSpeed = blindnessLevelDecrementSpeed;
 
         MaxCorrosionTime = maxCorrosionTime;
-        CorrosionResistance = corrosionResistance;
+        CorrosionResistence = corrosionResistence;
 
         _initialized = true;
     }
@@ -193,9 +193,9 @@ public class StatusComponent : MonoBehaviour
         }
 
         increment = Mathf.Max(increment, 0);
-        float actualBlindnessResistance = Mathf.Clamp01(BlindnessResistance);
+        float actualBlindnessResistence = Mathf.Clamp01(BlindnessResistence);
 
-        increment = (1 - actualBlindnessResistance) * increment;
+        increment = (1 - actualBlindnessResistence) * increment;
 
         CurrentBlindnesslevel = Mathf.Min(MaxBlindnesslevel, CurrentBlindnesslevel + increment);
     }
