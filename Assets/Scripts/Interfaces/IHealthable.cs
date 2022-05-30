@@ -1,6 +1,3 @@
-
-using System;
-
 /// <summary>
 /// Interface <c>IHealthable</c>
 /// Interface for character health management.

@@ -1,19 +1,8 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Collider))]
+[RequireComponent(typeof(Collider2D))]
 public class MovementController2D : MonoBehaviour
 {
-    #region Debug
-
-    public float MovementForce;
-    public float JumpForce;
-    public float DashForce;
-    public float DesiredGravityScale;
-    public bool Grounded;
-    public LayerMask ToCast;
-
-    #endregion
-
     /// <summary>
     /// The <c>Rigidbody2D</c> component attached to the gameObject. 
     /// It handles the movement of the gameObject according to several parameters that can be fine tuned. 
@@ -28,10 +17,20 @@ public class MovementController2D : MonoBehaviour
     {
         get
         {
+            if (!_initialized)
+            {
+                return 0;
+            }
+
             return AttachedRigidbody.gravityScale;
         }
         set
         {
+            if (!_initialized)
+            {
+                return;
+            }
+
             AttachedRigidbody.gravityScale = value;
         }
     }
@@ -43,10 +42,20 @@ public class MovementController2D : MonoBehaviour
     {
         get
         {
+            if (!_initialized)
+            {
+                return 0;
+            }
+            
             return AttachedRigidbody.drag;
         }
         set
         {
+            if (!_initialized)
+            {
+                return;
+            }
+            
             AttachedRigidbody.drag = value;
         }
     }
@@ -84,6 +93,8 @@ public class MovementController2D : MonoBehaviour
     /// </summary>
     private PhysicsMaterial2D _maxFriction;
 
+    private bool _initialized;
+
     void Start()
     {
         if (!gameObject.GetComponent<Rigidbody2D>())
@@ -99,34 +110,9 @@ public class MovementController2D : MonoBehaviour
 
         _maxFriction = new PhysicsMaterial2D();
         _maxFriction.friction = 1;
+
+        _initialized = true;
     }
-
-    #region Debug
-
-    void Update()
-    {
-        GravityScale = DesiredGravityScale;
-
-        if (Input.GetKeyDown(KeyCode.Space) && IsGrounded)
-        {
-            GiveImpulse(transform.up, JumpForce);
-        }
-
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            GiveImpulse(transform.right, DashForce);
-        }
-        
-        Grounded = IsGrounded;
-    }
-
-    private void FixedUpdate()
-    {
-        float h = Input.GetAxis("Horizontal");
-        HandleMovement(h, MovementForce);
-    }
-
-    #endregion
 
     /// <summary>
     /// Method that rotates and moves the character, according to <c>horizontalInput</c> and <c>drivingForce</c>.
@@ -141,6 +127,11 @@ public class MovementController2D : MonoBehaviour
     /// </param>
     public void HandleMovement(float horizontalInput, float drivingForce)
     {
+        if (!_initialized)
+        {
+            return;
+        }
+
         horizontalInput = Mathf.Clamp(horizontalInput, -1, 1);
         drivingForce = Mathf.Abs(horizontalInput) * Mathf.Abs(drivingForce);
 
@@ -210,6 +201,11 @@ public class MovementController2D : MonoBehaviour
     /// </param>
     public void GiveImpulse(Vector2 direction, float force)
     {
+        if (!_initialized)
+        {
+            return;
+        }
+
         Vector3 forceToApply = direction.normalized * force;
         AttachedRigidbody.AddForce(forceToApply * AttachedRigidbody.mass, ForceMode2D.Impulse);
     }
