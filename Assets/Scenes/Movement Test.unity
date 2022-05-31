@@ -763,11 +763,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 484568640}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.007, y: 2.279, z: 0}
+  m_LocalPosition: {x: 0.0069999695, y: 1.279, z: 0}
   m_LocalScale: {x: 0.35, y: 0.35, z: 0.35}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1287368323}
+  m_Father: {fileID: 1984630491}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &484568642
@@ -1251,7 +1251,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1984630491}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -5.798}
 --- !u!212 &751087355
 SpriteRenderer:
@@ -2038,7 +2038,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 484568641}
   - {fileID: 1984630491}
   m_Father: {fileID: 0}
   m_RootOrder: 2
@@ -3180,7 +3179,7 @@ Transform:
   - {fileID: 1510309755}
   - {fileID: 1746702364}
   m_Father: {fileID: 1984630491}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1783067134
 GameObject:
@@ -3837,7 +3836,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1984630491}
   - component: {fileID: 1984630490}
-  - component: {fileID: 1984630493}
   - component: {fileID: 1984630492}
   m_Layer: 3
   m_Name: Player_gfx
@@ -3910,10 +3908,11 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 484568641}
   - {fileID: 751087354}
   - {fileID: 1783044023}
   m_Father: {fileID: 1287368323}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!70 &1984630492
 CapsuleCollider2D:
@@ -3931,28 +3930,6 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 1, y: 2}
   m_Direction: 0
---- !u!114 &1984630493
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1984630487}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1823a5e232d44c7448d9663918d26973, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  WalkSpeed: 0
-  RunSpeed: 0
-  JumpForce: 40
-  DashForce: 30
-  GravityScale: 7.5
-  ProjectilesSpawnPoint: {fileID: 1746702364}
-  JumpInterval: 0
-  DashInterval: 1
-  ShootInterval: 0
-  NumberOfJumpsAllowed: 1
 --- !u!1 &2021412577
 GameObject:
   m_ObjectHideFlags: 0
