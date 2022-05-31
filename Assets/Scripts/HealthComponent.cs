@@ -3,7 +3,7 @@ using UnityEngine;
 
 /// <summary>
 /// Class <c>HealthComponent</c>
-/// Class that each <c>IHealthable</c> must have
+/// Component that stores all values and methods to manage the health of a character.
 /// </summary>
 public class HealthComponent 
 {
@@ -51,9 +51,9 @@ public class HealthComponent
 
     /// <summary>
     /// Constructor <c>Healthable</c>
-    /// The constructor of <c>Healthable</c>
+    /// The constructor of <c>Healthable</c>.
     /// </summary>
-    /// <param name="maxHealth">The integer value to be assigned to <c>MaxHealth</c> and <c>CurrentHealth</c></param>
+    /// <param name="maxHealth">The integer value to assign to <c>MaxHealth</c> and <c>CurrentHealth</c></param>
     /// <param name="dieProcedure">The desired procedure to call when the character dies</param>
     public HealthComponent(int maxHealth, Die dieProcedure)
     {
@@ -64,13 +64,13 @@ public class HealthComponent
 
     /// <summary>
     /// Method <c>IncreaseHealth</c>
-    /// Increases the health of the character
+    /// Increases the health of the character.
     /// </summary>
-    /// <param name="increment">The integer value of the healing the character received </param>
+    /// <param name="increment">The integer value of the healing the character received</param>
     public void IncreaseHealth(int increment)
     {
         increment = Math.Max(increment, 0); // if increment has a negative value it will assume a value of 0, otherwise it remains unchanged
-        CurrentHealth = Math.Min(increment + CurrentHealth, MaxHealth); // if the sum between the increase and the CurrentHealth is greater than the Maxhealth, then the CurrentHealth will be equal to the Maxhealth, otherwise it will be equal to the sum
+        CurrentHealth = Math.Min(CurrentHealth + increment, MaxHealth); // if the sum between the increase and the CurrentHealth is greater than the Maxhealth, then the CurrentHealth will be equal to the Maxhealth, otherwise it will be equal to the sum
     }
 
     /// <summary>
@@ -100,7 +100,7 @@ public class HealthComponent
     public void IncreasePercentage(float variation)
     {
         variation = Mathf.Clamp01(variation);
-        int increment = Mathf.FloorToInt(variation * (float)CurrentHealth);
+        int increment = Mathf.FloorToInt((float)MaxHealth * variation);
 
         IncreaseHealth(increment);
     }
@@ -115,8 +115,8 @@ public class HealthComponent
     /// </param>
     public void DecreasePercentage(float variation)
     {
-        variation = Mathf.Max(variation, 0);
-        int decrement = Mathf.FloorToInt(variation * (float)CurrentHealth);
+        variation = Mathf.Clamp01(variation);
+        int decrement = Mathf.FloorToInt((float)MaxHealth * variation);
 
         DecreaseHealth(decrement);
     }
@@ -134,7 +134,7 @@ public class HealthComponent
     /// Method <c>IncrementMaxHealth</c>
     /// Increases the maximum health of the character
     /// </summary>
-    /// <param name="increment">The integer value of the increment the character received</param>
+    /// <param name="increment">The integer value of the increment the character's health received</param>
     public void IncreaseMaxHealth(int increment)
     {
         MaxHealth += Math.Max(increment, 0);
