@@ -1,39 +1,120 @@
 using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(Collider2D))]
 public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusable
 {
     #region Parameters
 
-    public float WalkForce;
-    public float RunForce;
+    /// <summary>
+    /// The speed that the character should reach when it's walking.
+    /// </summary>
+    public float WalkSpeed;
+
+    /// <summary>
+    /// The speed that the character should reach when it's running.
+    /// </summary>
+    public float RunSpeed;
+
+    /// <summary>
+    /// The force with which the character should jump.
+    /// </summary>
     public float JumpForce;
+
+    /// <summary>
+    /// The force with which the character should dash.
+    /// </summary>
     public float DashForce;
+
+    /// <summary>
+    /// The gravity scale of the attached rigidbody.
+    /// </summary>
     public float GravityScale;
+
+    /// <summary>
+    /// The transform from which the projectiles must be instantiated.
+    /// </summary>
     public Transform ProjectilesSpawnPoint;
 
-    public float DashInterval;
-    public float FireInterval;
+    /// <summary>
+    /// The time that elapses between different series of jumps.
+    /// </summary>
+    public float JumpInterval;
 
+    /// <summary>
+    /// The time that elapses between different dashes.
+    /// </summary>
+    public float DashInterval;
+
+    /// <summary>
+    /// The time that elapses between different shots.
+    /// </summary>
+    public float ShootInterval;
+
+    /// <summary>
+    /// The number of consecutive jumps allowed.
+    /// </summary>
     public int NumberOfJumpsAllowed;
 
     #endregion
 
+    /// <summary>
+    /// The <c>MovementController2D</c> that moves the player.
+    /// </summary>
     private MovementController2D MovementController { get; set; }
 
+    /// <summary>
+    /// The <c>HealthComponent</c> that stores values and methods related to the health of the player.
+    /// </summary>
     public HealthComponent Health { get; private set; }
 
+    /// <summary>
+    /// The <c>StatsComponent</c> that stores values and methods related to the stats of the player.
+    /// </summary>
     public StatsComponent Stats { get; private set; }
 
+    /// <summary>
+    /// The <c>StatusComponent</c> that stores values and methods related to the status of the player.
+    /// </summary>
     public StatusComponent Status { get; private set; }
 
+    /// <summary>
+    /// Stores the number of jumps executed consecutively without touching the ground.
+    /// </summary>
+    public int CurrentNumberOfJumps { get; set; }
+
+    /// <summary>
+    /// Stores the coroutine that handles the jump process.
+    /// </summary>
+    private Coroutine _jumpHandlingTask;
+
+    /// <summary>
+    /// Stores the time to wait to jump again.
+    /// </summary>
+    private float _timeToWaitToJump;
+    
+    /// <summary>
+    /// Returns whether the player can jump or not.
+    /// </summary>
+    private bool CanJump
+    {
+        get
+        {
+            int actualNumberOfJumpsAllowed = Mathf.Max(NumberOfJumpsAllowed, 1);
+
+            return (MovementController.IsGrounded || CurrentNumberOfJumps < actualNumberOfJumpsAllowed) && 
+                _timeToWaitToJump <= 0;
+        }
+    }
+
+    /// <summary>
+    /// Represents whether the player can dash or not.
+    /// </summary>
     private bool CanDash { get; set; }
+
+    /// <summary>
+    /// Represents whether the player can shoot or not.
+    /// </summary>
     private bool CanShoot { get; set; }
-
-    private int CurrentNumberOfJumps { get; set; }
-
-    private bool _isDying;
 
     void Start()
     {
@@ -51,7 +132,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
         MovementController = gameObject.GetComponent<MovementController2D>();
 
-        Health = new HealthComponent(100);
+        Health = new HealthComponent(100, Die);
 
         Stats = new StatsComponent(100, 200, 50, 100, 200, 50, 100, 200, 50);
 
@@ -65,8 +146,6 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
     void Update()
     {
-        float horizontalInput = Input.GetAxis("Horizontal");
-
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Jump();
@@ -85,41 +164,29 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
     void FixedUpdate()
     {
-        if (Health.IsDead && !_isDying)
-        {
-            _isDying = true;
-            Die();
-            return;
-        }
-
         float horizontalInput = Input.GetAxis("Horizontal");
-        float movementForce = Input.GetKey(KeyCode.B) ? RunForce : WalkForce;
+        float movementSpeed = Input.GetKey(KeyCode.B) ? RunSpeed : WalkSpeed;
 
-        MovementController.HandleMovement(horizontalInput, movementForce);
+        MovementController.HandleMovementWithSpeed(horizontalInput, movementSpeed);
 
         MovementController.GravityScale = GravityScale;
 
-        if (MovementController.IsGrounded)
-        {
-            CurrentNumberOfJumps = 0;
-        }
+        _timeToWaitToJump = Mathf.Max(_timeToWaitToJump - Time.fixedDeltaTime, 0);
     }
 
-    void IHealthable.Die()
-    {
-
-    }
-
-    void Die()
-    {
-        Destroy(gameObject);
-    }
-    
+    /// <summary>
+    /// Allows the player to jump, if it is possible.
+    /// </summary>
     private void Jump()
     {
-        if (!MovementController.IsGrounded && CurrentNumberOfJumps >= NumberOfJumpsAllowed)
+        if (!CanJump)
         {
             return;
+        }
+
+        if (_jumpHandlingTask == null)
+        {
+            _jumpHandlingTask = StartCoroutine(HandleJump());
         }
 
         Vector3 jumpDirection = Vector3.up;
@@ -128,6 +195,23 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         CurrentNumberOfJumps++;
     }
 
+    /// <summary>
+    /// <c>IEnumerator</c> used to handle the jump process.
+    /// </summary>
+    private IEnumerator HandleJump()
+    {
+        yield return new WaitUntil(() => !MovementController.IsGrounded);
+        
+        yield return new WaitUntil(() => MovementController.IsGrounded);
+
+        CurrentNumberOfJumps = 0;
+        _timeToWaitToJump = JumpInterval;
+        _jumpHandlingTask = null;
+    }
+
+    /// <summary>
+    /// Allows the player to dash, if it is possible.
+    /// </summary>
     private IEnumerator Dash()
     {
         if (!CanDash)
@@ -144,6 +228,9 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         CanDash = true;
     }
 
+    /// <summary>
+    /// Allows the player to shoot, if it is possible.
+    /// </summary>
     private IEnumerator Shoot()
     {
         if (!CanShoot)
@@ -151,13 +238,21 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             yield break;
         }
 
-        Instantiate(Resources.Load<Projectile>("FireballPrefab"),
+        Instantiate(Resources.Load<Projectile>("Projectiles/FireballPrefab"),
                     ProjectilesSpawnPoint.position, ProjectilesSpawnPoint.rotation).Power *= Stats.Attack.CurrentValue;
 
         CanShoot = false;
 
-        yield return new WaitForSeconds(FireInterval);
+        yield return new WaitForSeconds(ShootInterval);
 
         CanShoot = true;
+    }
+
+    /// <summary>
+    /// This procedure is called when the health of the player reaches 0.
+    /// </summary>
+    void Die()
+    {
+        Destroy(gameObject);
     }
 }

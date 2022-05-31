@@ -1,6 +1,5 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Collider2D))]
 public class MovementController2D : MonoBehaviour
 {
     /// <summary>
@@ -11,7 +10,7 @@ public class MovementController2D : MonoBehaviour
     public Rigidbody2D AttachedRigidbody { get; private set; }
 
     /// <summary>
-    /// A property that provides access to the <c>gravityScale</c> of the <c>AttachedRigidbody</c>, according to the needs.
+    /// A property that provides access to the <c>gravityScale</c> of the <c>AttachedRigidbody</c>.
     /// </summary>
     public float GravityScale
     {
@@ -36,7 +35,7 @@ public class MovementController2D : MonoBehaviour
     }
 
     /// <summary>
-    /// A property that provides access to the <c>drag</c> of the <c>AttachedRigidbody</c>, according to the needs.
+    /// A property that provides access to the <c>drag</c> of the <c>AttachedRigidbody</c>.
     /// </summary>
     public float Drag
     {
@@ -93,6 +92,9 @@ public class MovementController2D : MonoBehaviour
     /// </summary>
     private PhysicsMaterial2D _maxFriction;
 
+    /// <summary>
+    /// Represents whether the component is initialized or not.
+    /// </summary>
     private bool _initialized;
 
     void Start()
@@ -119,13 +121,13 @@ public class MovementController2D : MonoBehaviour
     /// </summary>
     /// <param name="horizontalInput">
     /// pre: this value should be clamped between -1 and 1.
-    /// It represents the verse (on x-axis) and the intensity of the desired movement.
+    /// It represents the direction (on x-axis) and the intensity of the desired movement.
     /// </param>
     /// <param name="drivingForce">
     /// pre: this value should be > 0.
     /// It represents the driving force of the desired movement.
     /// </param>
-    public void HandleMovement(float horizontalInput, float drivingForce)
+    public void HandleMovement(float horizontalInput, float drivingForce, float desiredDrag = 4)
     {
         if (!_initialized)
         {
@@ -135,7 +137,7 @@ public class MovementController2D : MonoBehaviour
         horizontalInput = Mathf.Clamp(horizontalInput, -1, 1);
         drivingForce = Mathf.Abs(horizontalInput) * Mathf.Abs(drivingForce);
 
-        AttachedRigidbody.drag = 4;
+        Drag = desiredDrag;
 
         if (Mathf.Abs(horizontalInput) > 0)
         {
@@ -150,11 +152,31 @@ public class MovementController2D : MonoBehaviour
     }
 
     /// <summary>
-    /// Rotates the character in the correct verse, according to the <c>horizontalInput</c> parameter.
+    /// Method that rotates and moves the character, according to <c>horizontalInput</c> and <c>desiredSpeed</c>.
     /// </summary>
     /// <param name="horizontalInput">
     /// pre: this value should be clamped between -1 and 1.
-    /// It's used to change the verse (on x-axis) of the character.
+    /// It represents the direction (on x-axis) and the intensity of the desired movement.
+    /// </param>
+    /// <param name="desiredSpeed">
+    /// pre: this value should be > 0.
+    /// It represents the desired speed that the character should reach.
+    /// </param>
+    public void HandleMovementWithSpeed(float horizontalInput, float desiredSpeed)
+    {
+        float desiredDrag = 4;
+
+        float drivingForce = desiredSpeed * desiredDrag;
+
+        HandleMovement(horizontalInput, drivingForce, desiredDrag);
+    }
+    
+    /// <summary>
+    /// Rotates the character in the correct direction, according to the <c>horizontalInput</c> parameter.
+    /// </summary>
+    /// <param name="horizontalInput">
+    /// pre: this value should be clamped between -1 and 1.
+    /// It's used to change the direction towards which the character points.
     /// </param>
     private void Rotate(float horizontalInput)
     {

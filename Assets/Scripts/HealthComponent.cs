@@ -9,27 +9,27 @@ public class HealthComponent
 {
     /// <summary>
     /// Const <c>DeathThreshold</c>
-    /// Value for which the character can be considered dead
+    /// Value from which the character can be considered dead.
     /// </summary>
     public const int DeathThreshold = 0;
 
     /// <summary>
     /// Property <c>CourrentHealth</c>
-    /// properties for viewing and editing the current health of the character
+    /// Property that represents the current health of the character.
     /// </summary>
     public int CurrentHealth
     { get; private set; }
 
     /// <summary>
     /// Property <c>MaxHealth</c>
-    /// properties for viewing and editing the maximum health of the character
+    /// Property that stores the max value that <c>CurrentHealth</c> can reach.
     /// </summary>
-    public  int MaxHealth
+    public int MaxHealth
     { get; private set; }
 
     /// <summary>
     /// Property <c>IsDead</c>
-    /// Properties to see if the character is dead
+    /// Returns whether the character is dead or not.
     /// </summary>
     public bool IsDead
     {
@@ -40,18 +40,30 @@ public class HealthComponent
     }
 
     /// <summary>
+    /// A new delegate type, to store the die procedure.
+    /// </summary>
+    public delegate void Die();
+
+    /// <summary>
+    /// It will store the procedure called when the health of the character reaches <c>DeathThreshold</c>.
+    /// </summary>
+    public Die DieProcedure { get; set; }
+
+    /// <summary>
     /// Constructor <c>Healthable</c>
     /// The constructor of <c>Healthable</c>
     /// </summary>
-    /// <param name="maxHealth">The integer value to be assigned to <c>MaxHealth</c> and <c>CurrentHealth</c> </param>
-    public HealthComponent(int maxHealth)
+    /// <param name="maxHealth">The integer value to be assigned to <c>MaxHealth</c> and <c>CurrentHealth</c></param>
+    /// <param name="dieProcedure">The desired procedure to call when the character dies</param>
+    public HealthComponent(int maxHealth, Die dieProcedure)
     {
         MaxHealth = Math.Max(maxHealth, 0);
         CurrentHealth = MaxHealth; // a character when created will have CurrentHealth equal to MaxHealth
+        DieProcedure = dieProcedure;
     }
 
     /// <summary>
-    /// Method <c>IncrementHealth</c>
+    /// Method <c>IncreaseHealth</c>
     /// Increases the health of the character
     /// </summary>
     /// <param name="increment">The integer value of the healing the character received </param>
@@ -62,38 +74,51 @@ public class HealthComponent
     }
 
     /// <summary>
-    /// Method <c>DecrementHealth</c>
+    /// Method <c>DecreaseHealth</c>
     /// Decreases the health of the character
     /// </summary>
     /// <param name="decrement">The integer value of the damage the character received</param>
-    public void DecreasetHealth(int decrement)
+    public void DecreaseHealth(int decrement)
     {
         decrement = Math.Max(decrement, 0); // if decrement has a negative value it will assume a value of 0, otherwise it remains unchanged
         CurrentHealth = Math.Max(CurrentHealth - decrement, DeathThreshold); // if the decrement greater than CurrentHealth, the CurrentHealth will be 0, otherwise it will be equal to the difference
+
+        if (CurrentHealth <= DeathThreshold)
+        {
+            DieProcedure();
+        }
     }
 
     /// <summary>
     /// Procedure <c>IncreasePercentage</c>
     /// Procedure that increases by a certain percentage the current value of the health
     /// </summary>
-    /// <param name="variation"></param> the percentage of the increment
+    /// <param name="variation">
+    /// the percentage of the increment
+    /// pre: this value should be clamped between 0 and 1.
+    /// </param>
     public void IncreasePercentage(float variation)
     {
-        variation = Mathf.Max(variation, 0);
+        variation = Mathf.Clamp01(variation);
         int increment = Mathf.FloorToInt(variation * (float)CurrentHealth);
-        CurrentHealth = Mathf.Min(MaxHealth, CurrentHealth + increment);
+
+        IncreaseHealth(increment);
     }
 
     /// <summary>
     /// Procedure <c>DecreasePercentage</c>
     /// Procedure that decreases by a certain percentage the current value of the health
     /// </summary>
-    /// <param name="variation"></param> the percentage of the increment
+    /// <param name="variation">
+    /// the percentage of the decrement
+    /// pre: this value should be clamped between 0 and 1.
+    /// </param>
     public void DecreasePercentage(float variation)
     {
         variation = Mathf.Max(variation, 0);
         int decrement = Mathf.FloorToInt(variation * (float)CurrentHealth);
-        CurrentHealth = Mathf.Max(DeathThreshold, CurrentHealth - decrement);
+
+        DecreaseHealth(decrement);
     }
 
     /// <summary>
@@ -112,6 +137,6 @@ public class HealthComponent
     /// <param name="increment">The integer value of the increment the character received</param>
     public void IncreaseMaxHealth(int increment)
     {
-        MaxHealth = MaxHealth + Math.Max(increment, 0);
+        MaxHealth += Math.Max(increment, 0);
     }
 }
