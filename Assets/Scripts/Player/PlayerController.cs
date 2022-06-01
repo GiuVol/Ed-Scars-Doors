@@ -146,17 +146,17 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (InputHandler.Jump("Down"))
         {
             Jump();
         }
 
-        if (Input.GetKeyDown(KeyCode.Z) && CanDash)
+        if (InputHandler.Dash("Down") && CanDash)
         {
             StartCoroutine(Dash());
         }
 
-        if (Input.GetKeyDown(KeyCode.Return) && CanShoot)
+        if (InputHandler.Shoot("Down") && CanShoot)
         {
             StartCoroutine(Shoot());
         }
@@ -164,7 +164,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
     void FixedUpdate()
     {
-        float horizontalInput = Input.GetAxis("Horizontal");
+        float horizontalInput = InputHandler.HorizontalInput;
         float movementSpeed = Input.GetKey(KeyCode.B) ? RunSpeed : WalkSpeed;
 
         MovementController.HandleMovementWithSpeed(horizontalInput, movementSpeed);
