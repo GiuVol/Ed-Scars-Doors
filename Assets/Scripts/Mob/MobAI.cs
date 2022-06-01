@@ -2,26 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
-public class EnemyAI : MonoBehaviour
+public class MobAI : MonoBehaviour
 {
-    private float Speed
+    public float Speed
     { get; set; }
-    private float NextWayPointDistance
+    public float NextWayPointDistance
     { get; set; }
     private  Path Path;
     private int CurrentWaypoint = 0;
     private bool EndOfPath = false;
     private Transform Target
     { get; set; }
-
-    private Transform Enemy;
+    private Transform PlayerTarget;
+    private Transform Mob;
     private Seeker Seeker;
     private Rigidbody2D Rb;
-    private float Drag
+    public float Drag
     { get; set; }
     public const float StartUpdatePath = 0f;
     public const float RatingUpdatePath = .5f;
-
 
     void Setup(float speed, float nextWayPointDistance, float drag)
     {
@@ -31,9 +30,23 @@ public class EnemyAI : MonoBehaviour
     }
     void Start()
     {
+        if(gameObject.GetComponent<Seeker>() == null)
+        {
+            gameObject.AddComponent<Seeker>();
+        }
+
+        if (gameObject.GetComponent<Rigidbody2D>() == null)
+        {
+            gameObject.AddComponent<Rigidbody2D>();
+        }
+
+        if (gameObject.GetComponent<Transform>() == null)
+        {
+            gameObject.AddComponent<Transform>();
+        }
         Seeker = GetComponent<Seeker>();
         Rb = GetComponent<Rigidbody2D>();
-        Enemy = GetComponentInChildren<Transform>();
+        Mob = GetComponentInChildren<Transform>();
         InvokeRepeating("UpdatePath", StartUpdatePath, RatingUpdatePath);
         Rb.drag = Drag;
         Rb.freezeRotation = true;
@@ -93,11 +106,11 @@ public class EnemyAI : MonoBehaviour
     {
         if (force.x >= 0.01f)
         {
-            Enemy.localScale = new Vector3(-1f, 1f, 1f);
+            Mob.localScale = new Vector3(-1f, 1f, 1f);
         }
         else if (force.x <= -0.01f)
         {
-            Enemy.localScale = new Vector3(1f, 1f, 1f);
+            Mob.localScale = new Vector3(1f, 1f, 1f);
         }
     }
 
@@ -111,6 +124,6 @@ public class EnemyAI : MonoBehaviour
 
     public void changeTarget()
     {
-        //??
+        
     }
 }
