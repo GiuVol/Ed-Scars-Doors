@@ -7,6 +7,11 @@ public class Projectile : MonoBehaviour
     /// Stores the power of the projectile.
     /// </summary>
     public float Power;
+    
+    /// <summary>
+    /// Stores the attack of who/what has launched the projectile.
+    /// </summary>
+    public float AttackerAttack { get; set; }
 
     /// <summary>
     /// Stores the speed of the projectile.
@@ -63,22 +68,26 @@ public class Projectile : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        StopAllCoroutines();
-        Destroy(gameObject);
-
+        float basePower = Power;
+        float attackerAttack = Mathf.Max(AttackerAttack, 1);
+        float targetDefence = 1;
+        
         IHealthable collidedHealthable = collision.gameObject.GetComponent<IHealthable>();
-        IStatsable collidedStatusable = collision.gameObject.GetComponent<IStatsable>();
+        IStatsable collidedStatsable = collision.gameObject.GetComponent<IStatsable>();
 
         if (collidedHealthable != null)
         {
-            float damage = Power;
-
-            if (collidedStatusable != null)
+            if (collidedStatsable != null)
             {
-                damage /= collidedStatusable.Stats.Defence.CurrentValue;
+                targetDefence = collidedStatsable.Stats.Defence.CurrentValue;
             }
 
-            collidedHealthable.Health.DecreaseHealth(Mathf.FloorToInt(damage));
+            int damage = GameFormulas.Damage(basePower, attackerAttack, targetDefence);
+
+            collidedHealthable.Health.DecreaseHealth(damage);
         }
+
+        StopAllCoroutines();
+        Destroy(gameObject);
     }
 }
