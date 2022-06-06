@@ -48,10 +48,10 @@ public class MobAI : MonoBehaviour
     private Transform _casualTarget;
 
     /// <summary>
-    /// Attribute <c>_playerTarget</c>
+    /// Static attribute <c>_playerTarget</c>
     /// Reference to the player's position
     /// </summary>
-    private Transform _playerTarget;
+    private static Transform PlayerTarget;
 
     /// <summary>
     /// Attribute <c>_mob</c>
@@ -119,8 +119,19 @@ public class MobAI : MonoBehaviour
     {
         get
         {
-            return (Target == _playerTarget);
+            return (Target == PlayerTarget);
         }
+    }
+
+
+    public static void SetPlayerTarget(Transform playerTarget)
+    {
+        PlayerTarget = playerTarget;
+    }
+
+    public static Transform GetPlayerTarget()
+    {
+        return PlayerTarget;
     }
 
     /// <summary>
@@ -192,6 +203,7 @@ public class MobAI : MonoBehaviour
             float distance = Vector2.Distance(_rb.position, _path.vectorPath[_currentWaypoint]);
             UpgradeNextWayPoint(distance);
             InvertEnemy(force);
+            ChangeTarget();
         }
     }
 
@@ -288,13 +300,13 @@ public class MobAI : MonoBehaviour
     /// Otherwise it checks if it is already following a random point,
     /// if it has arrived it generates a new one
     /// </summary>
-    public void changeTarget()
+    public void ChangeTarget()
     {
-        float distance = Vector2.Distance(_playerTarget.position, _mob.position);
+        float distance = Vector2.Distance(PlayerTarget.position, _mob.position);
 
         if (distance <= _rangeToCheck)
         {
-            Target = _playerTarget;
+            Target = PlayerTarget;
         }
         else
         {
@@ -319,6 +331,7 @@ public class MobAI : MonoBehaviour
         return new Vector3(Random.Range(MinCasualRange + _mob.position.x, MaxCasualRange + _mob.position.x), 0, _mob.position.y);
     }
 
+    /*
     /// <summary>
     /// 
     /// </summary>
@@ -340,6 +353,8 @@ public class MobAI : MonoBehaviour
         }
         return player;
     }
+
+    */
 
     /// <summary>
     /// Procedure <c>ActiveMobAI</c>

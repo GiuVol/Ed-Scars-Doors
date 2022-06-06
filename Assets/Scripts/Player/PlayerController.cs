@@ -142,6 +142,8 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
         CanDash = true;
         CanShoot = true;
+
+        MobAI.SetPlayerTarget(gameObject.GetComponent<Transform>());
     }
 
     void Update()
