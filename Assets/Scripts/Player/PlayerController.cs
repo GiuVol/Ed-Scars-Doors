@@ -238,8 +238,10 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             yield break;
         }
 
-        Instantiate(Resources.Load<Projectile>("Projectiles/FireballPrefab"),
-                    ProjectilesSpawnPoint.position, ProjectilesSpawnPoint.rotation).Power *= Stats.Attack.CurrentValue;
+        Projectile projectile = Instantiate(Resources.Load<Projectile>("Projectiles/FireballPrefab"), 
+                                            ProjectilesSpawnPoint.position, ProjectilesSpawnPoint.rotation);
+
+        projectile.AttackerAttack = Stats.Attack.CurrentValue;
 
         CanShoot = false;
 
