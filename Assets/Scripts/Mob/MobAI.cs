@@ -21,12 +21,14 @@ public class MobAI : MonoBehaviour
     { get; set; }
     public const float StartUpdatePath = 0f;
     public const float RatingUpdatePath = .5f;
+    private float _rangeToCheck;
 
-    void Setup(float speed, float nextWayPointDistance, float drag)
+    void Setup(float speed, float nextWayPointDistance, float drag, float rangeToCheck)
     {
         Speed = speed;
         NextWayPointDistance = nextWayPointDistance;
         Drag = drag;
+        _rangeToCheck = rangeToCheck;
     }
     void Start()
     {
@@ -40,10 +42,7 @@ public class MobAI : MonoBehaviour
             gameObject.AddComponent<Rigidbody2D>();
         }
 
-        if (gameObject.GetComponent<Transform>() == null)
-        {
-            gameObject.AddComponent<Transform>();
-        }
+        gameObject.AddComponent<Transform>();
         Seeker = GetComponent<Seeker>();
         Rb = GetComponent<Rigidbody2D>();
         Mob = GetComponentInChildren<Transform>();
@@ -67,6 +66,8 @@ public class MobAI : MonoBehaviour
         float distance = Vector2.Distance(Rb.position, Path.vectorPath[CurrentWaypoint]);
         UpgradeNextWayPoint(distance);
         InvertEnemy(force);
+
+
     }
 
     private void UpdatePath()
@@ -125,5 +126,18 @@ public class MobAI : MonoBehaviour
     public void changeTarget()
     {
         
+    }
+
+    public Transform GetTarget()
+    {
+        ContactFilter2D contactFilter = new ContactFilter2D();
+        contactFilter = contactFilter.NoFilter();
+        List<Collider2D> collidersFound = new List<Collider2D>();
+        Physics2D.OverlapCircle(transform.position, _rangeToCheck, contactFilter, collidersFound);
+        foreach (var item in collection)
+        {
+            if()
+        }
+        return;
     }
 }

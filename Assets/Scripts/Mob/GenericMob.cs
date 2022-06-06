@@ -21,11 +21,11 @@ public abstract class GenericMob : MonoBehaviour
     /// </summary>
     public StatusComponent Status { get; protected set; }
 
-    protected MobAI MobAI;
+    protected MobAI _mobAI;
 
-    protected string Name;
-    protected bool CanAttack;
-    protected float AttackInterval;
+    protected string _name;
+    protected bool _canAttack;
+    protected float _attackInterval;
 
    private void Setup()
     {
