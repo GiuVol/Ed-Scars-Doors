@@ -51,7 +51,7 @@ public abstract class GenericMob : MonoBehaviour
             gameObject.AddComponent<MobAI>();
         }
 
-        MobAI = gameObject.GetComponent<MobAI>();
+        _mobAI = gameObject.GetComponent<MobAI>();
         Status = gameObject.GetComponent<StatusComponent>();
 
         

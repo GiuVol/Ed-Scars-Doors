@@ -11,7 +11,7 @@ public class Spawnest : GenericMob
 
     public override void SetName()
     {
-        Name = "Spawnest";
+        _name = "Spawnest";
     }
 
     public override void SetupHealth()
@@ -21,9 +21,7 @@ public class Spawnest : GenericMob
 
     public override void SetupMobAI()
     {
-        MobAI.Speed = 200f;
-        MobAI.NextWayPointDistance = 3f;
-        MobAI.Drag = 1.5f;
+        _mobAI.Setup(200f, 3f, 1.5f, 5f, false);
     }
 
     public override void SetupStats()

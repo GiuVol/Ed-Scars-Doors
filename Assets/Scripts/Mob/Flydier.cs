@@ -11,14 +11,12 @@ public class Flydier : GenericMob
 
     public override void SetName()
     {
-        Name = "Flydier";
+        _name = "Flydier";
     }
 
     public override void SetupMobAI()
     {
-        MobAI.Speed = 200f;
-        MobAI.NextWayPointDistance = 3f;
-        MobAI.Drag = 1.5f;
+        _mobAI.Setup(200f, 3f, 1.5f, 5f, true);
     }
 
     public override void SetupHealth()

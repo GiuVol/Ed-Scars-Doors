@@ -7,21 +7,21 @@ public class Crawler : GenericMob
     Collision2D Collision;
     public override IEnumerator Attack()
     {
-        if (Collision != null && CanAttack == true)
+        if (Collision != null && _canAttack == true)
         {
             IHealthable collidedHealthable = Collision.gameObject.GetComponent<IHealthable>();
             collidedHealthable.Health.DecreaseHealth(Mathf.FloorToInt(Stats.Attack.CurrentValue));
-            CanAttack = false;
+            _canAttack = false;
             Collision = null;
-            yield return new WaitForSeconds(AttackInterval);
+            yield return new WaitForSeconds(_attackInterval);
 
-            CanAttack = true;
+            _canAttack = true;
         }
     }
 
     public override void SetName()
     {
-        Name = "Crawler";
+        _name = "Crawler";
     }
 
     public override void SetupHealth()
@@ -31,9 +31,7 @@ public class Crawler : GenericMob
 
     public override void SetupMobAI()
     {
-        MobAI.Speed = 200f;
-        MobAI.NextWayPointDistance = 3f;
-        MobAI.Drag = 1.5f;
+        _mobAI.Setup(200f, 3f, 1.5f, 5f, true);
     }
 
     public override void SetupStats()
@@ -48,7 +46,7 @@ public class Crawler : GenericMob
 
     protected override void SetupMob()
     {
-        AttackInterval = 5f;
+        _attackInterval = 5f;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
