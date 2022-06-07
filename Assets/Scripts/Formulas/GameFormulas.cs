@@ -2,6 +2,10 @@ using UnityEngine;
 
 public class GameFormulas
 {
+    public const string ProjectileResourcesPath = "Projectiles/";
+    public const string NormalProjectileName = "LightProjectile";
+    public const string DarkProjectileName = "DarkProjectile";
+
     private const float MinDamageMultiplier = .1f;
     private const float MaxDamageMultiplier = 10;
 

@@ -6,70 +6,79 @@ using UnityEngine;
 /// </summary>
 public class Stat
 {
-    /// <summary>
-    /// Property <c>CurrentValue</c>
-    /// Property that represents the current value of a character's statistic
-    /// </summary>
-    public int CurrentValue
-    { get; private set; }
-
+    private const float MinStatMultiplier = .5f;
+    private const float MaxStatMultiplier = 10;
+    
     /// <summary>
     /// Property <c>StandardValue</c>
-    /// Property that represents the starting value of a character's statistic
+    /// Property that represents the standard value of the stat
     /// </summary>
     public int StandardValue
     { get; private set; }
 
     /// <summary>
-    /// Property <c>MaxValue</c>
-    /// Property that represents the maximum value of a character's statistic
+    /// Field <c>_statMultiplier</c>
+    /// This value represents the multiplier of the standard stat value
     /// </summary>
-    public int MaxValue
-    { get; private set; }
+    private float _statMultiplier;
+
+    /// <summary>
+    /// Property <c>StatMultiplier</c>
+    /// Property that provides access to the <c>_statMultiplier</c> field in a controlled way
+    /// </summary>
+    public float StatMultiplier
+    {
+        get
+        {
+            return _statMultiplier;
+        }
+        set
+        {
+            _statMultiplier = Mathf.Clamp(value, MinStatMultiplier, MaxStatMultiplier);
+        }
+    }
+
+    /// <summary>
+    /// Property <c>CurrentValue</c>
+    /// Property that represents the current value of the stat
+    /// </summary>
+    public int CurrentValue
+    {
+        get
+        {
+            int currentValue = Mathf.FloorToInt((float) StandardValue * StatMultiplier);
+            currentValue = Mathf.Clamp(currentValue, MinValue, MaxValue);
+
+            return currentValue;
+        }
+    }
 
     /// <summary>
     /// Property <c>MinValue</c>
-    /// Property that represents the minimum value of a character's statistic
+    /// Property that represents the minimum value of the stat
     /// </summary>
     public int MinValue
+    { get; private set; }
+
+    /// <summary>
+    /// Property <c>MaxValue</c>
+    /// Property that represents the maximum value of the stat
+    /// </summary>
+    public int MaxValue
     { get; private set; }
 
     /// <summary>
     /// Constructor <c>Stat</c>
     /// </summary>
     /// <param name="standardValue"> the starting value of a character's statistic </param>
-    /// <param name="maxValue"> the maximum value of a character's statistic </param>
     /// <param name="minValue"> the minimum value of a character's statistic </param>
-    public Stat(int standardValue, int maxValue, int minValue)
+    /// <param name="maxValue"> the maximum value of a character's statistic </param>
+    public Stat(int standardValue, int minValue, int maxValue)
     {
         StandardValue = standardValue;
-        CurrentValue = standardValue;
-        MaxValue = maxValue;
+        StatMultiplier = 1;
         MinValue = minValue;
-    }
-
-    /// <summary>
-    /// Procedure <c>IncreasePercentage</c>
-    /// Procedure that increases by a certain percentage the current value of the statistic
-    /// </summary>
-    /// <param name="variation"> the percentage of the increment </param>
-    public void IncreasePercentage(float variation)
-    {
-        variation = Mathf.Max(variation, 0);
-        int increment = Mathf.FloorToInt(variation * (float)CurrentValue);
-        CurrentValue = Mathf.Min(MaxValue, CurrentValue + increment); 
-    }
-
-    /// <summary>
-    /// Procedure <c>DecreasePercentage</c>
-    /// Procedure that decreases by a certain percentage the current value of the statistic
-    /// </summary>
-    /// <param name="variation"> the percentage of the decrement </param> 
-    public void DecreasePercentage(float variation)
-    {
-        variation = Mathf.Max(variation, 0);
-        int decrement = Mathf.FloorToInt(variation * (float)CurrentValue);
-        CurrentValue = Mathf.Max(MinValue, CurrentValue - decrement);
+        MaxValue = maxValue;
     }
 
     /// <summary>
@@ -78,6 +87,6 @@ public class Stat
     /// </summary>
     public void ResetStat()
     {
-        CurrentValue = StandardValue;
+        StatMultiplier = 1;
     }
 }

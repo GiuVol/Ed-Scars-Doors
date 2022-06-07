@@ -116,6 +116,14 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     /// </summary>
     private bool CanShoot { get; set; }
 
+    public string ProjectileType { get; set; }
+
+    #region Test
+
+    private ProjectileChangeAbility _testAbility;
+
+    #endregion
+
     void Start()
     {
         NumberOfJumpsAllowed = Mathf.Max(NumberOfJumpsAllowed, 1);
@@ -134,7 +142,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
         Health = new HealthComponent(100, Die);
 
-        Stats = new StatsComponent(100, 200, 50, 100, 200, 50, 100, 200, 50);
+        Stats = new StatsComponent(100, 50, 250, 100, 50, 250);
 
         Status = gameObject.GetComponent<StatusComponent>();
 
@@ -142,6 +150,14 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
         CanDash = true;
         CanShoot = true;
+
+        ProjectileType = GameFormulas.NormalProjectileName;
+
+        #region Test
+
+        _testAbility = new ProjectileChangeAbility(GameFormulas.DarkProjectileName);
+
+        #endregion
     }
 
     void Update()
@@ -160,6 +176,21 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         {
             StartCoroutine(Shoot());
         }
+
+        #region Test
+
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            if (_testAbility.IsEnabled)
+            {
+                _testAbility.Disable(this);
+            } else
+            {
+                _testAbility.Enable(this);
+            }
+        }
+
+        #endregion
     }
 
     void FixedUpdate()
@@ -238,7 +269,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             yield break;
         }
 
-        Projectile projectile = Instantiate(Resources.Load<Projectile>("Projectiles/FireballPrefab"), 
+        Projectile projectile = Instantiate(Resources.Load<Projectile>(GameFormulas.ProjectileResourcesPath + ProjectileType), 
                                             ProjectilesSpawnPoint.position, ProjectilesSpawnPoint.rotation);
 
         projectile.AttackerAttack = Stats.Attack.CurrentValue;
