@@ -7,16 +7,35 @@ public class Crawler : GenericMob
     Collision2D Collision;
     public override IEnumerator Attack()
     {
-        if (Collision != null && _canAttack == true)
+        if(_canAttack)
+        if (_mobAI.IsHookedPlayer)
         {
-            IHealthable collidedHealthable = Collision.gameObject.GetComponent<IHealthable>();
-            collidedHealthable.Health.DecreaseHealth(Mathf.FloorToInt(Stats.Attack.CurrentValue));
-            _canAttack = false;
-            Collision = null;
-            yield return new WaitForSeconds(_attackInterval);
+            float distance = Vector2.Distance(MobAI.GetPlayerTarget().position, transform.position);
+            if(distance <= _attackRange)
+            {
+                    //posso iniziare con l'attacco
 
-            _canAttack = true;
-        }
+                    //play attck animation
+                    //shot of the enemy
+
+                    //detectk enemy in range to point attck
+                    Collider2D [] hitPlayers = Physics2D.OverlapCircleAll(_attackPoint.position, _attackPointRange, _playerLayer);
+                    foreach (Collider2D player in hitPlayers)
+                    {
+                        IHealthable playerHealth = player.gameObject.GetComponent<IHealthable>();
+                        if ( playerHealth != null)
+                        {
+                            playerHealth.Health.DecreaseHealth(Stats.Attack.CurrentValue);
+
+                            _canAttack = false;
+
+                            yield return new WaitForSeconds(_attackInterval);
+
+                            _canAttack = true;
+                        }
+                    }
+                }
+            }
     }
 
     public override void SetName()
@@ -47,13 +66,5 @@ public class Crawler : GenericMob
     protected override void SetupMob()
     {
         _attackInterval = 5f;
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.tag == "Player")
-        {
-            Collision = collision;
-        }
     }
 }

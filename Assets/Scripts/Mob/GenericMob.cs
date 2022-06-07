@@ -26,6 +26,13 @@ public abstract class GenericMob : MonoBehaviour
     protected string _name;
     protected bool _canAttack;
     protected float _attackInterval;
+    protected Transform _attackPoint;
+    protected float _attackPointRange;
+    protected float _attackRange;
+    protected LayerMask _playerLayer = LayerMask.GetMask("Player");
+
+
+
 
    private void Setup()
     {

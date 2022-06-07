@@ -302,9 +302,14 @@ public class MobAI : MonoBehaviour
     /// </summary>
     public void ChangeTarget()
     {
-        float distance = Vector2.Distance(PlayerTarget.position, _mob.position);
-
-        if (distance <= _rangeToCheck)
+        bool controlPlayer = false;
+        if(PlayerTarget != null)
+        {
+            float distance = Vector2.Distance(PlayerTarget.position, _mob.position);
+            controlPlayer = (distance <= _rangeToCheck);
+        }
+        
+        if (controlPlayer)
         {
             Target = PlayerTarget;
         }
