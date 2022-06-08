@@ -4,6 +4,7 @@ using UnityEngine;
 using Pathfinding;
 public class MobAI : MonoBehaviour
 {
+    public bool _debug = false;
     /// <summary>
     /// Attribute <c>Speed</c>
     /// Represents the speed at which the mob moves
@@ -38,7 +39,7 @@ public class MobAI : MonoBehaviour
     /// Property <c>Target</c>
     /// The target that the mob is chasing at the moment
     /// </summary>
-    public  Transform Target
+    public Transform Target
     { get; private set; }
 
     /// <summary>
@@ -102,7 +103,7 @@ public class MobAI : MonoBehaviour
     /// Constant used for generating the position of the random target.
     /// It represents the smallest value on the x-axis that the casual target can reach
     /// </summary>
-    const float MinCasualRange = -10f;
+    const float MinCasualRange = 2.5f;
 
     /// <summary>
     /// Const <c>MaxCasualRange</c>
@@ -121,6 +122,26 @@ public class MobAI : MonoBehaviour
         {
             return (Target == PlayerTarget);
         }
+    }
+
+    private static float XStartGraph;
+    private static float XEndGraph;
+
+    private bool _nextCasualPositionDirection = true; //true va a destra, false a sinistra
+
+    private void SetupDebug()
+    {
+        _speed = 200f;
+        _nextWayPointDistance = 3f;
+        _rb.drag = 1.5f;
+        _rangeToCheck = 5f;
+        _activate = true;
+    }
+
+    public static void SetExtremeGraph(float xCenter, float width)
+    {
+        XStartGraph = xCenter - width / 2;
+        XEndGraph = xCenter + width / 2;
     }
 
 
@@ -184,6 +205,11 @@ public class MobAI : MonoBehaviour
         _casualTarget = go.transform;
         _casualTarget.position = GenerateCasualPosition();
         Target = _casualTarget;
+        _rb.gravityScale = 0;
+        if (_debug)
+        {
+            SetupDebug();
+        }
     }
 
     void FixedUpdate()
@@ -218,7 +244,7 @@ public class MobAI : MonoBehaviour
              * This function is used to generate the path to be taken by the mob.
              * To prevent the path from being generated, the OnPathComplete procedure is called each time
              */
-            _seeker.StartPath(_rb.position, Target.position, OnPathComplete); 
+            _seeker.StartPath(_rb.position, Target.position, OnPathComplete);
     }
 
     /// <summary>
@@ -302,13 +328,14 @@ public class MobAI : MonoBehaviour
     /// </summary>
     public void ChangeTarget()
     {
+        float distance;
         bool controlPlayer = false;
-        if(PlayerTarget != null)
+        if (PlayerTarget != null)
         {
-            float distance = Vector2.Distance(PlayerTarget.position, _mob.position);
+            distance = Vector2.Distance(PlayerTarget.position, _mob.position);
             controlPlayer = (distance <= _rangeToCheck);
         }
-        
+
         if (controlPlayer)
         {
             Target = PlayerTarget;
@@ -320,9 +347,13 @@ public class MobAI : MonoBehaviour
                 Target = _casualTarget;
                 Target.position = GenerateCasualPosition();
             }
+            else
+            {
+                distance = Vector2.Distance(Target.position, _mob.position);
+                if (distance <= 1f)
+                    Target.position = GenerateCasualPosition();
+            }
 
-            if (_mob.position == Target.position)
-                Target.position = GenerateCasualPosition();
         }
     }
 
@@ -333,8 +364,34 @@ public class MobAI : MonoBehaviour
     /// <returns></returns>
     private Vector3 GenerateCasualPosition()
     {
-        return new Vector3(Random.Range(MinCasualRange + _mob.position.x, MaxCasualRange + _mob.position.x), 0, _mob.position.y);
+        Vector3 casualPosition;
+        if (_nextCasualPositionDirection)
+        {
+            _nextCasualPositionDirection = false;
+            casualPosition = new Vector3(Random.Range(_mob.position.x + MinCasualRange, MaxCasualRange + _mob.position.x), 0, _mob.position.y);
+        }
+        else
+        {
+            _nextCasualPositionDirection = true;
+            casualPosition = new Vector3(Random.Range(_mob.position.x - MaxCasualRange, _mob.position.x - MinCasualRange), 0, _mob.position.y);
+        }
+
+        return ControlGenerateCasualPosition(casualPosition);
     }
+
+
+    private Vector3 ControlGenerateCasualPosition(Vector3 casualPosition)
+    {
+        if (casualPosition.x <= XStartGraph || casualPosition.x >= XEndGraph)
+        {
+            return GenerateCasualPosition();
+        }
+        else
+        {
+            return casualPosition;
+        }
+    }
+
 
     /*
     /// <summary>
