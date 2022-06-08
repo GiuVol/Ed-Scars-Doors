@@ -23,7 +23,7 @@ public class GameFormulas
             multiplier = Mathf.Clamp(multiplier, MinDamageMultiplier, MaxDamageMultiplier);
         } else
         {
-            multiplier = Mathf.Max(attackerAttack - targetDefence, 0) + 1;
+            multiplier = Mathf.Max(attackerAttack - targetDefence, 0) + 3;
             multiplier = Mathf.Log(multiplier, 3);
             multiplier = Mathf.Clamp(multiplier, MinDamageMultiplier, MaxDamageMultiplier);
         }

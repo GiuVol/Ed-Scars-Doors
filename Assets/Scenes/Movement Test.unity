@@ -2016,16 +2016,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1823a5e232d44c7448d9663918d26973, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WalkSpeed: 6
-  RunSpeed: 12
-  JumpForce: 40
-  DashForce: 30
-  GravityScale: 7.5
+  StandardWalkSpeed: 10
+  StandardRunSpeed: 20
+  StandardJumpForce: 30
+  StandardDashForce: 30
+  StandardGravityScale: 7
+  StandardJumpInterval: 0.4
+  StandardDashInterval: 0.4
+  StandardShootInterval: 0.4
+  StandardNumberOfJumpsAllowed: 1
   ProjectilesSpawnPoint: {fileID: 1746702364}
-  JumpInterval: 0.05
-  DashInterval: 1
-  ShootInterval: 0.2
-  NumberOfJumpsAllowed: 1
 --- !u!4 &1287368323
 Transform:
   m_ObjectHideFlags: 0

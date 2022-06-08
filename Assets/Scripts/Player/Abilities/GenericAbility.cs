@@ -1,26 +1,38 @@
-public abstract class GenericAbility
-{
-    public bool IsEnabled { get; protected set; }
+using UnityEngine;
 
+public abstract class GenericAbility : ScriptableObject
+{
+    /// <summary>
+    /// This method enables the ability on the <c>PlayerController</c> in input.
+    /// </summary>
+    /// <param name="playerController">The <c>PlayerController</c> on which you want to enable the ability</param>
     public void Enable(PlayerController playerController)
     {
-        if (IsEnabled)
+        foreach (GenericAbility equippedAbility in playerController.EquippedAbilities)
         {
-            return;
+            if (equippedAbility.GetType().IsEquivalentTo(this.GetType()))
+            {
+                Debug.Log("An ability of this type is already equipped!");
+                return;
+            }
         }
 
-        IsEnabled = true;
+        playerController.EquippedAbilities.Add(this);
         Setup(playerController);
     }
 
+    /// <summary>
+    /// This method disables the ability on the <c>PlayerController</c> in input.
+    /// </summary>
+    /// <param name="playerController">The <c>PlayerController</c> on which you want to disable the ability</param>
     public void Disable(PlayerController playerController)
     {
-        if (!IsEnabled)
+        if (!playerController.EquippedAbilities.Contains(this))
         {
             return;
         }
-        
-        IsEnabled = false;
+
+        playerController.EquippedAbilities.Remove(this);
         Takedown(playerController);
     }
 
