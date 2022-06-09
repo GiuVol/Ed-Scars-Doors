@@ -79,18 +79,6 @@ public class StatusComponent : MonoBehaviour
 
     private bool _initialized;
 
-    void Start()
-    {
-        CurrentBlindnesslevel = 0;
-        IsBlinded = false;
-        CanBeBlinded = true;
-
-        CorrosionTimeLeft = 0;
-        IsCorroded = false;
-
-        _initialized = false;
-    }
-
     /// <summary>
     /// This method is used to setup the <c>StatusComponent</c> with the desired values.
     /// </summary>
@@ -122,6 +110,15 @@ public class StatusComponent : MonoBehaviour
                       float blindnessLevelDecrementSpeed, float maxCorrosionTime, 
                       float corrosionResistence)
     {
+        CurrentBlindnesslevel = 0;
+        IsBlinded = false;
+        CanBeBlinded = true;
+
+        CorrosionTimeLeft = 0;
+        IsCorroded = false;
+
+        blindnessLevelDecrementSpeed = Mathf.Max(blindnessLevelDecrementSpeed, 1);
+        
         MaxBlindnesslevel = maxBlindnesslevel;
         BlindnessDuration = Mathf.Min(blindnessDuration, maxBlindnesslevel / blindnessLevelDecrementSpeed);
         BlindnessCooldownTime = blindnessCooldownTime;
@@ -134,7 +131,7 @@ public class StatusComponent : MonoBehaviour
         _initialized = true;
     }
 
-    protected void FixedUpdate()
+    void FixedUpdate()
     {
         if (!_initialized)
         {

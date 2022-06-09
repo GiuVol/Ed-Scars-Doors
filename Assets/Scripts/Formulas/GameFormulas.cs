@@ -5,6 +5,7 @@ public class GameFormulas
     public const string ProjectileResourcesPath = "Projectiles/";
     public const string NormalProjectileName = "LightProjectile";
     public const string DarkProjectileName = "DarkProjectile";
+    public const string SwarmProjectileName = "SwarmProjectile";
 
     private const float MinDamageMultiplier = .1f;
     private const float MaxDamageMultiplier = 10;
@@ -23,8 +24,9 @@ public class GameFormulas
             multiplier = Mathf.Clamp(multiplier, MinDamageMultiplier, MaxDamageMultiplier);
         } else
         {
-            multiplier = Mathf.Max(attackerAttack - targetDefence, 0) + 3;
-            multiplier = Mathf.Log(multiplier, 3);
+            int desiredBase = 3;
+            multiplier = Mathf.Max(attackerAttack - targetDefence, 0) + desiredBase;
+            multiplier = Mathf.Log(multiplier, desiredBase);
             multiplier = Mathf.Clamp(multiplier, MinDamageMultiplier, MaxDamageMultiplier);
         }
 

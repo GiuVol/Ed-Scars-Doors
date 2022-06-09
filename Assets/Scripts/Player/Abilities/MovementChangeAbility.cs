@@ -48,8 +48,8 @@ public class MovementChangeAbility : GenericAbility
     public int NumberOfJumpsAllowed;
 
     #endregion
-    
-    protected override void Setup(PlayerController playerController)
+
+    public override void Enable(PlayerController playerController)
     {
         playerController.CurrentWalkSpeed = WalkSpeed;
         playerController.CurrentRunSpeed = RunSpeed;
@@ -67,7 +67,7 @@ public class MovementChangeAbility : GenericAbility
         }
     }
 
-    protected override void Takedown(PlayerController playerController)
+    public override void Disable(PlayerController playerController)
     {
         playerController.ResetMovementValues();
     }

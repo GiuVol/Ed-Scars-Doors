@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusable
 {
+    public const int MaxNumberOfEquippableAbilities = 4;
+
     #region Movement Parameters
 
     /// <summary>
@@ -166,9 +168,16 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     /// </summary>
     private bool CanShoot { get; set; }
 
+    /// <summary>
+    /// The name of the projectile that the player will shoot. 
+    /// It must match the name of the projectile prefab.
+    /// </summary>
     public string ProjectileType { get; set; }
 
-    public List<GenericAbility> EquippedAbilities { get; private set; }
+    /// <summary>
+    /// Structure that stores the abilities currently equipped by the player.
+    /// </summary>
+    private List<GenericAbility> EquippedAbilities { get; set; }
 
     #region Test
 
@@ -200,22 +209,21 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         Stats = new StatsComponent(100, 50, 500, 100, 50, 500);
 
         Status = gameObject.GetComponent<StatusComponent>();
-
-        Status.Setup(50, 10, 2.5f, 0, 2, 15, 0);
+        Status.Setup(100, 5, 5, 0, 1, 20, 0);
 
         CanDash = true;
         CanShoot = true;
 
         ProjectileType = GameFormulas.NormalProjectileName;
 
-        EquippedAbilities = new List<GenericAbility>();
+        EquippedAbilities = new List<GenericAbility>(MaxNumberOfEquippableAbilities);
 
         #region Test
 
-        _testAbility1 = Resources.Load<MovementChangeAbility>("Abilities/DoubleJump");
-        _testAbility2 = new ProjectileChangeAbility(GameFormulas.DarkProjectileName);
-        _testAbility3 = new StatChangeAbility(1, 2);
-        _testAbility4 = Resources.Load<MovementChangeAbility>("Abilities/ImprovedDoubleJump");
+        _testAbility1 = Resources.Load<GenericAbility>("Abilities/DoubleJump");
+        _testAbility2 = Resources.Load<GenericAbility>("Abilities/AttackOverDefence");
+        _testAbility3 = Resources.Load<GenericAbility>("Abilities/SwarmShooter");
+        _testAbility4 = Resources.Load<GenericAbility>("Abilities/ImprovedDoubleJump");
 
         #endregion
     }
@@ -241,42 +249,45 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            if (EquippedAbilities.Contains(_testAbility1))
+            if (!IsEquipped(_testAbility1))
             {
-                _testAbility1.Disable(this);
+                EquipAbility(_testAbility1);
             } else
             {
-                _testAbility1.Enable(this);
+                UnequipAbility(_testAbility1);
             }
         } else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            if (EquippedAbilities.Contains(_testAbility2))
+            if (!IsEquipped(_testAbility2))
             {
-                _testAbility2.Disable(this);
+                EquipAbility(_testAbility2);
             }
             else
             {
-                _testAbility2.Enable(this);
+                UnequipAbility(_testAbility2);
             }
+
+            Debug.Log(Stats.Attack.CurrentValue + " " + Stats.Defence.CurrentValue);
+
         } else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            if (EquippedAbilities.Contains(_testAbility3))
+            if (!IsEquipped(_testAbility3))
             {
-                _testAbility3.Disable(this);
+                EquipAbility(_testAbility3);
             }
             else
             {
-                _testAbility3.Enable(this);
+                UnequipAbility(_testAbility3);
             }
         } else if (Input.GetKeyDown(KeyCode.Alpha4))
         {
-            if (EquippedAbilities.Contains(_testAbility4))
+            if (!IsEquipped(_testAbility4))
             {
-                _testAbility4.Disable(this);
+                EquipAbility(_testAbility4);
             }
             else
             {
-                _testAbility4.Enable(this);
+                UnequipAbility(_testAbility4);
             }
         }
 
@@ -295,6 +306,22 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         _timeToWaitToJump = Mathf.Max(_timeToWaitToJump - Time.fixedDeltaTime, 0);
     }
 
+    /// <summary>
+    /// This method initializes all the values related to movement.
+    /// </summary>
+    public void ResetMovementValues()
+    {
+        CurrentWalkSpeed = StandardWalkSpeed;
+        CurrentRunSpeed = StandardRunSpeed;
+        CurrentJumpForce = StandardJumpForce;
+        CurrentDashForce = StandardDashForce;
+        CurrentGravityScale = StandardGravityScale;
+        CurrentJumpInterval = StandardJumpInterval;
+        CurrentDashInterval = StandardDashInterval;
+        CurrentShootInterval = StandardShootInterval;
+        CurrentNumberOfJumpsAllowed = Mathf.Max(StandardNumberOfJumpsAllowed, 1);
+    }
+    
     /// <summary>
     /// Allows the player to jump, if it is possible.
     /// </summary>
@@ -359,8 +386,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             yield break;
         }
 
-        Projectile projectile = Instantiate(Resources.Load<Projectile>(GameFormulas.ProjectileResourcesPath + ProjectileType), 
-                                            ProjectilesSpawnPoint.position, ProjectilesSpawnPoint.rotation);
+        Projectile projectile = Projectile.InstantiateProjectile(ProjectileType, ProjectilesSpawnPoint);
 
         projectile.AttackerAttack = Stats.Attack.CurrentValue;
 
@@ -379,16 +405,53 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         Destroy(gameObject);
     }
 
-    public void ResetMovementValues()
+    /// <summary>
+    /// This method enables the ability given in input on the player, if it is possible to equip it.
+    /// </summary>
+    /// <param name="newAbility">The ability you want to equip</param>
+    public void EquipAbility(GenericAbility newAbility)
     {
-        CurrentWalkSpeed = StandardWalkSpeed;
-        CurrentRunSpeed = StandardRunSpeed;
-        CurrentJumpForce = StandardJumpForce;
-        CurrentDashForce = StandardDashForce;
-        CurrentGravityScale = StandardGravityScale;
-        CurrentJumpInterval = StandardJumpInterval;
-        CurrentDashInterval = StandardDashInterval;
-        CurrentShootInterval = StandardShootInterval;
-        CurrentNumberOfJumpsAllowed = Mathf.Max(StandardNumberOfJumpsAllowed, 1);
+        if (EquippedAbilities.Count >= MaxNumberOfEquippableAbilities)
+        {
+            Debug.Log("You have already reached the max number of equipped abilities!");
+            return;
+        }
+
+        foreach (GenericAbility equippedAbility in EquippedAbilities)
+        {
+            if (equippedAbility.GetType().IsEquivalentTo(newAbility.GetType()))
+            {
+                Debug.Log("An ability of this type is already equipped!");
+                return;
+            }
+        }
+
+        EquippedAbilities.Add(newAbility);
+        newAbility.Enable(this);
+    }
+
+    /// <summary>
+    /// This method disables the ability given in input, only if it is already equipped.
+    /// </summary>
+    /// <param name="ability">The ability you want to unequip</param>
+    public void UnequipAbility(GenericAbility ability)
+    {
+        if (!EquippedAbilities.Contains(ability))
+        {
+            return;
+        }
+
+        EquippedAbilities.Remove(ability);
+        ability.Disable(this);
+    }
+
+    /// <summary>
+    /// Returns whether the ability given in input is equipped or not.
+    /// </summary>
+    /// <param name="ability">The ability you want to check</param>
+    /// <returns></returns>
+    public bool IsEquipped(GenericAbility ability)
+    {
+        return EquippedAbilities.Contains(ability);
     }
 }

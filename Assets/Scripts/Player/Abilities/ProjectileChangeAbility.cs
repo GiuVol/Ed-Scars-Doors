@@ -1,18 +1,16 @@
 public class ProjectileChangeAbility : GenericAbility
 {
-    private readonly string _projectileName;
+    /// <summary>
+    /// The name of the projectile that this ability allows to shoot.
+    /// </summary>
+    public string ProjectileName;
 
-    public ProjectileChangeAbility(string projectileName)
+    public override void Enable(PlayerController playerController)
     {
-        _projectileName = projectileName;
+        playerController.ProjectileType = ProjectileName;
     }
 
-    protected override void Setup(PlayerController playerController)
-    {
-        playerController.ProjectileType = _projectileName;
-    }
-
-    protected override void Takedown(PlayerController playerController)
+    public override void Disable(PlayerController playerController)
     {
         playerController.ProjectileType = GameFormulas.NormalProjectileName;
     }

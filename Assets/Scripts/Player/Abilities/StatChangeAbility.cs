@@ -1,27 +1,28 @@
 public class StatChangeAbility : GenericAbility
 {
-    private readonly float _attackMultiplier;
-    private readonly float _defenceMultiplier;
+    /// <summary>
+    /// The attack multiplier given by this ability.
+    /// </summary>
+    public float AttackMultiplier;
 
-    public StatChangeAbility(float attackMultiplier, float defenceMultiplier)
-    {
-        _attackMultiplier = attackMultiplier;
-        _defenceMultiplier = defenceMultiplier;
-    }
+    /// <summary>
+    /// The defence multiplier given by this ability
+    /// </summary>
+    public float DefenceMultiplier;
 
-    protected override void Setup(PlayerController playerController)
+    public override void Enable(PlayerController playerController)
     {
-        float actualAttackMultiplier = (_attackMultiplier <= 0) ? 1 : _attackMultiplier;
-        float actualDefenceMultiplier = (_defenceMultiplier <= 0) ? 1 : _defenceMultiplier;
+        float actualAttackMultiplier = (AttackMultiplier <= 0) ? 1 : AttackMultiplier;
+        float actualDefenceMultiplier = (DefenceMultiplier <= 0) ? 1 : DefenceMultiplier;
 
         playerController.Stats.Attack.StatMultiplier *= actualAttackMultiplier;
         playerController.Stats.Defence.StatMultiplier *= actualDefenceMultiplier;
     }
-    
-    protected override void Takedown(PlayerController playerController)
+
+    public override void Disable(PlayerController playerController)
     {
-        float actualAttackMultiplier = (_attackMultiplier <= 0) ? 1 : _attackMultiplier;
-        float actualDefenceMultiplier = (_defenceMultiplier <= 0) ? 1 : _defenceMultiplier;
+        float actualAttackMultiplier = (AttackMultiplier <= 0) ? 1 : AttackMultiplier;
+        float actualDefenceMultiplier = (DefenceMultiplier <= 0) ? 1 : DefenceMultiplier;
 
         playerController.Stats.Attack.StatMultiplier /= actualAttackMultiplier;
         playerController.Stats.Defence.StatMultiplier /= actualDefenceMultiplier;
