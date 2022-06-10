@@ -1,12 +1,19 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Crawler : GenericMob
 {
+    /// <summary>
+    /// The <c>_attackPointRange</c>
+    /// </summary>
+    protected float _attackPointRange;
+    private LayerMask _playerLayer;
     Collision2D Collision;
-    public override IEnumerator Attack()
+    public override bool Attack()
     {
+        /*
         if(_canAttack)
         if (_mobAI.IsHookedPlayer)
         {
@@ -35,7 +42,13 @@ public class Crawler : GenericMob
                         }
                     }
                 }
-            }
+            }*/
+        return false;
+    }
+
+    public override void Die()
+    {
+        Destroy(gameObject);
     }
 
     public override void SetName()
@@ -50,7 +63,7 @@ public class Crawler : GenericMob
 
     public override void SetupMobAI()
     {
-        _mobAI.Setup(200f, 3f, 1.5f, 5f, true);
+        _mobAI.Setup(200f, 3f, 5f, true);
     }
 
     public override void SetupStats()
@@ -63,8 +76,14 @@ public class Crawler : GenericMob
         Status.Setup(50, 10, 2.5f, 0, 2, 15, 0);
     }
 
+    protected override void AttackTime(Func<bool> Attack)
+    {
+        throw new NotImplementedException();
+    }
+
     protected override void SetupMob()
     {
         _attackInterval = 5f;
+        _playerLayer = LayerMask.GetMask("Player");
     }
 }

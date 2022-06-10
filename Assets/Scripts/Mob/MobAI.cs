@@ -70,7 +70,7 @@ public class MobAI : MonoBehaviour
     /// Attribute <c>_rb</c>
     /// Used for mob physics
     /// </summary>
-    private Rigidbody2D _rb;
+    public Rigidbody2D _rb;
 
     /// <summary>
     /// Const <c>StartUpdatePath</c>
@@ -124,9 +124,22 @@ public class MobAI : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Static attribute <c>XStartGraph</c>
+    /// Attribute that stores the value of coordinate of the x of the beginning of the graph
+    /// </summary>
     private static float XStartGraph;
+
+    /// <summary>
+    /// Static attribute <c>XEndGraph</c>
+    /// Attribute that stores the value of coordinate of the x of the ending of the graph
+    /// </summary>
     private static float XEndGraph;
 
+    /// <summary>
+    /// Attribute <c>_nextCasualPositionDirection</c>
+    /// Attribute that marks the next causal direction of the mob
+    /// </summary>
     private bool _nextCasualPositionDirection = true; //true va a destra, false a sinistra
 
     private void SetupDebug()
@@ -138,18 +151,39 @@ public class MobAI : MonoBehaviour
         _activate = true;
     }
 
+    public Transform GetMobTransform()
+    {
+        return _mob;
+    }
+
+    /// <summary>
+    /// Static method <c>SetExtremeGraph</c>
+    /// It's used to set the value of:
+    /// XStartGraph,XEndGraph
+    /// </summary>
+    /// <param name="xCenter">The center of grath</param>
+    /// <param name="width">The width dimension of grath</param>
     public static void SetExtremeGraph(float xCenter, float width)
     {
         XStartGraph = xCenter - width / 2;
         XEndGraph = xCenter + width / 2;
     }
 
-
+    /// <summary>
+    /// Static method <c>SetPlayerTarget</c>
+    ///  It's used to set the value of PlayerTarget
+    /// </summary>
+    /// <param name="playerTarget">Player's transform </param>
     public static void SetPlayerTarget(Transform playerTarget)
     {
         PlayerTarget = playerTarget;
     }
 
+    /// <summary>
+    /// Static function <c>GetPlayerTarget</c>
+    /// Return the player transform
+    /// </summary>
+    /// <returns></returns>
     public static Transform GetPlayerTarget()
     {
         return PlayerTarget;
@@ -165,14 +199,12 @@ public class MobAI : MonoBehaviour
     /// </summary>
     /// <param name="speed">Value to assigned to Speed</param>
     /// <param name="nextWayPointDistance">Value to assign to NextWayPointDistance</param>
-    /// <param name="drag">Value to assign to position of the mob's transform</param>
     /// <param name="rangeToCheck">Value to assign to _rangeToCheck</param>
     /// <param name="activate">Value to assign to _activate</param>
-    public void Setup(float speed, float nextWayPointDistance, float drag, float rangeToCheck, bool activate)
+    public void Setup(float speed, float nextWayPointDistance, float rangeToCheck, bool activate)
     {
         _speed = speed;
         _nextWayPointDistance = nextWayPointDistance;
-        _rb.drag = drag;
         _rangeToCheck = rangeToCheck;
         _activate = activate;
     }
@@ -194,7 +226,7 @@ public class MobAI : MonoBehaviour
         _seeker = GetComponent<Seeker>();
         _rb = GetComponent<Rigidbody2D>();
         _mob = GetComponentInChildren<Transform>();
-
+        _rb.drag = 1.5f;
         /*
          *InvokeRepeating starts calling the UpdatePath method,
          *after a period of time equal to the value of StartUpdatePath has passed,
@@ -206,9 +238,26 @@ public class MobAI : MonoBehaviour
         _casualTarget.position = GenerateCasualPosition();
         Target = _casualTarget;
         _rb.gravityScale = 0;
-        if (_debug)
+        /*if (_debug)
         {
             SetupDebug();
+        }*/
+    }
+
+    void DebugChangeTarget()
+    {
+        float distance;
+        bool controlPlayer = false;
+
+        if (PlayerTarget != null)
+        {
+            distance = Vector2.Distance(PlayerTarget.position, _mob.position);
+            controlPlayer = (distance <= _rangeToCheck);
+        }
+
+        if (controlPlayer)
+        {
+            Target = PlayerTarget;
         }
     }
 
@@ -330,7 +379,7 @@ public class MobAI : MonoBehaviour
     {
         float distance;
         bool controlPlayer = false;
-        if (PlayerTarget != null)
+        if (PlayerTarget != null) // Check if a playerController has been created in the scene
         {
             distance = Vector2.Distance(PlayerTarget.position, _mob.position);
             controlPlayer = (distance <= _rangeToCheck);
@@ -342,7 +391,7 @@ public class MobAI : MonoBehaviour
         }
         else
         {
-            if (IsHookedPlayer)
+            if (IsHookedPlayer) //This control is used when the player is initially hooked and then moves away
             {
                 Target = _casualTarget;
                 Target.position = GenerateCasualPosition();
@@ -350,7 +399,7 @@ public class MobAI : MonoBehaviour
             else
             {
                 distance = Vector2.Distance(Target.position, _mob.position);
-                if (distance <= 1f)
+                if (distance <= 1f) // We check if the mob has reached the current target and then we need to create a new one
                     Target.position = GenerateCasualPosition();
             }
 
@@ -365,21 +414,29 @@ public class MobAI : MonoBehaviour
     private Vector3 GenerateCasualPosition()
     {
         Vector3 casualPosition;
-        if (_nextCasualPositionDirection)
+        if (_nextCasualPositionDirection) // If _nextCasualPositionDirection is equal to true then go to the right otherwise go to the left
         {
-            _nextCasualPositionDirection = false;
+            _nextCasualPositionDirection = false; // The next target will be on the left
             casualPosition = new Vector3(Random.Range(_mob.position.x + MinCasualRange, MaxCasualRange + _mob.position.x), 0, _mob.position.y);
+            // Generate a random dot to the right of the mob
         }
         else
         {
-            _nextCasualPositionDirection = true;
+            _nextCasualPositionDirection = true; // The next target will be on the right
             casualPosition = new Vector3(Random.Range(_mob.position.x - MaxCasualRange, _mob.position.x - MinCasualRange), 0, _mob.position.y);
+            // Generate a random dot to the left of the mob
         }
 
         return ControlGenerateCasualPosition(casualPosition);
     }
 
 
+    /// <summary>
+    /// Function <c>ControlGenerateCasualPosition</c>
+    /// Check if the generated position is within the bounds of the graph
+    /// </summary>
+    /// <param name="casualPosition">Generated position</param>
+    /// <returns>If position is correct return the him else it generated a new position</returns>
     private Vector3 ControlGenerateCasualPosition(Vector3 casualPosition)
     {
         if (casualPosition.x <= XStartGraph || casualPosition.x >= XEndGraph)

@@ -1,12 +1,31 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Spawnest : GenericMob
 {
-    public override IEnumerator Attack()
+    private float _attackIntervalPlayerHocked;
+    private const int _maxFlydier = 2;
+    private int _countFlydier = 0;
+    public override bool Attack()
     {
-        throw new System.NotImplementedException();
+        if (_countFlydier < _maxFlydier)
+        {
+            Instantiate(Resources.Load<Flydier>("Flydier"), _attackPoint.position, _attackPoint.rotation).SetFather(this);
+            _countFlydier++;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    internal void DecrementCountFlydier()
+    {
+        if(_countFlydier > 0)
+            _countFlydier--;
     }
 
     public override void SetName()
@@ -21,7 +40,7 @@ public class Spawnest : GenericMob
 
     public override void SetupMobAI()
     {
-        _mobAI.Setup(200f, 3f, 1.5f, 5f, false);
+        _mobAI.Setup(200f, 3f, 5f, false);
     }
 
     public override void SetupStats()
@@ -34,8 +53,40 @@ public class Spawnest : GenericMob
         Status.Setup(50, 10, 2.5f, 0, 2, 15, 0);
     }
 
+    protected override void AttackTime(Func<bool> Attack)
+    {
+        if (_timeLeftToAttack < 0f)
+        {
+            if (Attack())
+            {
+                if (_mobAI.IsHookedPlayer)
+                {
+                    _timeLeftToAttack = _attackIntervalPlayerHocked;
+                }
+                else
+                {
+                    _timeLeftToAttack = _attackInterval;
+                }
+            }
+        }
+        else
+        {
+            if(_countFlydier != _maxFlydier)
+            {
+                _timeLeftToAttack -= Time.deltaTime;
+            }
+        }
+    }
+
     protected override void SetupMob()
     {
-        throw new System.NotImplementedException();
+        _attackRange = 2.5f;
+        _attackInterval = 5f;
+        _attackIntervalPlayerHocked = 2.5f;
+    }
+
+    public override void Die()
+    {
+        Destroy(gameObject);
     }
 }
