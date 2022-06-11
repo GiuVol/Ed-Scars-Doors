@@ -330,6 +330,8 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             return;
         }
 
+        bool isGrounded = MovementController.IsGrounded;
+
         if (_jumpHandlingTask == null)
         {
             _jumpHandlingTask = StartCoroutine(HandleJump());
@@ -338,7 +340,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         Vector3 jumpDirection = Vector3.up;
         MovementController.GiveImpulse(jumpDirection, CurrentJumpForce);
 
-        if (!MovementController.IsGrounded)
+        if (!isGrounded)
         {
             CurrentNumberOfJumpsInTheAir++;
         }
