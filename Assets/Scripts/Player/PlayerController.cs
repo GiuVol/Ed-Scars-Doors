@@ -436,7 +436,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     /// <param name="ability">The ability you want to unequip</param>
     public void UnequipAbility(GenericAbility ability)
     {
-        if (!EquippedAbilities.Contains(ability))
+        if (!IsEquipped(ability))
         {
             return;
         }

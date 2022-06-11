@@ -51,14 +51,14 @@ public class MovementChangeAbility : GenericAbility
 
     public override void Enable(PlayerController playerController)
     {
-        playerController.CurrentWalkSpeed = WalkSpeed;
-        playerController.CurrentRunSpeed = RunSpeed;
-        playerController.CurrentJumpForce = JumpForce;
-        playerController.CurrentDashForce = DashForce;
-        playerController.CurrentGravityScale = GravityScale;
-        playerController.CurrentJumpInterval = JumpInterval;
-        playerController.CurrentDashInterval = DashInterval;
-        playerController.CurrentShootInterval = ShootInterval;
+        playerController.CurrentWalkSpeed = (WalkSpeed > 0) ? WalkSpeed : playerController.StandardWalkSpeed;
+        playerController.CurrentRunSpeed = (RunSpeed > 0) ? RunSpeed : playerController.StandardRunSpeed;
+        playerController.CurrentJumpForce = (JumpForce > 0) ? JumpForce : playerController.StandardJumpForce;
+        playerController.CurrentDashForce = (DashForce > 0) ? DashForce : playerController.StandardDashForce;
+        playerController.CurrentGravityScale = (GravityScale > 0) ? GravityScale : playerController.StandardGravityScale;
+        playerController.CurrentJumpInterval = (JumpInterval > 0) ? JumpInterval : playerController.StandardJumpInterval;
+        playerController.CurrentDashInterval = (DashInterval > 0) ? DashInterval : playerController.StandardDashInterval;
+        playerController.CurrentShootInterval = (ShootInterval > 0) ? ShootInterval : playerController.StandardShootInterval;
         playerController.CurrentNumberOfJumpsAllowed = NumberOfJumpsAllowed;
 
         if (playerController.CurrentNumberOfJumpsAllowed < 1)
