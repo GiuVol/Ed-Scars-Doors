@@ -49,9 +49,9 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     public float StandardShootInterval;
 
     /// <summary>
-    /// The standard number of consecutive jumps allowed.
+    /// The standard number of jumps allowed in the air.
     /// </summary>
-    public int StandardNumberOfJumpsAllowed;
+    public int StandardNumberOfJumpsAllowedInAir;
 
     /// <summary>
     /// The transform from which the projectiles must be instantiated.
@@ -103,9 +103,9 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     public float CurrentShootInterval { get; set; }
 
     /// <summary>
-    /// The current number of consecutive jumps allowed.
+    /// The current number of jumps allowed in the air.
     /// </summary>
-    public int CurrentNumberOfJumpsAllowed { get; set; }
+    public int CurrentNumberOfJumpsAllowedInAir { get; set; }
 
     #endregion
     
@@ -130,9 +130,9 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     public StatusComponent Status { get; private set; }
 
     /// <summary>
-    /// Stores the number of jumps executed consecutively without touching the ground.
+    /// Stores the number of jumps executed in the air.
     /// </summary>
-    public int CurrentNumberOfJumps { get; set; }
+    public int CurrentNumberOfJumpsInTheAir { get; set; }
 
     /// <summary>
     /// Stores the coroutine that handles the jump process.
@@ -151,9 +151,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     {
         get
         {
-            int actualNumberOfJumpsAllowed = Mathf.Max(CurrentNumberOfJumpsAllowed, 1);
-
-            return (MovementController.IsGrounded || CurrentNumberOfJumps < actualNumberOfJumpsAllowed) && 
+            return (MovementController.IsGrounded || CurrentNumberOfJumpsInTheAir < CurrentNumberOfJumpsAllowedInAir) && 
                 _timeToWaitToJump <= 0;
         }
     }
@@ -319,7 +317,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         CurrentJumpInterval = StandardJumpInterval;
         CurrentDashInterval = StandardDashInterval;
         CurrentShootInterval = StandardShootInterval;
-        CurrentNumberOfJumpsAllowed = Mathf.Max(StandardNumberOfJumpsAllowed, 1);
+        CurrentNumberOfJumpsAllowedInAir = StandardNumberOfJumpsAllowedInAir;
     }
     
     /// <summary>
@@ -340,7 +338,10 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         Vector3 jumpDirection = Vector3.up;
         MovementController.GiveImpulse(jumpDirection, CurrentJumpForce);
 
-        CurrentNumberOfJumps++;
+        if (!MovementController.IsGrounded)
+        {
+            CurrentNumberOfJumpsInTheAir++;
+        }
     }
 
     /// <summary>
@@ -352,7 +353,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         
         yield return new WaitUntil(() => MovementController.IsGrounded);
 
-        CurrentNumberOfJumps = 0;
+        CurrentNumberOfJumpsInTheAir = 0;
         _timeToWaitToJump = CurrentJumpInterval;
         _jumpHandlingTask = null;
     }

@@ -45,7 +45,7 @@ public class MovementChangeAbility : GenericAbility
     /// <summary>
     /// The number of consecutive jumps allowed.
     /// </summary>
-    public int NumberOfJumpsAllowed;
+    public int NumberOfJumpsAllowedInAir;
 
     #endregion
 
@@ -59,12 +59,7 @@ public class MovementChangeAbility : GenericAbility
         playerController.CurrentJumpInterval = (JumpInterval > 0) ? JumpInterval : playerController.StandardJumpInterval;
         playerController.CurrentDashInterval = (DashInterval > 0) ? DashInterval : playerController.StandardDashInterval;
         playerController.CurrentShootInterval = (ShootInterval > 0) ? ShootInterval : playerController.StandardShootInterval;
-        playerController.CurrentNumberOfJumpsAllowed = NumberOfJumpsAllowed;
-
-        if (playerController.CurrentNumberOfJumpsAllowed < 1)
-        {
-            playerController.CurrentNumberOfJumpsAllowed = 1;
-        }
+        playerController.CurrentNumberOfJumpsAllowedInAir = NumberOfJumpsAllowedInAir;
     }
 
     public override void Disable(PlayerController playerController)
