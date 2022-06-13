@@ -5,14 +5,28 @@ using UnityEngine;
 
 public class Spawnest : GenericMob
 {
+    /// <summary>
+    /// Attribute <c>_attackIntervalPlayerHocked</c>
+    /// stores the time interval that the spawnet respects when hockeds player
+    /// </summary>
     private float _attackIntervalPlayerHocked;
+
+    /// <summary>
+    /// Const <c>_maxFlydier</c>
+    /// the max number of flydiers that spawnest can spawn at the same time
+    /// </summary>
     private const int _maxFlydier = 2;
+
+    /// <summary>
+    /// Attribute <c>_countFlydier</c>
+    /// stores the number of flydiers spawn by spawnest actualy not dead
+    /// </summary>
     private int _countFlydier = 0;
     public override bool Attack()
     {
         if (_countFlydier < _maxFlydier)
         {
-            Instantiate(Resources.Load<Flydier>("Flydier"), _attackPoint.position, _attackPoint.rotation).SetFather(this);
+            Instantiate(Resources.Load<Flydier>("Mobs/FlydierPrefab"), _attackPoint.position, _attackPoint.rotation).SetFather(this);
             _countFlydier++;
             return true;
         }
@@ -40,7 +54,7 @@ public class Spawnest : GenericMob
 
     public override void SetupMobAI()
     {
-        _mobAI.Setup(200f, 3f, 5f, false);
+        _mobAI.Setup(200f, 3f, 5f, false, false);
     }
 
     public override void SetupStats()
@@ -51,6 +65,13 @@ public class Spawnest : GenericMob
     public override void SetupStatus()
     {
         Status.Setup(50, 10, 2.5f, 0, 2, 15, 0);
+    }
+
+    protected override void SetupMob()
+    {
+        _attackRange = 2.5f;
+        _attackInterval = 5f;
+        _attackIntervalPlayerHocked = 2.5f;
     }
 
     protected override void AttackTime(Func<bool> Attack)
@@ -76,13 +97,6 @@ public class Spawnest : GenericMob
                 _timeLeftToAttack -= Time.deltaTime;
             }
         }
-    }
-
-    protected override void SetupMob()
-    {
-        _attackRange = 2.5f;
-        _attackInterval = 5f;
-        _attackIntervalPlayerHocked = 2.5f;
     }
 
     public override void Die()

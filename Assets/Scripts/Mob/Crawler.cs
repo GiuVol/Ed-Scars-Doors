@@ -46,6 +46,21 @@ public class Crawler : GenericMob
         return false;
     }
 
+    protected override void AttackTime(Func<bool> Attack)
+    {
+        if (_timeLeftToAttack < 0f)
+        {
+            if (Attack())
+            {
+                _timeLeftToAttack = _attackInterval;
+            }
+        }
+        else
+        {
+            _timeLeftToAttack -= Time.deltaTime;
+        }
+    }
+
     public override void Die()
     {
         Destroy(gameObject);
@@ -63,7 +78,7 @@ public class Crawler : GenericMob
 
     public override void SetupMobAI()
     {
-        _mobAI.Setup(200f, 3f, 5f, true);
+        _mobAI.Setup(200f, 3f, 5f, true, false);
     }
 
     public override void SetupStats()
@@ -76,13 +91,9 @@ public class Crawler : GenericMob
         Status.Setup(50, 10, 2.5f, 0, 2, 15, 0);
     }
 
-    protected override void AttackTime(Func<bool> Attack)
-    {
-        throw new NotImplementedException();
-    }
-
     protected override void SetupMob()
     {
+        _attackRange = 2.5f;
         _attackInterval = 5f;
         _playerLayer = LayerMask.GetMask("Player");
     }

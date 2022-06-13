@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static HealthComponent;
 
-public abstract class GenericMob : MonoBehaviour
+public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStatusable
 {
     /// <summary>
     /// The <c>HealthComponent</c> that stores values and methods related to the health of the mob.
@@ -72,13 +72,6 @@ public abstract class GenericMob : MonoBehaviour
         SetupMob();
     }
 
-    /// <summary>
-    /// Procedure <c>SetupMob</c>
-    /// It is used to set the another values
-    /// To customize the components according
-    /// to the mob being implemented.
-    /// </summary>
-    abstract protected void SetupMob();
 
     // Start is called before the first frame update
     void Start()
@@ -137,6 +130,14 @@ public abstract class GenericMob : MonoBehaviour
     /// to the mob being implemented.
     /// </summary>
     abstract public void SetupStats();
+
+    /// <summary>
+    /// Procedure <c>SetupMob</c>
+    /// It is used to set the another values
+    /// To customize the components according
+    /// to the mob being implemented.
+    /// </summary>
+    abstract protected void SetupMob();
 
     /// <summary>
     /// Procedure <c>Attack</c>

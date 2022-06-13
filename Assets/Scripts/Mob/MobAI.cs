@@ -103,14 +103,21 @@ public class MobAI : MonoBehaviour
     /// Constant used for generating the position of the random target.
     /// It represents the smallest value on the x-axis that the casual target can reach
     /// </summary>
-    const float MinCasualRange = 2.5f;
+    const float MinCasualRangeX = 5f;
 
     /// <summary>
     /// Const <c>MaxCasualRange</c>
     /// Constant used for generating the position of the random target.
     /// It represents the largest value on the x-axis that the casual target can reach
     /// </summary>
-    const float MaxCasualRange = 10f;
+    const float MaxCasualRangeX = 10f;
+
+    /// <summary>
+    /// Const <c>MaxCasualRangeY</c>
+    /// Constant used for generating the position of the random target.
+    /// It represents the largest value on the y-axis that the casual target can reach
+    /// </summary>
+    const float MaxCasualRangeY = 5f;
 
     /// <summary>
     /// Property <c>IsHookedPlayer</c>
@@ -120,7 +127,7 @@ public class MobAI : MonoBehaviour
     {
         get
         {
-            return (Target == PlayerTarget);
+            return (Target.position.x == PlayerTarget.position.x);
         }
     }
 
@@ -138,9 +145,41 @@ public class MobAI : MonoBehaviour
 
     /// <summary>
     /// Attribute <c>_nextCasualPositionDirection</c>
-    /// Attribute that marks the next causal direction of the mob
+    /// Attribute that marks the next causal direction x-axis of the mob
+    /// if value is true the direction is right, else the direction is left
     /// </summary>
-    private bool _nextCasualPositionDirection = true; //true va a destra, false a sinistra
+    private bool _nextCasualPositionDirectionX = true;
+
+    /// <summary>
+    /// Attribute <c>_nextCasualPositionDirectionY</c>
+    /// Attribute that marks the next causal direction y-axis of the mob
+    /// if the value is true the direction increment y-value, else the y-value is equal to the _yMob
+    /// </summary>
+    private bool _nextCasualPositionDirectionY = true;
+
+    /// <summary>
+    /// Attribute <c>_timeToChangeTarget</c>
+    /// Strores the remaining time to change a casual target with another casual target
+    /// </summary>
+    private float _timeToChangeTarget;
+
+    /// <summary>
+    /// Attribute <c>_yMob</c>
+    /// Stores the value of y-axis of initial position of mob
+    /// </summary>
+    private float _yMob;
+
+    /// <summary>
+    /// Attribute <c>_isFlidier</c>
+    /// Indicate if the mob is a flydier
+    /// </summary>
+    private bool _isFlydier;
+
+    /// <summary>
+    /// Const attribute <c>ChangeAttackInterval</c>
+    /// Stores the interval time between change casual target
+    /// </summary>
+    private const float ChangeTargetInterval = 15f;
 
     private void SetupDebug()
     {
@@ -150,7 +189,11 @@ public class MobAI : MonoBehaviour
         _rangeToCheck = 5f;
         _activate = true;
     }
-
+    /// <summary>
+    /// Method <c>GetMobTransform</c>
+    /// return the transform of mob
+    /// </summary>
+    /// <returns></returns>
     public Transform GetMobTransform()
     {
         return _mob;
@@ -201,12 +244,13 @@ public class MobAI : MonoBehaviour
     /// <param name="nextWayPointDistance">Value to assign to NextWayPointDistance</param>
     /// <param name="rangeToCheck">Value to assign to _rangeToCheck</param>
     /// <param name="activate">Value to assign to _activate</param>
-    public void Setup(float speed, float nextWayPointDistance, float rangeToCheck, bool activate)
+    public void Setup(float speed, float nextWayPointDistance, float rangeToCheck, bool activate, bool isFlydier)
     {
         _speed = speed;
         _nextWayPointDistance = nextWayPointDistance;
         _rangeToCheck = rangeToCheck;
         _activate = activate;
+        _isFlydier = isFlydier;
     }
 
     void Start()
@@ -225,7 +269,7 @@ public class MobAI : MonoBehaviour
         gameObject.AddComponent<Transform>();
         _seeker = GetComponent<Seeker>();
         _rb = GetComponent<Rigidbody2D>();
-        _mob = GetComponentInChildren<Transform>();
+        _mob = GetComponent<Transform>();
         _rb.drag = 1.5f;
         /*
          *InvokeRepeating starts calling the UpdatePath method,
@@ -235,9 +279,11 @@ public class MobAI : MonoBehaviour
         InvokeRepeating("UpdatePath", StartUpdatePath, RatingUpdatePath);
         _rb.freezeRotation = true;
         _casualTarget = go.transform;
-        _casualTarget.position = GenerateCasualPosition();
         Target = _casualTarget;
         _rb.gravityScale = 0;
+        _timeToChangeTarget = ChangeTargetInterval;
+        _yMob = _mob.position.y;
+        _casualTarget.position = GenerateCasualPosition();
         /*if (_debug)
         {
             SetupDebug();
@@ -387,7 +433,15 @@ public class MobAI : MonoBehaviour
 
         if (controlPlayer)
         {
-            Target = PlayerTarget;
+            if (_isFlydier)
+            {
+               Target = PlayerTarget;
+            }
+            else
+            {
+                _casualTarget.position = new Vector3(PlayerTarget.position.x, _yMob, 0);
+            }
+           
         }
         else
         {
@@ -398,9 +452,19 @@ public class MobAI : MonoBehaviour
             }
             else
             {
-                distance = Vector2.Distance(Target.position, _mob.position);
-                if (distance <= 1f) // We check if the mob has reached the current target and then we need to create a new one
+                if (_timeToChangeTarget < 0f)
+                {
                     Target.position = GenerateCasualPosition();
+                    _timeToChangeTarget = ChangeTargetInterval;
+                }
+                else
+                {
+                    _timeToChangeTarget -= Time.deltaTime;
+                    distance = Vector2.Distance(Target.position, _mob.position);
+                    if (distance <= 1f) // We check if the mob has reached the current target and then we need to create a new one
+                        Target.position = GenerateCasualPosition();
+                }
+                
             }
 
         }
@@ -413,21 +477,40 @@ public class MobAI : MonoBehaviour
     /// <returns></returns>
     private Vector3 GenerateCasualPosition()
     {
-        Vector3 casualPosition;
-        if (_nextCasualPositionDirection) // If _nextCasualPositionDirection is equal to true then go to the right otherwise go to the left
+        float casualY;
+        float casualX;
+        if (_nextCasualPositionDirectionX) // If _nextCasualPositionDirection is equal to true then go to the right otherwise go to the left
         {
-            _nextCasualPositionDirection = false; // The next target will be on the left
-            casualPosition = new Vector3(Random.Range(_mob.position.x + MinCasualRange, MaxCasualRange + _mob.position.x), 0, _mob.position.y);
+            _nextCasualPositionDirectionX = false; // The next target will be on the left
+            casualX = Random.Range(_mob.position.x + MinCasualRangeX, MaxCasualRangeX + _mob.position.x);
             // Generate a random dot to the right of the mob
         }
         else
         {
-            _nextCasualPositionDirection = true; // The next target will be on the right
-            casualPosition = new Vector3(Random.Range(_mob.position.x - MaxCasualRange, _mob.position.x - MinCasualRange), 0, _mob.position.y);
+            _nextCasualPositionDirectionX = true; // The next target will be on the right
+            casualX = Random.Range(_mob.position.x - MaxCasualRangeX, _mob.position.x - MinCasualRangeX);
             // Generate a random dot to the left of the mob
         }
 
-        return ControlGenerateCasualPosition(casualPosition);
+
+        if (_isFlydier)
+        {
+            if (_nextCasualPositionDirectionY)
+            {
+                casualY = Random.Range(MaxCasualRangeY+_mob.position.y, _mob.position.y);
+                _nextCasualPositionDirectionY = false;
+            }
+            else
+            {
+                casualY = _yMob;
+                _nextCasualPositionDirectionY = true;
+            }
+        }
+        else
+        {
+            casualY = _yMob;
+        }
+        return ControlGenerateCasualPosition(new Vector3(casualX, casualY, 0));
     }
 
 
@@ -448,32 +531,6 @@ public class MobAI : MonoBehaviour
             return casualPosition;
         }
     }
-
-
-    /*
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
-    public Transform GetTarget()
-    {
-        Transform player = null;
-        ContactFilter2D contactFilter = new ContactFilter2D();
-        contactFilter = contactFilter.NoFilter();
-        List<Collider2D> collidersFound = new List<Collider2D>();
-        Physics2D.OverlapCircle(transform.position, _rangeToCheck, contactFilter, collidersFound);
-        foreach (Collider2D item in collidersFound)
-        {
-            if (item.gameObject.GetComponent<IHealthable>() != null && item.gameObject.tag == "Player")
-            {
-                player = item.gameObject.transform;
-                break;
-            }
-        }
-        return player;
-    }
-
-    */
 
     /// <summary>
     /// Procedure <c>ActiveMobAI</c>

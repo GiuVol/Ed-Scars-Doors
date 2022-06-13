@@ -5,10 +5,15 @@ using UnityEngine;
 
 public class Flydier : GenericMob
 {
+    /// <summary>
+    /// Attribute <c>_father</c>
+    /// if flydier is spawnest by a spawnest, this attribute stores the spawnest that he generate flydier
+    /// </summary>
     private Spawnest _father;
+
     public override bool Attack()
     {
-        if (_mobAI.IsHookedPlayer)
+        if (_mobAI.IsHookedPlayer) // check if flydier hookeds the player to check if can attack
             {
                 float distance = Vector2.Distance(_mobAI.GetMobTransform().position, MobAI.GetPlayerTarget().position);
                 if (distance <= _attackRange)
@@ -26,15 +31,22 @@ public class Flydier : GenericMob
             }
             else
                 {
+                    // the palyer is not in attack range
                     return false;
                 }
             }
         else
         {
+            // the player has not been hooked
             return false;
         }
     }
 
+    /// <summary>
+    /// Method <c>SetFather</c>
+    /// this methos is called when a spawnest spawn flydier and set the father
+    /// </summary>
+    /// <param name="father"></param>
     internal void SetFather(Spawnest father)
     {
         _father = father;
@@ -47,7 +59,7 @@ public class Flydier : GenericMob
 
     public override void SetupMobAI()
     {
-        _mobAI.Setup(200f, 3f, 5f, true);
+        _mobAI.Setup(200f, 3f, 5f, true, true);
     }
 
     public override void SetupHealth()
@@ -88,7 +100,7 @@ public class Flydier : GenericMob
 
     public override void Die()
     {
-        if (_father != null)
+        if (_father != null) // check if flydier was created by a spawnest
         {
             _father.DecrementCountFlydier();
         }
