@@ -173,6 +173,25 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     public string ProjectileType { get; set; }
 
     /// <summary>
+    /// This property returns the prefab of the current projectile equipped.
+    /// </summary>
+    private Projectile CurrentProjectile
+    {
+        get
+        {
+            Projectile currentProjectile = Resources.Load<Projectile>(GameFormulas.ProjectileResourcesPath + ProjectileType);
+
+            if (currentProjectile == null)
+            {
+                currentProjectile = 
+                    Resources.Load<Projectile>(GameFormulas.ProjectileResourcesPath + GameFormulas.NormalProjectileName);
+            }
+
+            return currentProjectile;
+        }
+    }
+
+    /// <summary>
     /// Structure that stores the abilities currently equipped by the player.
     /// </summary>
     private List<GenericAbility> EquippedAbilities { get; set; }
@@ -180,9 +199,6 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     #region Test
 
     private GenericAbility _testAbility1;
-    private GenericAbility _testAbility2;
-    private GenericAbility _testAbility3;
-    private GenericAbility _testAbility4;
 
     #endregion
 
@@ -218,10 +234,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
         #region Test
 
-        _testAbility1 = Resources.Load<GenericAbility>("Abilities/DoubleJump");
-        _testAbility2 = Resources.Load<GenericAbility>("Abilities/AttackOverDefence");
-        _testAbility3 = Resources.Load<GenericAbility>("Abilities/SwarmShooter");
-        _testAbility4 = Resources.Load<GenericAbility>("Abilities/ImprovedDoubleJump");
+        _testAbility1 = Resources.Load<GenericAbility>("Abilities/DarkShooter");
 
         #endregion
     }
@@ -253,39 +266,6 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             } else
             {
                 UnequipAbility(_testAbility1);
-            }
-        } else if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            if (!IsEquipped(_testAbility2))
-            {
-                EquipAbility(_testAbility2);
-            }
-            else
-            {
-                UnequipAbility(_testAbility2);
-            }
-
-            Debug.Log(Stats.Attack.CurrentValue + " " + Stats.Defence.CurrentValue);
-
-        } else if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            if (!IsEquipped(_testAbility3))
-            {
-                EquipAbility(_testAbility3);
-            }
-            else
-            {
-                UnequipAbility(_testAbility3);
-            }
-        } else if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            if (!IsEquipped(_testAbility4))
-            {
-                EquipAbility(_testAbility4);
-            }
-            else
-            {
-                UnequipAbility(_testAbility4);
             }
         }
 
@@ -389,9 +369,27 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             yield break;
         }
 
-        Projectile projectile = Projectile.InstantiateProjectile(ProjectileType, ProjectilesSpawnPoint);
+        float chargeTime = 0;
+
+        Projectile currentProjectileAsset = CurrentProjectile;
+
+        if (currentProjectileAsset.IsChargeable)
+        {
+            while (InputHandler.Shoot())
+            {
+                yield return null;
+                chargeTime += Time.deltaTime;
+            }
+        }
+
+        Projectile projectile = 
+            Instantiate(currentProjectileAsset, ProjectilesSpawnPoint.position, ProjectilesSpawnPoint.rotation);
 
         projectile.AttackerAttack = Stats.Attack.CurrentValue;
+
+        projectile.ChargeTime = chargeTime;
+
+        projectile.Shooter = gameObject;
 
         CanShoot = false;
 
@@ -405,7 +403,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     /// </summary>
     void Die()
     {
-        Destroy(gameObject);
+        //Destroy(gameObject);
     }
 
     /// <summary>
