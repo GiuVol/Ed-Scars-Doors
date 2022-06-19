@@ -58,6 +58,11 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     /// </summary>
     public Transform ProjectilesSpawnPoint;
 
+    /// <summary>
+    /// The target that the healthbar must follow.
+    /// </summary>
+    public Transform HealthBarTarget;
+
     #endregion
 
     #region MovementValues

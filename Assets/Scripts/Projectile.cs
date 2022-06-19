@@ -181,7 +181,7 @@ public class Projectile : MonoBehaviour
 
         if (attachedCollider != null)
         {
-            attachedCollider.isTrigger = true;
+            attachedCollider.isTrigger = false;
         }
 
         if (IsChargeable)
@@ -213,12 +213,13 @@ public class Projectile : MonoBehaviour
         Destroy(gameObject);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        Rigidbody2D attachedRigidbody = collision.GetComponentInParent<Rigidbody2D>();
+        Rigidbody2D attachedRigidbody = collision.gameObject.GetComponent<Rigidbody2D>();
 
         if (attachedRigidbody != null && attachedRigidbody.gameObject == Shooter)
         {
+            Destroy(gameObject);
             return;
         }
 
