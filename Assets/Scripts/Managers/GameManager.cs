@@ -44,14 +44,14 @@ public class GameManager : MonoBehaviour
     public IEnumerator LoadScene(string sceneName)
     {
         AsyncOperation sceneLoadingOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
-        float activationProgress = 0;
+        float activationProgress;
 
         UI.LoadSceneLoadingInfo();
 
         while (!sceneLoadingOperation.isDone)
         {
             activationProgress = Mathf.Clamp01(sceneLoadingOperation.progress / .9f);
-            UI.LoadingInfo.text = activationProgress.ToString();
+            UI.SceneLoadingInfo.text = activationProgress.ToString();
             yield return null;
         }
 

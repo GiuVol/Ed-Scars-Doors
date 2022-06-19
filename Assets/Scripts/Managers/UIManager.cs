@@ -44,7 +44,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public TextMeshProUGUI LoadingInfo { get; private set; }
+    public TextMeshProUGUI SceneLoadingInfo { get; private set; }
     
     private bool _initialized;
     
@@ -126,23 +126,23 @@ public class UIManager : MonoBehaviour
 
     public void LoadSceneLoadingInfo()
     {
-        if (!_initialized || LoadingInfo != null)
+        if (!_initialized || SceneLoadingInfo != null)
         {
             return;
         }
         
-        LoadingInfo = 
+        SceneLoadingInfo = 
             Instantiate(Resources.Load<TextMeshProUGUI>(GameFormulas.SceneLoadingInfoResourcesPath), CurrentCanvas.transform);
     }
 
     public void UnloadSceneLoadingInfo()
     {
-        if (!_initialized || LoadingInfo == null)
+        if (!_initialized || SceneLoadingInfo == null)
         {
             return;
         }
 
-        Destroy(LoadingInfo.gameObject);
-        LoadingInfo = null;
+        Destroy(SceneLoadingInfo.gameObject);
+        SceneLoadingInfo = null;
     }
 }
