@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -28,15 +26,13 @@ public class UIManager : MonoBehaviour
 
     public MainMenu MainMenu { get; private set; }
 
-    public bool IsInMainMenu
+    public bool MainMenuIsLoaded
     {
         get
         {
             return MainMenu != null;
         }
     }
-
-    public TextMeshProUGUI LoadingInfos { get; private set; }
 
     public HUD CurrentHUD { get; private set; }
 
@@ -47,6 +43,10 @@ public class UIManager : MonoBehaviour
             return CurrentHUD != null;
         }
     }
+
+    public TextMeshProUGUI LoadingInfo { get; private set; }
+    
+    private bool _initialized;
     
     public void Setup()
     {
@@ -58,21 +58,25 @@ public class UIManager : MonoBehaviour
         CurrentEventSystem = new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule))
             .GetComponent<EventSystem>();
 
-        LoadingInfos = Instantiate(Resources.Load<TextMeshProUGUI>("UI/Loading"), CurrentCanvas.transform);
-        LoadingInfos.gameObject.SetActive(false);
-
         DontDestroyOnLoad(CurrentCanvas.gameObject);
         DontDestroyOnLoad(CurrentEventSystem.gameObject);
+
+        _initialized = true;
     }
 
     public void LoadMainMenu()
     {
+        if (!_initialized)
+        {
+            return;
+        }
+
         if (MainMenu != null)
         {
             Destroy(MainMenu);
         }
 
-        MainMenu = Instantiate(Resources.Load<MainMenu>("UI/MainMenu"), CurrentCanvas.transform);
+        MainMenu = Instantiate(Resources.Load<MainMenu>(GameFormulas.MainMenuResourcesPath), CurrentCanvas.transform);
 
         MainMenu.PlayDemoButton.onClick.AddListener(
             delegate {
@@ -85,6 +89,11 @@ public class UIManager : MonoBehaviour
 
     public void SwitchHUD()
     {
+        if (!_initialized)
+        {
+            return;
+        }
+        
         if (HUDIsLoaded)
         {
             UnloadHUD();
@@ -96,22 +105,44 @@ public class UIManager : MonoBehaviour
 
     public void LoadHUD()
     {
-        if (HUDIsLoaded)
+        if (!_initialized || HUDIsLoaded)
         {
             return;
         }
 
-        CurrentHUD = Instantiate(Resources.Load<HUD>("UI/HUD"), CurrentCanvas.transform);
+        CurrentHUD = Instantiate(Resources.Load<HUD>(GameFormulas.HUDResourcesPath), CurrentCanvas.transform);
     }
 
     public void UnloadHUD()
     {
-        if (!HUDIsLoaded)
+        if (!_initialized || !HUDIsLoaded)
         {
             return;
         }
         
         Destroy(CurrentHUD.gameObject);
         CurrentHUD = null;
+    }
+
+    public void LoadSceneLoadingInfo()
+    {
+        if (!_initialized || LoadingInfo != null)
+        {
+            return;
+        }
+        
+        LoadingInfo = 
+            Instantiate(Resources.Load<TextMeshProUGUI>(GameFormulas.SceneLoadingInfoResourcesPath), CurrentCanvas.transform);
+    }
+
+    public void UnloadSceneLoadingInfo()
+    {
+        if (!_initialized || LoadingInfo == null)
+        {
+            return;
+        }
+
+        Destroy(LoadingInfo.gameObject);
+        LoadingInfo = null;
     }
 }

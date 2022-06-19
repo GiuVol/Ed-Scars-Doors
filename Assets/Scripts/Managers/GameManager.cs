@@ -1,14 +1,9 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-using UnityEditor;
-
 public class GameManager : MonoBehaviour
 {
-    private const string SceneResourcesFolder = "Scenes";
-
     private static GameManager _instance;
 
     public static GameManager Instance
@@ -37,7 +32,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (!UI.IsInMainMenu)
+        if (!UI.MainMenuIsLoaded)
         {
             if (Input.GetKeyDown(KeyCode.H))
             {
@@ -51,25 +46,27 @@ public class GameManager : MonoBehaviour
         AsyncOperation sceneLoadingOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
         float activationProgress = 0;
 
-        UI.LoadingInfos.gameObject.SetActive(true);
+        UI.LoadSceneLoadingInfo();
 
         while (!sceneLoadingOperation.isDone)
         {
             activationProgress = Mathf.Clamp01(sceneLoadingOperation.progress / .9f);
-            UI.LoadingInfos.text = activationProgress.ToString();
+            UI.LoadingInfo.text = activationProgress.ToString();
             yield return null;
         }
 
-        UI.LoadingInfos.gameObject.SetActive(false);
-        
-        Vector3 playerPosition = GameObject.Find("PlayerStartPosition").transform.position;
-        Vector3 cameraPosition = GameObject.Find("CameraStartPosition").transform.position;
+        UI.UnloadSceneLoadingInfo();
+
+        Vector3 playerPosition = GameObject.Find(GameFormulas.PlayerStartPositionName).transform.position;
+        Vector3 cameraPosition = GameObject.Find(GameFormulas.CameraStartPositionName).transform.position;
 
         PlayerController playerController = 
-            Instantiate(Resources.Load<PlayerController>("Player/Player"), playerPosition, Quaternion.identity);
+            Instantiate(Resources.Load<PlayerController>(GameFormulas.PlayerResourcesPath), playerPosition, Quaternion.identity);
         CameraController cameraController = 
-            Instantiate(Resources.Load<CameraController>("Player/MainCamera"), cameraPosition, Quaternion.identity);
+            Instantiate(Resources.Load<CameraController>(GameFormulas.CameraResourcesPath), cameraPosition, Quaternion.identity);
 
         cameraController.Target = playerController.transform;
+
+        UI.LoadHUD();
     }
 }
