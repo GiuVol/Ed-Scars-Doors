@@ -2,13 +2,27 @@ using UnityEngine;
 
 public class HUD : MonoBehaviour
 {
+    /// <summary>
+    /// The bar, shown in the HUD, that shows the health of the player.
+    /// </summary>
     [SerializeField]
     private UIBar _playerHealthBar;
+
+    /// <summary>
+    /// The bar, shown in the HUD, that shows the blindness level of the player.
+    /// </summary>
     [SerializeField]
     private UIBar _playerBlindnessBar;
+
+    /// <summary>
+    /// The bar, shown in the HUD, that shows the corrosion time of the player.
+    /// </summary>
     [SerializeField]
     private UIBar _playerCorrosionBar;
 
+    /// <summary>
+    /// This property provides access to <c>_playerHealthBar</c> in a controlled way.
+    /// </summary>
     public UIBar PlayerHealthBar
     {
         get
@@ -17,6 +31,9 @@ public class HUD : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// This property provides access to <c>_playerBlindnessBar</c> in a controlled way.
+    /// </summary>
     public UIBar PlayerBlindnessBar
     {
         get
@@ -25,6 +42,9 @@ public class HUD : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// This property provides access to <c>_playerCorrosionBar</c> in a controlled way.
+    /// </summary>
     public UIBar PlayerCorrosionBar
     {
         get

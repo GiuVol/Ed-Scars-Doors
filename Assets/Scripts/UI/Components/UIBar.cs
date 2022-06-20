@@ -5,32 +5,65 @@ using UnityEngine.UI;
 
 public class UIBar : DynamicUIComponent
 {
+    /// <summary>
+    /// The background of the bar.
+    /// </summary>
     [SerializeField]
-    private Image barBackground;
-    [SerializeField]
-    private Image bar;
-    [SerializeField]
-    private TextMeshProUGUI infoTextComponent;
-    [SerializeField]
-    private TextMeshProUGUI valueTextComponent;
+    private Image _barBackground;
 
+    /// <summary>
+    /// The slider of the bar.
+    /// </summary>
+    [SerializeField]
+    private Image _bar;
+
+    /// <summary>
+    /// The text component that displays infos about the bar.
+    /// </summary>
+    [SerializeField]
+    private TextMeshProUGUI _infoTextComponent;
+
+    /// <summary>
+    /// The text component that displays the current value of the bar.
+    /// </summary>
+    [SerializeField]
+    private TextMeshProUGUI _valueTextComponent;
+
+    /// <summary>
+    /// This property allows to show or hide <c>_infoTextComponent</c>
+    /// </summary>
     public bool ShowInfo
     {
         set
         {
-            infoTextComponent.gameObject.SetActive(value);
+            _infoTextComponent.gameObject.SetActive(value);
         }
     }
+
+    /// <summary>
+    /// This property allows to show or hide <c>_valueTextComponent</c>
+    /// </summary>
     public bool ShowValue
     {
         set
         {
-            valueTextComponent.gameObject.SetActive(value);
+            _valueTextComponent.gameObject.SetActive(value);
         }
     }
 
+    /// <summary>
+    /// The max length that the slider can have.
+    /// </summary>
     private float MaxLength { get; set; }
+
+    /// <summary>
+    /// The max value that the slider can represent.
+    /// </summary>
     private int MaxValue { get; set; }
+
+    /// <summary>
+    /// The current value that the slider represents.
+    /// </summary>
     private int CurrentValue { get; set; }
 
     public void InitializeDynamic(Transform targetToFollow, Vector3 positionOffset, 
@@ -53,26 +86,25 @@ public class UIBar : DynamicUIComponent
     /// <param name="info">the info text displayed near the bar</param>
     private void SetupBar(int maxValue, string info)
     {
-        MaxLength = bar.rectTransform.rect.width;
+        MaxLength = _bar.rectTransform.rect.width;
         MaxValue = maxValue;
         CurrentValue = MaxValue;
 
-        infoTextComponent.text = info;
+        _infoTextComponent.text = info;
         UpdateValueTextComponent();
     }
 
     /// <summary>
-    /// Updates the value of the bar.
+    /// Lerps the new value of the bar.
     /// </summary>
     /// <param name="newValue">The new value to assign</param>
-    /// <returns></returns>
     public IEnumerator LerpValue(int newValue)
     {
         float oldValue = CurrentValue;
         newValue = Mathf.Clamp(newValue, 0, MaxValue);
 
         float currentLength;
-        float height = bar.rectTransform.rect.height;
+        float height = _bar.rectTransform.rect.height;
         
         float lerpFactor = 0;
 
@@ -85,7 +117,7 @@ public class UIBar : DynamicUIComponent
 
             currentLength = MaxLength * ((float) CurrentValue / (float) MaxValue);
 
-            bar.rectTransform.sizeDelta = new Vector2(currentLength, height);
+            _bar.rectTransform.sizeDelta = new Vector2(currentLength, height);
             UpdateValueTextComponent();
 
             yield return null;
@@ -93,14 +125,18 @@ public class UIBar : DynamicUIComponent
         } while (lerpFactor < 1);
     }
 
+    /// <summary>
+    /// Updates the value of the bar.
+    /// </summary>
+    /// <param name="newValue">The new value to assign</param>
     public void UpdateValue(int newValue)
     {
         CurrentValue = Mathf.Clamp(newValue, 0, MaxValue);
 
         float currentLength = MaxLength * ((float)CurrentValue / (float)MaxValue);
-        float height = bar.rectTransform.rect.height;
+        float height = _bar.rectTransform.rect.height;
 
-        bar.rectTransform.sizeDelta = new Vector2(currentLength, height);
+        _bar.rectTransform.sizeDelta = new Vector2(currentLength, height);
     }
 
     /// <summary>
@@ -108,6 +144,6 @@ public class UIBar : DynamicUIComponent
     /// </summary>
     private void UpdateValueTextComponent()
     {
-        valueTextComponent.text = CurrentValue.ToString() + "/" + MaxValue.ToString();
+        _valueTextComponent.text = CurrentValue.ToString() + "/" + MaxValue.ToString();
     }
 }
