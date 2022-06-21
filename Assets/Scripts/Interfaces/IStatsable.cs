@@ -5,7 +5,7 @@ using System;
 /// Interface <c>IStatsable</c>
 /// Interface for character statistics management
 /// </summary>
-interface IStatsable
+public interface IStatsable
 {
     /// <summary>
     /// Property <c>Stats</c>
