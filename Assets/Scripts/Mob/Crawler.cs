@@ -9,41 +9,46 @@ public class Crawler : GenericMob
     /// The <c>_attackPointRange</c>
     /// </summary>
     protected float _attackPointRange;
-    private LayerMask _playerLayer;
     Collision2D Collision;
+    [SerializeField]
+    private float _dashForce;
+    private PointToAttack _pointToAttack;
     public override bool Attack()
     {
-        /*
-        if(_canAttack)
-        if (_mobAI.IsHookedPlayer)
+        if (_mobAI.IsHookedPlayer) // check if flydier hookeds the player to check if can attack
         {
-            float distance = Vector2.Distance(MobAI.GetPlayerTarget().position, transform.position);
-            if(distance <= _attackRange)
+            float distance = Vector2.Distance(_mobAI.GetMobTransform().position, MobAI.GetPlayerTarget().position);
+            if (distance <= _attackRange)
             {
-                    //posso iniziare con l'attacco
-
-                    //play attck animation
-                    //shot of the enemy
-
-                    //detectk enemy in range to point attck
-                    Collider2D [] hitPlayers = Physics2D.OverlapCircleAll(_attackPoint.position, _attackPointRange, _playerLayer);
-                    foreach (Collider2D player in hitPlayers)
-                    {
-                        IHealthable playerHealth = player.gameObject.GetComponent<IHealthable>();
-                        if ( playerHealth != null)
-                        {
-                            playerHealth.Health.DecreaseHealth(Stats.Attack.CurrentValue);
-
-                            _canAttack = false;
-
-                            yield return new WaitForSeconds(_attackInterval);
-
-                            _canAttack = true;
-                        }
-                    }
+                Vector3 forceToApply;
+                //posso iniziare con l'attacco
+                //play attck animation
+                if (_mobAI.Target.position.x > transform.position.x)
+                {
+                    forceToApply = transform.right.normalized * _dashForce;
                 }
-            }*/
-        return false;
+                else
+                {
+                    forceToApply = (transform.right.normalized * -1) * _dashForce;
+                }
+                
+                _mobAI._rb.AddForce(forceToApply * _mobAI._rb.mass, ForceMode2D.Impulse);
+
+                //shot of the enemy
+                _pointToAttack.Activate();
+                //detectk enemy in range to point attck
+                return true;
+
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
     }
 
     protected override void AttackTime(Func<bool> Attack)
@@ -95,6 +100,13 @@ public class Crawler : GenericMob
     {
         _attackRange = 2.5f;
         _attackInterval = 5f;
-        _playerLayer = LayerMask.GetMask("Player");
+        _dashForce = 10;
+        if (_attackPoint.gameObject.GetComponent<PointToAttack>() == null)
+        {
+            _attackPoint.gameObject.AddComponent<PointToAttack>();
+        }
+        _pointToAttack = _attackPoint.gameObject.GetComponent<PointToAttack>();
+        _pointToAttack.Setup(Stats.Attack.CurrentValue, 1.5f);
     }
+
 }

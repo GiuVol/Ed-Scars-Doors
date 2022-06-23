@@ -173,7 +173,7 @@ public class MobAI : MonoBehaviour
     /// Attribute <c>_isFlidier</c>
     /// Indicate if the mob is a flydier
     /// </summary>
-    private bool _isFlydier;
+    private bool _canFly;
 
     /// <summary>
     /// Const attribute <c>ChangeAttackInterval</c>
@@ -250,7 +250,7 @@ public class MobAI : MonoBehaviour
         _nextWayPointDistance = nextWayPointDistance;
         _rangeToCheck = rangeToCheck;
         _activate = activate;
-        _isFlydier = isFlydier;
+        _canFly = isFlydier;
     }
 
     void Start()
@@ -394,14 +394,34 @@ public class MobAI : MonoBehaviour
     /// <param name="force"></param>
     public void InvertEnemy(Vector2 force)
     {
-        if (force.x >= 0.01f)
+        /* float yRotation;
+         if (force.x >= 0.01f)
+         {
+             _mob.localScale = new Vector3(-1f, 1f, 1f);
+         }
+         else if (force.x <= -0.01f)
+         {
+             _mob.localScale = new Vector3(1f, 1f, 1f);
+         }*/
+
+        float yRotation;
+
+        if (Target.position.x > 0)
         {
-            _mob.localScale = new Vector3(-1f, 1f, 1f);
+            yRotation = 0;
         }
-        else if (force.x <= -0.01f)
+        else if (Target.position.x < 0)
         {
-            _mob.localScale = new Vector3(1f, 1f, 1f);
+            yRotation = 180;
         }
+        else
+        {
+            yRotation = transform.eulerAngles.y;
+        }
+
+        transform.rotation = Quaternion.Euler(transform.eulerAngles.x, yRotation, transform.eulerAngles.z);
+
+
     }
 
     /// <summary>
@@ -433,7 +453,7 @@ public class MobAI : MonoBehaviour
 
         if (controlPlayer)
         {
-            if (_isFlydier)
+            if (_canFly)
             {
                Target = PlayerTarget;
             }
@@ -493,7 +513,7 @@ public class MobAI : MonoBehaviour
         }
 
 
-        if (_isFlydier)
+        if (_canFly)
         {
             if (_nextCasualPositionDirectionY)
             {

@@ -9,6 +9,7 @@ public class Spawnest : GenericMob
     /// Attribute <c>_attackIntervalPlayerHocked</c>
     /// stores the time interval that the spawnet respects when hockeds player
     /// </summary>
+    [SerializeField]
     private float _attackIntervalPlayerHocked;
 
     /// <summary>
