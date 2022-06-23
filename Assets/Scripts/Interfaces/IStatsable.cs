@@ -2,7 +2,7 @@
 /// Interface <c>IStatsable</c>
 /// Interface for character stats management.
 /// </summary>
-interface IStatsable
+public interface IStatsable
 {
     /// <summary>
     /// Property <c>Stats</c>

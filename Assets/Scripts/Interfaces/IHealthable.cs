@@ -2,7 +2,7 @@
 /// Interface <c>IHealthable</c>
 /// Interface for character health management.
 /// </summary>
-interface IHealthable
+public interface IHealthable
 {
     /// <summary>
     /// Property <c>Health</c>
