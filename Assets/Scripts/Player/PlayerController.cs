@@ -214,6 +214,16 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             gameObject.AddComponent<MovementController2D>();
         }
 
+        if (gameObject.GetComponent<HealthComponent>() == null)
+        {
+            gameObject.AddComponent<HealthComponent>();
+        }
+
+        if (gameObject.GetComponent<StatsComponent>() == null)
+        {
+            gameObject.AddComponent<StatsComponent>();
+        }
+
         if (gameObject.GetComponent<StatusComponent>() == null)
         {
             gameObject.AddComponent<StatusComponent>();
@@ -223,11 +233,12 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         
         MovementController = gameObject.GetComponent<MovementController2D>();
 
-        Health = new HealthComponent(100, Die);
-
-        Stats = new StatsComponent(100, 50, 500, 100, 50, 500);
-
+        Health = gameObject.GetComponent<HealthComponent>();
+        Stats = gameObject.GetComponent<StatsComponent>();
         Status = gameObject.GetComponent<StatusComponent>();
+
+        Health.Setup(100, Die);
+        Stats.Setup(100, 50, 500, 100, 50, 500);
         Status.Setup(100, 5, 5, 0, 1, 20, 0);
 
         CanDash = true;

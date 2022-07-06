@@ -192,12 +192,12 @@ public class TabMenu : MonoBehaviour
     }
 
     /// <summary>
-    /// Stores the selected tab.
+    /// Stores the selected tab's index.
     /// </summary>
-    private int _selectedTab;
+    private int _selectedTabIndex;
 
     /// <summary>
-    /// provides access to the selected tab's index in a controlled way.
+    /// provides access to the selected tab in a controlled way.
     /// </summary>
     public int SelectedTab
     {
@@ -208,28 +208,28 @@ public class TabMenu : MonoBehaviour
                 return 0;
             }
 
-            return Mathf.Clamp(_selectedTab, 1, NumberOfTabs);
+            return Mathf.Clamp(_selectedTabIndex, 1, NumberOfTabs);
         }
         set
         {
             if (NumberOfTabs == 0)
             {
-                _selectedTab = 0;
+                _selectedTabIndex = 0;
                 return;
             }
 
-            float oldValue = _selectedTab;
+            float oldValue = _selectedTabIndex;
             
-            _selectedTab = Mathf.Clamp(value, 1, NumberOfTabs);
+            _selectedTabIndex = Mathf.Clamp(value, 1, NumberOfTabs);
 
-            if (_selectedTab == oldValue)
+            if (_selectedTabIndex == oldValue)
             {
                 return;
             }
 
             for (int i = 0; i < NumberOfTabs; i++)
             {
-                bool active = (i == _selectedTab - 1);
+                bool active = (i == _selectedTabIndex - 1);
 
                 _tabs[i].SetActive(active, _enabledTabLabelColor, _enabledTabTextColor, _disabledTabLabelColor, _disabledTabTextColor);
             }
@@ -244,18 +244,5 @@ public class TabMenu : MonoBehaviour
         }
 
         SelectedTab = 1;
-    }
-
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            SelectedTab++;
-        }
-
-        if (Input.GetKeyDown(KeyCode.J))
-        {
-            SelectedTab--;
-        }
     }
 }
