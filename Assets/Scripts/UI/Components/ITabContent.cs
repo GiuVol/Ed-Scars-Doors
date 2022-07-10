@@ -1,0 +1,4 @@
+interface ITabContent
+{
+    void Activate();
+}

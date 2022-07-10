@@ -8,6 +8,7 @@ public class GameFormulas
     public const string CameraResourcesPath = "Player/MainCamera";
 
     public const string MainMenuResourcesPath = "UI/MainMenu";
+    public const string GameMenuResourcesPath = "UI/GameMenu";
     public const string HUDResourcesPath = "UI/HUD";
     public const string SceneLoadingInfoResourcesPath = "UI/SceneLoadingInfo";
 

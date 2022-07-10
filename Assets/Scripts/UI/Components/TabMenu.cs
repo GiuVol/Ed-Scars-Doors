@@ -79,6 +79,11 @@ public class TabMenu : MonoBehaviour
             /// </param>
             public void SetColors(bool active, Color enabledColor, Color enabledTextColor, Color disabledColor, Color disabledTextColor)
             {
+                if (_image == null || _text == null)
+                {
+                    return;
+                }
+                
                 if (_useCustomColors)
                 {
                     if (active)
@@ -121,6 +126,16 @@ public class TabMenu : MonoBehaviour
         private GameObject _menu;
 
         /// <summary>
+        /// New type of delegate
+        /// </summary>
+        public delegate void TabActivationDelegate();
+
+        /// <summary>
+        /// The method that is called when the tab is activated.
+        /// </summary>
+        public TabActivationDelegate ActivationDelegate { get; set; }
+        
+        /// <summary>
         /// Enables or disables the tab.
         /// </summary>
         /// <param name="active">
@@ -140,8 +155,21 @@ public class TabMenu : MonoBehaviour
         /// </param>
         public void SetActive(bool active, Color enabledColor, Color enabledTextColor, Color disabledColor, Color disabledTextColor)
         {
+            if (_label == null || _menu == null)
+            {
+                return;
+            }
+
             _label.SetColors(active, enabledColor, enabledTextColor, disabledColor, disabledTextColor);
             _menu.SetActive(active);
+
+            if (active)
+            {
+                if (ActivationDelegate != null)
+                {
+                    ActivationDelegate();
+                }
+            }
         }
     }
 

@@ -26,9 +26,25 @@ public class GameManager : MonoBehaviour
     public UIManager UI { get; private set; }
 
     /// <summary>
+    /// Returns the Player.
+    /// </summary>
+    public PlayerController Player { get; private set; }
+
+    /// <summary>
     /// The main Camera.
     /// </summary>
     public Camera MainCamera { get; private set; }
+
+    /// <summary>
+    /// Returns whether the player is in Game Menu or not.
+    /// </summary>
+    public bool IsInGameMenu
+    {
+        get
+        {
+            return UI.GameMenuIsLoaded;
+        }
+    }
 
     private void Start()
     {
@@ -57,6 +73,29 @@ public class GameManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.H))
             {
                 UI.SwitchHUD();
+            }
+
+            if (Input.GetKeyDown(KeyCode.M))
+            {
+                UI.SwitchGameMenu();
+            }
+        }
+
+        if (Player != null)
+        {
+            Player.HasControl = !IsInGameMenu;
+        }
+
+        if (IsInGameMenu)
+        {
+            if (Input.GetKeyDown(KeyCode.J))
+            {
+                UI.GameMenu.SelectedTab--;
+            }
+
+            if (Input.GetKeyDown(KeyCode.L))
+            {
+                UI.GameMenu.SelectedTab++;
             }
         }
     }
@@ -92,5 +131,7 @@ public class GameManager : MonoBehaviour
         cameraController.Target = playerController.transform;
 
         UI.LoadHUD();
+
+        Player = playerController;
     }
 }

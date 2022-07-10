@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 /// <summary>
 /// Class <c>Item</c>
@@ -23,14 +22,14 @@ public abstract class Item : ScriptableObject
     public string Description;
 
     /// <summary>
-    /// Field that stores the image of the item.
+    /// Field that stores the sprite that the item has to have inside the menu.
     /// </summary>
-    public Image ItemImage;
+    public Sprite MenuSprite;
 
     /// <summary>
-    /// Field that stores the sprite of the item.
+    /// Field that stores the gameObject that represents the item in the overworld.
     /// </summary>
-    public Sprite ItemSprite;
+    public GameObject OverworldPrefab;
 
     /// <summary>
     /// Field that stores whether you can hold or not this type of.

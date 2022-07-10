@@ -113,6 +113,11 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     public int CurrentNumberOfJumpsAllowedInAir { get; set; }
 
     #endregion
+
+    /// <summary>
+    /// Returns whether the character can be controlled through player's inpput or not.
+    /// </summary>
+    public bool HasControl { get; set; }
     
     /// <summary>
     /// The <c>MovementController2D</c> that moves the player.
@@ -230,6 +235,8 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         }
 
         ResetMovementValues();
+
+        HasControl = true;
         
         MovementController = gameObject.GetComponent<MovementController2D>();
 
@@ -257,43 +264,50 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
     void Update()
     {
-        if (InputHandler.Jump("Down"))
+        if (HasControl)
         {
-            Jump();
-        }
-
-        if (InputHandler.Dash("Down") && CanDash)
-        {
-            StartCoroutine(Dash());
-        }
-
-        if (InputHandler.Shoot("Down") && CanShoot)
-        {
-            StartCoroutine(Shoot());
-        }
-
-        #region Test
-
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            if (!IsEquipped(_testAbility1))
+            if (InputHandler.Jump("Down"))
             {
-                EquipAbility(_testAbility1);
-            } else
-            {
-                UnequipAbility(_testAbility1);
+                Jump();
             }
-        }
 
-        #endregion
+            if (InputHandler.Dash("Down") && CanDash)
+            {
+                StartCoroutine(Dash());
+            }
+
+            if (InputHandler.Shoot("Down") && CanShoot)
+            {
+                StartCoroutine(Shoot());
+            }
+
+            #region Test
+
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                if (!IsEquipped(_testAbility1))
+                {
+                    EquipAbility(_testAbility1);
+                }
+                else
+                {
+                    UnequipAbility(_testAbility1);
+                }
+            }
+
+            #endregion
+        }
     }
 
     void FixedUpdate()
     {
-        float horizontalInput = InputHandler.HorizontalInput;
-        float movementSpeed = Input.GetKey(KeyCode.B) ? CurrentRunSpeed : CurrentWalkSpeed;
+        if (HasControl)
+        {
+            float horizontalInput = InputHandler.HorizontalInput;
+            float movementSpeed = Input.GetKey(KeyCode.B) ? CurrentRunSpeed : CurrentWalkSpeed;
 
-        MovementController.HandleMovementWithSpeed(horizontalInput, movementSpeed);
+            MovementController.HandleMovementWithSpeed(horizontalInput, movementSpeed);
+        }
 
         MovementController.GravityScale = CurrentGravityScale;
 
