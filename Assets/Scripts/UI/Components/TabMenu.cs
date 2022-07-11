@@ -145,13 +145,16 @@ public class TabMenu : MonoBehaviour
         /// </param>
         public void SetActive(bool active, Color enabledColor, Color enabledTextColor, Color disabledColor, Color disabledTextColor)
         {
-            if (_label == null || _content == null)
+            if (_label != null)
             {
-                return;
+                _label.SetColors(active, enabledColor, 
+                    enabledTextColor, disabledColor, disabledTextColor);
             }
 
-            _label.SetColors(active, enabledColor, enabledTextColor, disabledColor, disabledTextColor);
-            _content.SetActive(active);
+            if (_content != null)
+            {
+                _content.SetActive(active);
+            }
         }
     }
 
