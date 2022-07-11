@@ -123,7 +123,7 @@ public class TabMenu : MonoBehaviour
         /// The <c>GameObject</c> that contains the content of the tab.
         /// </summary>
         [SerializeField]
-        private GameObject _menu;
+        private GameObject _content;
 
         /// <summary>
         /// Enables or disables the tab.
@@ -145,13 +145,13 @@ public class TabMenu : MonoBehaviour
         /// </param>
         public void SetActive(bool active, Color enabledColor, Color enabledTextColor, Color disabledColor, Color disabledTextColor)
         {
-            if (_label == null || _menu == null)
+            if (_label == null || _content == null)
             {
                 return;
             }
 
             _label.SetColors(active, enabledColor, enabledTextColor, disabledColor, disabledTextColor);
-            _menu.SetActive(active);
+            _content.SetActive(active);
         }
     }
 
