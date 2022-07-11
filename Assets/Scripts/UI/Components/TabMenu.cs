@@ -126,16 +126,6 @@ public class TabMenu : MonoBehaviour
         private GameObject _menu;
 
         /// <summary>
-        /// New type of delegate
-        /// </summary>
-        public delegate void TabActivationDelegate();
-
-        /// <summary>
-        /// The method that is called when the tab is activated.
-        /// </summary>
-        public TabActivationDelegate ActivationDelegate { get; set; }
-        
-        /// <summary>
         /// Enables or disables the tab.
         /// </summary>
         /// <param name="active">
@@ -162,14 +152,6 @@ public class TabMenu : MonoBehaviour
 
             _label.SetColors(active, enabledColor, enabledTextColor, disabledColor, disabledTextColor);
             _menu.SetActive(active);
-
-            if (active)
-            {
-                if (ActivationDelegate != null)
-                {
-                    ActivationDelegate();
-                }
-            }
         }
     }
 
