@@ -27,16 +27,11 @@ public class TestInventory : ListMenu
     private new void Start()
     {
         _items = new List<string>();
-        _items.Add("Weak Potion");
-        _items.Add("Star");
-        _items.Add("Speed booster");
-        _items.Add("Strong Potion");
-        _items.Add("Attack booster");
-        _items.Add("Defence booster");
-        _items.Add("Invisibility potion");
-        _items.Add("Invincibility potion");
-        _items.Add("+Attack -Defence potion");
-        _items.Add("+Defence -Attack potion");
+
+        for(int i = 1; i <= 15; i++)
+        {
+            _items.Add("Item " + i);
+        }
 
         base.Start();
     }
@@ -48,9 +43,19 @@ public class TestInventory : ListMenu
             SelectedElementIndex++;
         }
 
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            SelectedElementIndex+=4;
+        }
+        
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             SelectedElementIndex--;
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            SelectedElementIndex-=4;
         }
     }
 }

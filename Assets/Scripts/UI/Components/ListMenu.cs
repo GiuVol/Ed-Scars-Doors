@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public abstract class ListMenu : MonoBehaviour
 {
+    #region Inner Classes
+
     public class ListElementOperation
     {
         public delegate void OperationDelegate();
@@ -18,25 +20,6 @@ public abstract class ListMenu : MonoBehaviour
         {
             Name = name;
             Operation = operation;
-        }
-    }
-
-    public class ElementMetadata
-    {
-        public string Name { get; set; }
-        public Sprite Icon { get; set; }
-        public string Description { get; set; }
-        public Sprite Image { get; set; }
-        public List<ListElementOperation> operations { get; private set; }
-
-        public ElementMetadata(string name, Sprite icon, 
-                               string description, Sprite image)
-        {
-            Name = name;
-            Icon = icon;
-            Description = description;
-            Image = image;
-            operations = new List<ListElementOperation>();
         }
     }
 
@@ -130,14 +113,35 @@ public abstract class ListMenu : MonoBehaviour
         }
     }
 
-    protected abstract List<ElementMetadata> ElementsMetadata
+    public class ElementMetadata
     {
-        get;
+        public string Name { get; set; }
+        public Sprite Icon { get; set; }
+        public string Description { get; set; }
+        public Sprite Image { get; set; }
+        public List<ListElementOperation> operations { get; private set; }
+
+        public ElementMetadata(string name, Sprite icon,
+                               string description, Sprite image)
+        {
+            Name = name;
+            Icon = icon;
+            Description = description;
+            Image = image;
+            operations = new List<ListElementOperation>();
+        }
     }
+
+    #endregion
 
     [SerializeField]
     protected List<UIListElement> _uiElements;
 
+    protected abstract List<ElementMetadata> ElementsMetadata
+    {
+        get;
+    }
+    
     #region Shared Areas
 
     [SerializeField]
@@ -240,14 +244,42 @@ public abstract class ListMenu : MonoBehaviour
                 return;
             }
 
-            int selectedUIElementIndex = _selectedElementIndex - FirstElementIndex;
+            int selectedUIElementIndex = _selectedElementIndex - FirstElementIndex + 1;
+
+            if (selectedUIElementIndex < 1)
+            {
+                FirstElementIndex += verse;
+            }
+            
+            if (selectedUIElementIndex > NumberOfUIElements)
+            {
+                FirstElementIndex += verse;
+            }
+
+            selectedUIElementIndex = _selectedElementIndex - FirstElementIndex + 1;
 
             for (int i = 0; i < NumberOfUIElements; i++)
             {
-                _uiElements[i].SetSelected(i == selectedUIElementIndex);
+                _uiElements[i].SetSelected(i == selectedUIElementIndex - 1);
             }
+
+            ClearLog();
+            Debug.Log(ElementsMetadata[SelectedElementIndex - 1].Name);
         }
     }
+
+    #region Debug
+
+    public void ClearLog()
+    {
+        var assembly = System.Reflection
+            .Assembly.GetAssembly(typeof(UnityEditor.Editor));
+        var type = assembly.GetType("UnityEditor.LogEntries");
+        var method = type.GetMethod("Clear");
+        method.Invoke(new object(), null);
+    }
+
+    #endregion
 
     private int _firstElementIndex;
 
@@ -290,7 +322,7 @@ public abstract class ListMenu : MonoBehaviour
         UpdateElements();
     }
 
-    #region Deprecated
+    #region Methods
 
     public bool GetElement(int index, UIListElement listElement)
     {
