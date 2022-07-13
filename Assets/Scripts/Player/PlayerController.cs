@@ -206,6 +206,57 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     /// </summary>
     private List<GenericAbility> EquippedAbilities { get; set; }
 
+    #region Data
+
+    private Container<UsableItem> _inventory;
+
+    public Container<UsableItem> Inventory
+    {
+        get
+        {
+            if (_inventory == null)
+            {
+                _inventory = new Container<UsableItem>();
+
+                HealingPotion testItem1 = 
+                    Resources.Load<HealingPotion>("Items/Usable Items/WeakPotion");
+                HealingPotion testItem2 = 
+                    Resources.Load<HealingPotion>("Items/Usable Items/MediumPotion");
+                HealingPotion testItem3 = 
+                    Resources.Load<HealingPotion>("Items/Usable Items/StrongPotion");
+                HealingPotion testItem4 = 
+                    Resources.Load<HealingPotion>("Items/Usable Items/HalfLifePotion");
+                HealingPotion testItem5 = 
+                    Resources.Load<HealingPotion>("Items/Usable Items/FullLifePotion");
+
+                _inventory.AddItem(testItem1, 1);
+                _inventory.AddItem(testItem2, 1);
+                _inventory.AddItem(testItem3, 1);
+                _inventory.AddItem(testItem4, 1);
+                _inventory.AddItem(testItem5, 1);
+            }
+
+            return _inventory;
+        }
+    }
+
+    public Container<CollectableItem> _collection;
+
+    public Container<CollectableItem> Collection
+    {
+        get
+        {
+            if (_collection == null)
+            {
+                _collection = new Container<CollectableItem>();
+            }
+
+            return _collection;
+        }
+    }
+
+    #endregion
+
     #region Test
 
     private GenericAbility _testAbility1;

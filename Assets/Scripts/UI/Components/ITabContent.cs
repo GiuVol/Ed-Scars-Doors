@@ -1,4 +1,4 @@
 interface ITabContent
 {
-    void Activate();
+    void Activate(bool active);
 }

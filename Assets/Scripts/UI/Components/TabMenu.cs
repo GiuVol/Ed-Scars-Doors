@@ -154,6 +154,13 @@ public class TabMenu : MonoBehaviour
             if (_content != null)
             {
                 _content.SetActive(active);
+
+                ITabContent tabContent = _content.GetComponent<ITabContent>();
+
+                if (tabContent != null)
+                {
+                    tabContent.Activate(active);
+                }
             }
         }
     }

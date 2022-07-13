@@ -21,6 +21,10 @@ public class Container<T> where T : Item
 
     public int PickableUnits(T item)
     {
+        if (item == null)
+        {
+            return 0;
+        }
 
         int pickableUnits = item.MaxNumberOfHoldableInstances - GetAmount(item);
         pickableUnits = Mathf.Max(pickableUnits, 0);
@@ -35,6 +39,11 @@ public class Container<T> where T : Item
     /// <param name="amount">The amount of instances to add</param>
     public void AddItem(T item, int amount)
     {
+        if (item == null)
+        {
+            return;
+        }
+
         if (!ContainerStructure.KeyExists(item))
         {
             ContainerStructure.Add(item, 0);

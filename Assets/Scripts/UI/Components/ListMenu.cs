@@ -510,6 +510,8 @@ public abstract class ListMenu : MonoBehaviour
                 bool selected = i == selectedUIElementIndex - 1;
                 UIElements[i].SetSelected(selected, enabledLabelColor, disabledLabelColor);
             }
+
+            DescriptionAreaText = ElementsMetadata[SelectedElementIndex - 1].Description;
         }
     }
 
@@ -521,7 +523,7 @@ public abstract class ListMenu : MonoBehaviour
     /// <summary>
     /// A property that allows to change the first element displayed.
     /// </summary>
-    private int FirstElementIndex
+    protected int FirstElementIndex
     {
         get
         {
@@ -553,7 +555,7 @@ public abstract class ListMenu : MonoBehaviour
     /// <summary>
     /// A property which returns the index of the last element displayed.
     /// </summary>
-    private int LastElementIndex
+    protected int LastElementIndex
     {
         get
         {
@@ -574,6 +576,7 @@ public abstract class ListMenu : MonoBehaviour
     protected void UpdateElements()
     {
         FillElementsMetadata();
+        UpdateUIElements();
         FirstElementIndex = FirstElementIndex;
         SelectedElementIndex = SelectedElementIndex;
     }
