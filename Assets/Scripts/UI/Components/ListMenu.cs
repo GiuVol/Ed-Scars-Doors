@@ -510,28 +510,8 @@ public abstract class ListMenu : MonoBehaviour
                 bool selected = i == selectedUIElementIndex - 1;
                 UIElements[i].SetSelected(selected, enabledLabelColor, disabledLabelColor);
             }
-
-            #region Debug
-
-            ClearLog();
-            Debug.Log(ElementsMetadata[SelectedElementIndex - 1].Name);
-
-            #endregion
         }
     }
-
-    #region Debug
-
-    public void ClearLog()
-    {
-        var assembly = System.Reflection
-            .Assembly.GetAssembly(typeof(UnityEditor.Editor));
-        var type = assembly.GetType("UnityEditor.LogEntries");
-        var method = type.GetMethod("Clear");
-        method.Invoke(new object(), null);
-    }
-
-    #endregion
 
     /// <summary>
     /// The index of the first element displayed.
@@ -584,12 +564,26 @@ public abstract class ListMenu : MonoBehaviour
     public void Start()
     {
         UpdateElements();
-        FirstElementIndex = 1;
-        SelectedElementIndex = 1;
     }
 
     #region Methods
 
+    /// <summary>
+    /// Method that updates the elements and the view.
+    /// </summary>
+    protected void UpdateElements()
+    {
+        FillElementsMetadata();
+        FirstElementIndex = FirstElementIndex;
+        SelectedElementIndex = SelectedElementIndex;
+    }
+
+    /// <summary>
+    /// Method that fills the list containing the metadata of the elements.
+    /// It depends on the specific class that extends ListMenu.
+    /// </summary>
+    protected abstract void FillElementsMetadata();
+    
     /// <summary>
     /// Method that updates the displayed elements.
     /// </summary>
@@ -636,23 +630,6 @@ public abstract class ListMenu : MonoBehaviour
         listElement.NameAreaText = currentElement.Name;
 
         return true;
-    }
-
-    /// <summary>
-    /// Method that fills the list containing the metadata of the elements.
-    /// It depends on the specific class that extends ListMenu.
-    /// </summary>
-    protected abstract void FillElementsMetadata();
-
-    /// <summary>
-    /// Method that updates the elements and the view.
-    /// </summary>
-    protected void UpdateElements()
-    {
-        FillElementsMetadata();
-        UpdateUIElements();
-        FirstElementIndex = FirstElementIndex;
-        SelectedElementIndex = SelectedElementIndex;
     }
 
     #endregion
