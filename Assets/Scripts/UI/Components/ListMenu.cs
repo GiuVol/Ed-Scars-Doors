@@ -162,6 +162,11 @@ public abstract class ListMenu : MonoBehaviour
 
             set
             {
+                if (_operations == null)
+                {
+                    _operations = new List<ListElementOperation>();
+                }
+                
                 _operations.Clear();
 
                 if (value == null)
@@ -260,6 +265,11 @@ public abstract class ListMenu : MonoBehaviour
 
             set
             {
+                if (_operations == null)
+                {
+                    _operations = new List<ListElementOperation>();
+                }
+                
                 _operations.Clear();
 
                 if (value == null)
@@ -365,6 +375,11 @@ public abstract class ListMenu : MonoBehaviour
 
         set
         {
+            if (_elementsMetadata == null)
+            {
+                _elementsMetadata = new List<ElementMetadata>();
+            }
+            
             _elementsMetadata.Clear();
 
             if (value == null)
