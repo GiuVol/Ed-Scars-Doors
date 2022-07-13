@@ -165,6 +165,22 @@ public class TabMenu : MonoBehaviour
     private List<Tab> _tabs;
     
     /// <summary>
+    /// Property that provides access to the tabs in a controlled manner.
+    /// </summary>
+    private List<Tab> Tabs
+    {
+        get
+        {
+            if (_tabs == null)
+            {
+                _tabs = new List<Tab>();
+            }
+
+            return _tabs;
+        }
+    }
+
+    /// <summary>
     /// The standard color that the tabs labels should have when enabled.
     /// </summary>
     [SerializeField]
@@ -195,12 +211,12 @@ public class TabMenu : MonoBehaviour
     {
         get
         {
-            if (_tabs == null)
+            if (Tabs == null)
             {
                 return 0;
             }
 
-            return _tabs.Count;
+            return Tabs.Count;
         }
     }
 
@@ -244,7 +260,7 @@ public class TabMenu : MonoBehaviour
             {
                 bool active = (i == _selectedTabIndex - 1);
 
-                _tabs[i].SetActive(active, _enabledTabLabelColor, _enabledTabTextColor, _disabledTabLabelColor, _disabledTabTextColor);
+                Tabs[i].SetActive(active, _enabledTabLabelColor, _enabledTabTextColor, _disabledTabLabelColor, _disabledTabTextColor);
             }
         }
     }
@@ -253,7 +269,7 @@ public class TabMenu : MonoBehaviour
     {
         for (int i = 0; i < NumberOfTabs; i++)
         {
-            _tabs[i].SetActive(false, _enabledTabLabelColor, _enabledTabTextColor, _disabledTabLabelColor, _disabledTabTextColor);
+            Tabs[i].SetActive(false, _enabledTabLabelColor, _enabledTabTextColor, _disabledTabLabelColor, _disabledTabTextColor);
         }
 
         SelectedTab = 1;
