@@ -5,25 +5,6 @@ public class TestInventory : ListMenu
 {
     private List<string> _items;
 
-    protected override List<ElementMetadata> ElementsMetadata
-    {
-        get
-        {
-            List<ElementMetadata> elementsMetadata = new List<ElementMetadata>();
-
-            foreach (string item in _items)
-            {
-                string description = "This is a " + item.ToString();
-
-                ElementMetadata newElement = 
-                    new ElementMetadata(item.ToString(), null, description, null);
-                elementsMetadata.Add(newElement);
-            }
-
-            return elementsMetadata;
-        }
-    }
-
     private new void Start()
     {
         _items = new List<string>();
@@ -56,6 +37,31 @@ public class TestInventory : ListMenu
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             SelectedElementIndex-=4;
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            int randomIndex = Random.Range(0, _items.Count);
+
+            if(_items.Count > 0)
+            {
+                _items.RemoveAt(SelectedElementIndex - 1);
+                UpdateElements();
+            }
+        }
+    }
+
+    protected override void FillElementsMetadata()
+    {
+        ElementsMetadata = null;
+
+        foreach (string item in _items)
+        {
+            string description = "This is a " + item.ToString();
+
+            ElementMetadata newElement =
+                new ElementMetadata(item, null, description, null);
+            ElementsMetadata.Add(newElement);
         }
     }
 }
