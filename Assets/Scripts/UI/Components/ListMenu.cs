@@ -86,6 +86,56 @@ public abstract class ListMenu : MonoBehaviour
         }
 
         /// <summary>
+        /// The part of the GUI component which displays the amount of elements of a specific kind.
+        /// </summary>
+        [SerializeField]
+        private TextMeshProUGUI _amountArea;
+
+        /// <summary>
+        /// A property that provides access to the value of the amount area in a controlled manner.
+        /// </summary>
+        public int AmountAreaValue
+        {
+            set
+            {
+                if (_amountArea == null)
+                {
+                    return;
+                }
+
+                if (value <= 0)
+                {
+                    _amountArea.text = "";
+                    return;
+                }
+
+                _amountArea.text = "x" + value.ToString();
+            }
+        }
+
+        /// <summary>
+        /// A property that provides access to the text of the amount area in a controlled manner.
+        /// </summary>
+        public string AmountAreaText
+        {
+            set
+            {
+                if (_amountArea == null)
+                {
+                    return;
+                }
+
+                if (value == null)
+                {
+                    _amountArea.text = "";
+                    return;
+                }
+
+                _amountArea.text = value;
+            }
+        }
+
+        /// <summary>
         /// The part of the GUI component which displays the sprite of the element.
         /// </summary>
         [SerializeField]
@@ -229,6 +279,11 @@ public abstract class ListMenu : MonoBehaviour
         public string Name { get; set; }
 
         /// <summary>
+        /// The amount of elements of the same kind.
+        /// </summary>
+        public int Amount { get; set; }
+        
+        /// <summary>
         /// The icon of the element.
         /// </summary>
         public Sprite Icon { get; set; }
@@ -283,18 +338,20 @@ public abstract class ListMenu : MonoBehaviour
                 }
             }
         }
-        
+
         /// <summary>
         /// The constructor of ElementMetadata.
         /// </summary>
         /// <param name="name">The name of the element</param>
+        /// <param name="amount">The amount of the element</param>
         /// <param name="icon">The icon of the element</param>
         /// <param name="description">The description of the element</param>
         /// <param name="image">The image of the element</param>
-        public ElementMetadata(string name, Sprite icon,
+        public ElementMetadata(string name, int amount, Sprite icon,
                                string description, Sprite image)
         {
             Name = name;
+            Amount = amount;
             Icon = icon;
             Description = description;
             Image = image;
@@ -437,7 +494,7 @@ public abstract class ListMenu : MonoBehaviour
     /// <summary>
     /// A property that provides access to the sprite of the image area.
     /// </summary>
-    protected Sprite SelectedElementSprite
+    protected Sprite ImageAreaSprite
     {
         get
         {
@@ -512,6 +569,7 @@ public abstract class ListMenu : MonoBehaviour
             }
 
             DescriptionAreaText = ElementsMetadata[SelectedElementIndex - 1].Description;
+            ImageAreaSprite = ElementsMetadata[SelectedElementIndex - 1].Image;
         }
     }
 
@@ -540,6 +598,7 @@ public abstract class ListMenu : MonoBehaviour
             if (ElementsMetadata.Count == 0)
             {
                 _firstElementIndex = 0;
+                UpdateUIElements();
                 return;
             }
             
@@ -576,7 +635,6 @@ public abstract class ListMenu : MonoBehaviour
     protected void UpdateElements()
     {
         FillElementsMetadata();
-        UpdateUIElements();
         FirstElementIndex = FirstElementIndex;
         SelectedElementIndex = SelectedElementIndex;
     }
@@ -631,6 +689,7 @@ public abstract class ListMenu : MonoBehaviour
         ElementMetadata currentElement = ElementsMetadata[index - 1];
 
         listElement.NameAreaText = currentElement.Name;
+        listElement.AmountAreaValue = currentElement.Amount;
 
         return true;
     }

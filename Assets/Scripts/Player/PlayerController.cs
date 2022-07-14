@@ -229,10 +229,10 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
                 HealingPotion testItem5 = 
                     Resources.Load<HealingPotion>("Items/Usable Items/FullLifePotion");
 
-                _inventory.AddItem(testItem1, 1);
-                _inventory.AddItem(testItem2, 1);
-                _inventory.AddItem(testItem3, 1);
-                _inventory.AddItem(testItem4, 1);
+                _inventory.AddItem(testItem1, 3);
+                _inventory.AddItem(testItem2, 2);
+                _inventory.AddItem(testItem3, 7);
+                _inventory.AddItem(testItem4, 5);
                 _inventory.AddItem(testItem5, 1);
             }
 
@@ -249,6 +249,14 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             if (_collection == null)
             {
                 _collection = new Container<CollectableItem>();
+
+                CollectableItem collectable1 = 
+                    Resources.Load<CollectableItem>("Items/Collectable Items/OldScarf");
+                CollectableItem collectable2 =
+                    Resources.Load<CollectableItem>("Items/Collectable Items/Gramophone");
+
+                _collection.AddItem(collectable1, 1);
+                _collection.AddItem(collectable2, 1);
             }
 
             return _collection;

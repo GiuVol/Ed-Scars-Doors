@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InventoryMenu : ListMenu, ITabContent
+public class CollectionMenu : ListMenu, ITabContent
 {
     public bool HasControl { get; set; }
 
@@ -9,16 +9,13 @@ public class InventoryMenu : ListMenu, ITabContent
     {
         ElementsMetadata.Clear();
 
-        Dictionary<UsableItem, int> inventory = 
-            GameManager.Instance.Player.Inventory.ContainerStructure.ToDictionary();
+        Dictionary<CollectableItem, int> inventory =
+            GameManager.Instance.Player.Collection.ContainerStructure.ToDictionary();
 
-        foreach (UsableItem item in inventory.Keys)
+        foreach (CollectableItem item in inventory.Keys)
         {
-            int amount;
-            inventory.TryGetValue(item, out amount);
-
-            ElementMetadata newElement = 
-                new ElementMetadata(item.Name, amount, item.ItemIcon, 
+            ElementMetadata newElement =
+                new ElementMetadata(item.Name, 1, item.ItemIcon, 
                                     item.Description, item.ItemImage);
 
             ElementsMetadata.Add(newElement);
@@ -44,14 +41,14 @@ public class InventoryMenu : ListMenu, ITabContent
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            SelectedElementIndex--;
-        }
-
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             SelectedElementIndex++;
+        }
+
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            SelectedElementIndex--;
         }
     }
 }

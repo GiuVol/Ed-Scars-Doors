@@ -22,10 +22,15 @@ public abstract class Item : ScriptableObject
     public string Description;
 
     /// <summary>
-    /// Field that stores the sprite that the item has to have inside the menu.
+    /// Field that stores the image of the item.
     /// </summary>
-    public Sprite MenuSprite;
+    public Sprite ItemImage;
 
+    /// <summary>
+    /// Field that stores the icon of the item.
+    /// </summary>
+    public Sprite ItemIcon;
+    
     /// <summary>
     /// Field that stores the gameObject that represents the item in the overworld.
     /// </summary>
