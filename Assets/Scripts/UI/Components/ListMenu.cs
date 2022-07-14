@@ -520,6 +520,22 @@ public abstract class ListMenu : MonoBehaviour
     #endregion
 
     /// <summary>
+    /// Property that returns the selected element.
+    /// </summary>
+    private ElementMetadata SelectedElement
+    {
+        get
+        {
+            if (ElementsMetadata.Count == 0)
+            {
+                return null;
+            }
+
+            return ElementsMetadata[SelectedElementIndex - 1];
+        }
+    }
+
+    /// <summary>
     /// The index of the selected element
     /// </summary>
     private int _selectedElementIndex;
@@ -568,8 +584,8 @@ public abstract class ListMenu : MonoBehaviour
                 UIElements[i].SetSelected(selected, enabledLabelColor, disabledLabelColor);
             }
 
-            DescriptionAreaText = ElementsMetadata[SelectedElementIndex - 1].Description;
-            ImageAreaSprite = ElementsMetadata[SelectedElementIndex - 1].Image;
+            DescriptionAreaText = SelectedElement.Description;
+            ImageAreaSprite = SelectedElement.Image;
         }
     }
 

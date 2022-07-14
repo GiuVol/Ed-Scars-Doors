@@ -54,20 +54,25 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        _instance = this;
+
         DontDestroyOnLoad(this);
 
         UI = gameObject.AddComponent<UIManager>();
-        UI.Setup();
 
         MainCamera = new GameObject("Camera", typeof(Camera)).GetComponent<Camera>();
         MainCamera.backgroundColor = Color.black;
+        UI.Setup();
         UI.LoadMainMenu();
-
-        _instance = this;
     }
 
     private void Update()
     {
+        if (UI.CurrentCanvas.worldCamera == null)
+        {
+            UI.CurrentCanvas.worldCamera = MainCamera;
+        }
+
         if (!UI.MainMenuIsLoaded)
         {
             if (Input.GetKeyDown(KeyCode.H))
@@ -88,15 +93,10 @@ public class GameManager : MonoBehaviour
 
         if (IsInGameMenu)
         {
-            if (Input.GetKeyDown(KeyCode.J))
-            {
-                UI.GameMenu.SelectedTab--;
-            }
-
-            if (Input.GetKeyDown(KeyCode.L))
-            {
-                UI.GameMenu.SelectedTab++;
-            }
+            Time.timeScale = 0;
+        } else
+        {
+            Time.timeScale = 1;
         }
     }
 
@@ -129,6 +129,8 @@ public class GameManager : MonoBehaviour
             Instantiate(Resources.Load<CameraController>(GameFormulas.CameraResourcesPath), cameraPosition, Quaternion.identity);
 
         cameraController.Target = playerController.transform;
+
+        MainCamera = cameraController.CameraComponent;
 
         UI.LoadHUD();
 

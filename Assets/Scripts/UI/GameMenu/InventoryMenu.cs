@@ -9,8 +9,10 @@ public class InventoryMenu : ListMenu, ITabContent
     {
         ElementsMetadata.Clear();
 
+        PlayerController player = GameManager.Instance.Player;
+
         Dictionary<UsableItem, int> inventory = 
-            GameManager.Instance.Player.Inventory.ContainerStructure.ToDictionary();
+            player.Inventory.ContainerStructure.ToDictionary();
 
         foreach (UsableItem item in inventory.Keys)
         {
@@ -20,6 +22,19 @@ public class InventoryMenu : ListMenu, ITabContent
             ElementMetadata newElement = 
                 new ElementMetadata(item.Name, amount, item.ItemIcon, 
                                     item.Description, item.ItemImage);
+
+            ListElementOperation useOperation = 
+                new ListElementOperation("Usa", delegate { item.Use(player); });
+
+            ListElementOperation throwOperation = 
+                new ListElementOperation("Getta", 
+                    delegate {
+                        player.Inventory.RemoveIstances(item, 1);
+                        UpdateElements();
+                    }
+                );
+
+            newElement.Operations.Add(useOperation);
 
             ElementsMetadata.Add(newElement);
         }

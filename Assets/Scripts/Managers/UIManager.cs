@@ -105,8 +105,8 @@ public class UIManager : MonoBehaviour
 
         CurrentCanvas = new GameObject("Canvas", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster))
             .GetComponent<Canvas>();
-        CurrentCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        CurrentCanvas.additionalShaderChannels -= AdditionalCanvasShaderChannels.Tangent;
+        CurrentCanvas.renderMode = RenderMode.ScreenSpaceCamera;
+        CurrentCanvas.worldCamera = GameManager.Instance.MainCamera;
 
         CurrentEventSystem = new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule))
             .GetComponent<EventSystem>();
