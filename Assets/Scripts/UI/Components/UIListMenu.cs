@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public abstract class ListMenu : MonoBehaviour
+public abstract class UIListMenu : MonoBehaviour
 {
     #region Inner Classes
 

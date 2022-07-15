@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CollectionMenu : ListMenu, ITabContent
+public class CollectionMenu : UIListMenu, ITabContent
 {
     public bool HasControl { get; set; }
 
