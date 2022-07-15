@@ -50,7 +50,7 @@ public class UIManager : MonoBehaviour
     /// <summary>
     /// The main menu. This field is null if the main menu is not loaded.
     /// </summary>
-    public TabMenu GameMenu { get; private set; }
+    public UITabMenu GameMenu { get; private set; }
 
     /// <summary>
     /// This property returns whether the main menu is loaded or not.
@@ -185,7 +185,7 @@ public class UIManager : MonoBehaviour
 
         ClearCanvas();
 
-        GameMenu = Instantiate(Resources.Load<TabMenu>(GameFormulas.GameMenuResourcesPath), CurrentCanvas.transform);
+        GameMenu = Instantiate(Resources.Load<UITabMenu>(GameFormulas.GameMenuResourcesPath), CurrentCanvas.transform);
     }
 
     /// <summary>

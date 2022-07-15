@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class GameMenu : TabMenu
+public class GameMenu : UITabMenu
 {
     // Update is called once per frame
     void Update()

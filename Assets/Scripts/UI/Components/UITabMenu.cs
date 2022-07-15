@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TabMenu : MonoBehaviour
+public class UITabMenu : MonoBehaviour
 {
     /// <summary>
     /// Class that represents a tab of the menu.
