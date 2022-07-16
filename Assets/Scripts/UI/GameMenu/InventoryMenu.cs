@@ -35,6 +35,7 @@ public class InventoryMenu : UIListMenu, ITabContent
                 );
 
             newElement.Operations.Add(useOperation);
+            newElement.Operations.Add(throwOperation);
 
             ElementsMetadata.Add(newElement);
         }

@@ -11,7 +11,7 @@ public abstract class UIListMenu : MonoBehaviour
     /// <summary>
     /// A class which represents an operation you could do on a list element.
     /// </summary>
-    protected class ListElementOperation
+    public class ListElementOperation
     {
         /// <summary>
         /// A new type of delegate, which will store a void procedure.
@@ -638,9 +638,13 @@ public abstract class UIListMenu : MonoBehaviour
         }
     }
 
+    [SerializeField]
+    private UIOperationSelector _uiOperationSelector;
+
     public void Start()
     {
         UpdateElements();
+        ShowSelectedElementOperations();
     }
 
     #region Methods
@@ -708,6 +712,21 @@ public abstract class UIListMenu : MonoBehaviour
         listElement.AmountAreaValue = currentElement.Amount;
 
         return true;
+    }
+
+    public void ShowSelectedElementOperations()
+    {
+        if (SelectedElement == null)
+        {
+            return;
+        }
+
+        if (SelectedElement.Operations.Count == 0)
+        {
+            return;
+        }
+
+        _uiOperationSelector.PromptOperations(SelectedElement.Operations);
     }
 
     #endregion
