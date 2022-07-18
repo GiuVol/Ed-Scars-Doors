@@ -5,6 +5,13 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    private static Vector2 ReferenceResolution = new Vector2(1024, 768);
+
+    private const string MainMenuResourcesPath = "UI/MainMenu";
+    private const string GameMenuResourcesPath = "UI/GameMenu";
+    private const string HUDResourcesPath = "UI/HUD";
+    private const string SceneLoadingInfoResourcesPath = "UI/SceneLoadingInfo";
+
     /// <summary>
     /// The only admissible instance of this singleton class.
     /// </summary>
@@ -105,8 +112,10 @@ public class UIManager : MonoBehaviour
 
         CurrentCanvas = new GameObject("Canvas", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster))
             .GetComponent<Canvas>();
-        CurrentCanvas.renderMode = RenderMode.ScreenSpaceCamera;
-        CurrentCanvas.worldCamera = GameManager.Instance.MainCamera;
+        CurrentCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        CanvasScaler canvasScaler = CurrentCanvas.GetComponent<CanvasScaler>();
+        canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        canvasScaler.referenceResolution = ReferenceResolution;
 
         CurrentEventSystem = new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule))
             .GetComponent<EventSystem>();
@@ -135,7 +144,7 @@ public class UIManager : MonoBehaviour
 
         ClearCanvas();
 
-        MainMenu = Instantiate(Resources.Load<MainMenu>(GameFormulas.MainMenuResourcesPath), CurrentCanvas.transform);
+        MainMenu = Instantiate(Resources.Load<MainMenu>(MainMenuResourcesPath), CurrentCanvas.transform);
 
         MainMenu.PlayDemoButton.onClick.AddListener(
             delegate {
@@ -185,7 +194,7 @@ public class UIManager : MonoBehaviour
 
         ClearCanvas();
 
-        GameMenu = Instantiate(Resources.Load<UITabMenu>(GameFormulas.GameMenuResourcesPath), CurrentCanvas.transform);
+        GameMenu = Instantiate(Resources.Load<UITabMenu>(GameMenuResourcesPath), CurrentCanvas.transform);
     }
 
     /// <summary>
@@ -239,7 +248,7 @@ public class UIManager : MonoBehaviour
             return;
         }
 
-        CurrentHUD = Instantiate(Resources.Load<HUD>(GameFormulas.HUDResourcesPath), CurrentCanvas.transform);
+        CurrentHUD = Instantiate(Resources.Load<HUD>(HUDResourcesPath), CurrentCanvas.transform);
 
         _wantsHudLoaded = true;
     }
@@ -270,7 +279,7 @@ public class UIManager : MonoBehaviour
             return;
         }
         
-        SceneLoadingInfo = Instantiate(Resources.Load<TextMeshProUGUI>(GameFormulas.SceneLoadingInfoResourcesPath), CurrentCanvas.transform);
+        SceneLoadingInfo = Instantiate(Resources.Load<TextMeshProUGUI>(SceneLoadingInfoResourcesPath), CurrentCanvas.transform);
     }
 
     /// <summary>

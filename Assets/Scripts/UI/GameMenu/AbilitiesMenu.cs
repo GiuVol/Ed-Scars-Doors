@@ -2,19 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InventoryMenu : UIListMenu, ITabContent
+public class AbilitiesMenu : UIListMenu, ITabContent
 {
-    private const string InventoryOperationSelectorPath = "UI/InventoryOperationSelector";
+    private const string AbilitiesOperationSelectorPath = "UI/InventoryOperationSelector";
 
     private UIOperationSelector _uiOperationSelectorPrefab;
-    
+
     public bool HasControl { get; set; }
 
     private new void Start()
     {
         base.Start();
         _uiOperationSelectorPrefab =
-            Resources.Load<InventoryOperationSelector>(InventoryOperationSelectorPath);
+            Resources.Load<InventoryOperationSelector>(AbilitiesOperationSelectorPath);
     }
 
     void Update()
@@ -57,7 +57,7 @@ public class InventoryMenu : UIListMenu, ITabContent
             yield break;
         }
 
-        UIOperationSelector uiOperationSelector = 
+        UIOperationSelector uiOperationSelector =
             Instantiate(_uiOperationSelectorPrefab, transform);
 
         if (!uiOperationSelector.PromptOperations(SelectedElement.Operations))
@@ -67,7 +67,7 @@ public class InventoryMenu : UIListMenu, ITabContent
         }
 
         HasControl = false;
-        
+
         yield return new WaitUntil(() => uiOperationSelector.SelectedOperation != null);
 
         ListElementOperation selectedOperation = uiOperationSelector.SelectedOperation;
@@ -81,7 +81,7 @@ public class InventoryMenu : UIListMenu, ITabContent
 
         HasControl = true;
     }
-
+    
     #region Override and Implementation
 
     protected override void FillElementsMetadata()
@@ -100,46 +100,47 @@ public class InventoryMenu : UIListMenu, ITabContent
             return;
         }
 
-        if (GameManager.Instance.Player.Inventory == null)
+        if (GameManager.Instance.Player.ObtainedAbilities == null)
         {
             return;
         }
-        
+
         #endregion
 
         PlayerController player = GameManager.Instance.Player;
 
-        Dictionary<UsableItem, int> inventory =
-            player.Inventory.ContainerStructure.ToDictionary();
-
-        foreach (UsableItem item in inventory.Keys)
+        foreach (GenericAbility ability in player.ObtainedAbilities)
         {
-            int amount;
-            inventory.TryGetValue(item, out amount);
+            ElementMetadata newElement = 
+                new ElementMetadata(ability.Name, 1, null, ability.Description, null);
 
-            ElementMetadata newElement =
-                new ElementMetadata(item.Name, amount, item.ItemIcon,
-                                    item.Description, item.ItemImage);
+            ListElementOperation equipOperation;
 
-            ListElementOperation useOperation =
-                new ListElementOperation("Usa",
-                    delegate {
-                        item.Use(player);
-                        player.Inventory.RemoveIstances(item, 1);
-                        UpdateElements();
-                    }
-                );
+            if (player.IsEquipped(ability))
+            {
+                equipOperation =
+                    new ListElementOperation(
+                        "Disequipaggia",
+                        delegate
+                        {
+                            player.UnequipAbility(ability);
+                            UpdateElements();
+                        }
+                    );
+            } else 
+            {
+                equipOperation =
+                    new ListElementOperation(
+                        "Equipaggia",
+                        delegate
+                        {
+                            player.EquipAbility(ability);
+                            UpdateElements();
+                        }
+                    );
+            }
 
-            ListElementOperation throwOperation =
-                new ListElementOperation("Getta",
-                    delegate {
-                        player.Inventory.RemoveIstances(item, 1);
-                        UpdateElements();
-                    }
-                );
-
-            newElement.Operations.Add(useOperation);
-            newElement.Operations.Add(throwOperation);
+            newElement.Operations.Add(equipOperation);
 
             ElementsMetadata.Add(newElement);
         }

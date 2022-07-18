@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abf450fc8891f534b9612333cce8e670, type: 3}
   m_Name: DarkShooter
   m_EditorClassIdentifier: 
+  Name: Dark Shooter
+  Description: With this, darkness will be your greatest ally!
   ProjectileName: DarkProjectile

@@ -16,24 +16,53 @@ public class CameraController : MonoBehaviour
     /// The max orthographic size that the camera can have.
     /// </summary>
     private const float MaxOrthographicSize = 10;
+
+    /// <summary>
+    /// The time (in seconds) that the camera needs to reach the desired position.
+    /// </summary>
+    [SerializeField]
+    private float _smoothTime = .1f;
+
+    /// <summary>
+    /// The standard position offset of the camera.
+    /// </summary>
+    [SerializeField]
+    public Vector3 _standardPositionOffset;
+
+    /// <summary>
+    /// The <c>Camera</c> attached to the controller.
+    /// </summary>
+    private Camera _cameraComponent;
     
     /// <summary>
     /// The <c>Camera</c> attached to the controller.
     /// </summary>
-    public Camera CameraComponent { get; private set; }
+    public Camera CameraComponent
+    {
+        get
+        {
+            if (_cameraComponent == null)
+            {
+                _cameraComponent = gameObject.GetComponentInChildren<Camera>();
+            }
 
+            return _cameraComponent;
+        }
+    }
+    
     /// <summary>
     /// The <c>Transform</c> that the camera should follow.
     /// </summary>
-    public Transform Target;
+    public Transform Target { get; set; }
 
     /// <summary>
-    /// A <c>Vector3</c> that stores the offset, relative to the <c>Target</c>, that the camera should have.
+    /// A <c>Vector3</c> that stores the offset, relative to the <c>Target</c>, 
+    /// that the camera should have.
     /// </summary>
-    public Vector3 Offset;
-
+    public Vector3 PositionOffset { get; set; }
+    
     /// <summary>
-    /// The desired orthographic size that the camera should have.
+    /// Property to access in a controlled way to the orthographic size of the camera
     /// </summary>
     public float OrthographicSize
     {
@@ -56,11 +85,6 @@ public class CameraController : MonoBehaviour
             CameraComponent.orthographicSize = Mathf.Clamp(value, MinOrthographicSize, MaxOrthographicSize);
         }
     }
-    
-    /// <summary>
-    /// The time (in seconds) that the camera needs to reach the desired position.
-    /// </summary>
-    public float SmoothTime = .1f;
 
     /// <summary>
     /// A <c>Vector3</c> that stores the position that the camera should have.
@@ -74,8 +98,7 @@ public class CameraController : MonoBehaviour
 
     private void Start()
     {
-        CameraComponent = gameObject.GetComponentInChildren<Camera>();
-
+        PositionOffset = _standardPositionOffset;
         OrthographicSize = StandardOrthographicSize;
     }
 
@@ -92,9 +115,9 @@ public class CameraController : MonoBehaviour
     /// </summary>
     private void FollowTarget()
     {
-        _desiredPosition = new Vector3(Target.position.x, Target.position.y) + Offset;
+        _desiredPosition = new Vector3(Target.position.x, Target.position.y) + PositionOffset;
         _desiredPosition.z = -5;
 
-        transform.position = Vector3.SmoothDamp(transform.position, _desiredPosition, ref _currentVelocity, SmoothTime);
+        transform.position = Vector3.SmoothDamp(transform.position, _desiredPosition, ref _currentVelocity, _smoothTime);
     }
 }

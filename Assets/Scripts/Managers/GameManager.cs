@@ -4,6 +4,12 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    private const string PlayerResourcesPath = "Player/Player";
+    private const string CameraResourcesPath = "Player/MainCamera";
+
+    private const string PlayerStartPositionName = "PlayerStartPosition";
+    private const string CameraStartPositionName = "CameraStartPosition";
+
     /// <summary>
     /// The only admissible instance of this singleton class.
     /// </summary>
@@ -21,11 +27,6 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// The <c>UIManager</c> component that handles the UI of the game.
-    /// </summary>
-    public UIManager UI { get; private set; }
-
-    /// <summary>
     /// Returns the Player.
     /// </summary>
     public PlayerController Player { get; private set; }
@@ -33,8 +34,37 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// The main Camera.
     /// </summary>
-    public Camera MainCamera { get; private set; }
+    private Camera _mainCamera;
 
+    /// <summary>
+    /// A property that allows access in a controlled way to the main camera.
+    /// </summary>
+    public Camera MainCamera
+    {
+        get
+        {
+            return _mainCamera;
+        }
+
+        private set
+        {
+            _mainCamera = value;
+
+            if (UI != null)
+            {
+                if (UI.CurrentCanvas != null)
+                {
+                    UI.CurrentCanvas.worldCamera = _mainCamera;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// The <c>UIManager</c> component that handles the UI of the game.
+    /// </summary>
+    public UIManager UI { get; private set; }
+    
     /// <summary>
     /// Returns whether the player is in Game Menu or not.
     /// </summary>
@@ -59,20 +89,15 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(this);
 
         UI = gameObject.AddComponent<UIManager>();
+        UI.Setup();
+        UI.LoadMainMenu();
 
         MainCamera = new GameObject("Camera", typeof(Camera)).GetComponent<Camera>();
         MainCamera.backgroundColor = Color.black;
-        UI.Setup();
-        UI.LoadMainMenu();
     }
 
     private void Update()
     {
-        if (UI.CurrentCanvas.worldCamera == null)
-        {
-            UI.CurrentCanvas.worldCamera = MainCamera;
-        }
-
         if (!UI.MainMenuIsLoaded)
         {
             if (Input.GetKeyDown(KeyCode.H))
@@ -106,7 +131,15 @@ public class GameManager : MonoBehaviour
     /// <param name="sceneName">The name of the scene to load</param>
     public IEnumerator LoadScene(string sceneName)
     {
-        AsyncOperation sceneLoadingOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
+        int buildIndex = SceneUtility.GetBuildIndexByScenePath(sceneName);
+
+        if (buildIndex < 0)
+        {
+            yield break;
+        }
+
+        AsyncOperation sceneLoadingOperation = 
+            SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
         float activationProgress;
 
         UI.LoadSceneLoadingInfo();
@@ -114,26 +147,43 @@ public class GameManager : MonoBehaviour
         while (!sceneLoadingOperation.isDone)
         {
             activationProgress = Mathf.Clamp01(sceneLoadingOperation.progress / .9f);
-            UI.SceneLoadingInfo.text = activationProgress.ToString();
+
+            if (UI.SceneLoadingInfo != null)
+            {
+                UI.SceneLoadingInfo.text = activationProgress.ToString();
+            }
+
             yield return null;
         }
 
         UI.UnloadSceneLoadingInfo();
 
-        Vector3 playerPosition = GameObject.Find(GameFormulas.PlayerStartPositionName).transform.position;
-        Vector3 cameraPosition = GameObject.Find(GameFormulas.CameraStartPositionName).transform.position;
+        Vector3 playerPosition = Vector3.zero;
+        Vector3 cameraPosition = Vector3.zero;
+
+        GameObject playerSpawn = GameObject.Find(PlayerStartPositionName);
+        GameObject cameraSpawn = GameObject.Find(CameraStartPositionName);
+        
+        if (playerSpawn != null)
+        {
+            playerPosition = playerSpawn.transform.position;
+
+            if (cameraSpawn != null)
+            {
+                cameraPosition = cameraSpawn.transform.position;
+            }
+        }
 
         PlayerController playerController = 
-            Instantiate(Resources.Load<PlayerController>(GameFormulas.PlayerResourcesPath), playerPosition, Quaternion.identity);
+            Instantiate(Resources.Load<PlayerController>(PlayerResourcesPath), playerPosition, Quaternion.identity);
         CameraController cameraController = 
-            Instantiate(Resources.Load<CameraController>(GameFormulas.CameraResourcesPath), cameraPosition, Quaternion.identity);
+            Instantiate(Resources.Load<CameraController>(CameraResourcesPath), cameraPosition, Quaternion.identity);
 
         cameraController.Target = playerController.transform;
 
+        Player = playerController;
         MainCamera = cameraController.CameraComponent;
 
         UI.LoadHUD();
-
-        Player = playerController;
     }
 }

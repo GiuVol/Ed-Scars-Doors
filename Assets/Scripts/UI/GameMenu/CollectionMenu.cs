@@ -9,10 +9,29 @@ public class CollectionMenu : UIListMenu, ITabContent
     {
         ElementsMetadata.Clear();
 
-        Dictionary<CollectableItem, int> inventory =
+        #region Pre-conditions check
+
+        if (GameManager.Instance == null)
+        {
+            return;
+        }
+
+        if (GameManager.Instance.Player == null)
+        {
+            return;
+        }
+
+        if (GameManager.Instance.Player.Collection == null)
+        {
+            return;
+        }
+
+        #endregion
+        
+        Dictionary<CollectableItem, int> collection =
             GameManager.Instance.Player.Collection.ContainerStructure.ToDictionary();
 
-        foreach (CollectableItem item in inventory.Keys)
+        foreach (CollectableItem item in collection.Keys)
         {
             ElementMetadata newElement =
                 new ElementMetadata(item.Name, 1, item.ItemIcon, 

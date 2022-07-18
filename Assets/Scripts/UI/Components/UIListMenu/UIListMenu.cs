@@ -237,6 +237,7 @@ public abstract class UIListMenu : MonoBehaviour
         public void Clear()
         {
             NameAreaText = "";
+            AmountAreaText = "";
             IconAreaSprite = null;
             Operations.Clear();
         }
@@ -520,22 +521,6 @@ public abstract class UIListMenu : MonoBehaviour
     #endregion
 
     /// <summary>
-    /// Property that returns the selected element.
-    /// </summary>
-    private ElementMetadata SelectedElement
-    {
-        get
-        {
-            if (ElementsMetadata.Count == 0)
-            {
-                return null;
-            }
-
-            return ElementsMetadata[SelectedElementIndex - 1];
-        }
-    }
-
-    /// <summary>
     /// The index of the selected element
     /// </summary>
     private int _selectedElementIndex;
@@ -549,7 +534,7 @@ public abstract class UIListMenu : MonoBehaviour
         {
             if (ElementsMetadata.Count == 0)
             {
-                _selectedElementIndex = 0;
+                return 0;
             }
             
             return _selectedElementIndex;
@@ -560,6 +545,8 @@ public abstract class UIListMenu : MonoBehaviour
             if (ElementsMetadata.Count == 0)
             {
                 _selectedElementIndex = 0;
+                DescriptionAreaText = "";
+                ImageAreaSprite = null;
                 return;
             }
 
@@ -589,6 +576,22 @@ public abstract class UIListMenu : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Property that returns the selected element.
+    /// </summary>
+    protected ElementMetadata SelectedElement
+    {
+        get
+        {
+            if (ElementsMetadata.Count == 0)
+            {
+                return null;
+            }
+
+            return ElementsMetadata[SelectedElementIndex - 1];
+        }
+    }
+    
     /// <summary>
     /// The index of the first element displayed.
     /// </summary>
@@ -638,17 +641,13 @@ public abstract class UIListMenu : MonoBehaviour
         }
     }
 
-    [SerializeField]
-    private UIOperationSelector _uiOperationSelector;
+    #region Methods
 
     public void Start()
     {
         UpdateElements();
-        ShowSelectedElementOperations();
     }
-
-    #region Methods
-
+    
     /// <summary>
     /// Method that updates the elements and the view.
     /// </summary>
@@ -679,7 +678,7 @@ public abstract class UIListMenu : MonoBehaviour
 
         foreach (UIListElement uiElement in UIElements)
         {
-            if (!GetElement(counter, uiElement))
+            if (!FillUIElement(counter, uiElement))
             {
                 uiElement.Clear();
                 uiElement.Enabled = false;
@@ -699,7 +698,7 @@ public abstract class UIListMenu : MonoBehaviour
     /// <param name="index">The index of the element; starts from 1, not from 0</param>
     /// <param name="listElement">The GUI component to fill</param>
     /// <returns></returns>
-    private bool GetElement(int index, UIListElement listElement)
+    private bool FillUIElement(int index, UIListElement listElement)
     {
         if (index < 1 || index > ElementsMetadata.Count)
         {
@@ -712,21 +711,6 @@ public abstract class UIListMenu : MonoBehaviour
         listElement.AmountAreaValue = currentElement.Amount;
 
         return true;
-    }
-
-    public void ShowSelectedElementOperations()
-    {
-        if (SelectedElement == null)
-        {
-            return;
-        }
-
-        if (SelectedElement.Operations.Count == 0)
-        {
-            return;
-        }
-
-        _uiOperationSelector.PromptOperations(SelectedElement.Operations);
     }
 
     #endregion

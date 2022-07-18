@@ -240,6 +240,47 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         }
     }
 
+    private List<GenericAbility> _obtainedAbilities;
+
+    public List<GenericAbility> ObtainedAbilities
+    {
+        get
+        {
+            if (_obtainedAbilities == null)
+            {
+                _obtainedAbilities = new List<GenericAbility>();
+
+                GenericAbility ability1 = Resources.Load<GenericAbility>("Abilities/DarkShooter");
+                GenericAbility ability2 = Resources.Load<GenericAbility>("Abilities/DoubleJumper");
+
+                _obtainedAbilities.Add(ability1);
+                _obtainedAbilities.Add(ability2);
+            }
+
+            return _obtainedAbilities;
+        }
+
+        set
+        {
+            if (_obtainedAbilities == null)
+            {
+                _obtainedAbilities = new List<GenericAbility>();
+            }
+
+            _obtainedAbilities.Clear();
+
+            if (value == null)
+            {
+                return;
+            }
+
+            foreach (GenericAbility ability in value)
+            {
+                _obtainedAbilities.Add(ability);
+            }
+        }
+    }
+
     public Container<CollectableItem> _collection;
 
     public Container<CollectableItem> Collection

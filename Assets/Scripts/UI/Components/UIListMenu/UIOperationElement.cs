@@ -2,7 +2,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-[System.Serializable]
 public class UIOperationElement : MonoBehaviour
 {
     [SerializeField]
@@ -39,12 +38,16 @@ public class UIOperationElement : MonoBehaviour
 
     public void SetSelected(bool selected, Color selectedLabelColor, Color unselectedLabelColor)
     {
-        if (selected)
+        if (Label != null)
         {
-            _label.color = selectedLabelColor;
-        } else
-        {
-            _label.color = unselectedLabelColor;
+            if (selected)
+            {
+                _label.color = selectedLabelColor;
+            }
+            else
+            {
+                _label.color = unselectedLabelColor;
+            }
         }
     }
 }
