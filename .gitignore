@@ -72,7 +72,4 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 # Ignoring Res folders
-Assets/Resources/*
 
-!Assets/Resources/Abilities/*
-!Assets/Resources/Projectiles/*

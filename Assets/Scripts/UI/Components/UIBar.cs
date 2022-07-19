@@ -95,37 +95,6 @@ public class UIBar : DynamicUIComponent
     }
 
     /// <summary>
-    /// Lerps the new value of the bar.
-    /// </summary>
-    /// <param name="newValue">The new value to assign</param>
-    public IEnumerator LerpValue(int newValue)
-    {
-        float oldValue = CurrentValue;
-        newValue = Mathf.Clamp(newValue, 0, MaxValue);
-
-        float currentLength;
-        float height = _bar.rectTransform.rect.height;
-        
-        float lerpFactor = 0;
-
-        do
-        {
-            lerpFactor += Time.fixedUnscaledDeltaTime;
-            lerpFactor = Mathf.Clamp01(lerpFactor);
-
-            CurrentValue = (int) Mathf.Lerp(oldValue, newValue, lerpFactor);
-
-            currentLength = MaxLength * ((float) CurrentValue / (float) MaxValue);
-
-            _bar.rectTransform.sizeDelta = new Vector2(currentLength, height);
-            UpdateValueTextComponent();
-
-            yield return null;
-
-        } while (lerpFactor < 1);
-    }
-
-    /// <summary>
     /// Updates the value of the bar.
     /// </summary>
     /// <param name="newValue">The new value to assign</param>

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f25c519c9d860e4c82db90d406a3218, type: 3}
+  m_Name: DoubleJumper
+  m_EditorClassIdentifier: 
+  Name: Double Jumper
+  Description: With this, you will be able to do one jump in mid air!
+  WalkSpeed: 0
+  RunSpeed: 0
+  JumpForce: 0
+  DashForce: 0
+  GravityScale: 0
+  JumpInterval: 0
+  DashInterval: 0
+  ShootInterval: 0
+  NumberOfJumpsAllowedInAir: 1
