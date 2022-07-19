@@ -51,13 +51,41 @@ public abstract class UIListMenu : MonoBehaviour
         /// the element is selected.
         /// </summary>
         [SerializeField]
+        private Image _border;
+
+        /// <summary>
+        /// The part of the GUI component on which the name area lays.
+        /// </summary>
+        [SerializeField]
         private Image _label;
+
+        /// <summary>
+        /// Property that provides access to the label field.
+        /// </summary>
+        public Image Label
+        {
+            get
+            {
+                return _label;
+            }
+        }
 
         /// <summary>
         /// The part of the GUI component which displays the name of the element.
         /// </summary>
         [SerializeField]
         private TextMeshProUGUI _nameArea;
+
+        /// <summary>
+        /// Property that provides access to the name area field.
+        /// </summary>
+        public TextMeshProUGUI NameArea
+        {
+            get
+            {
+                return _nameArea;
+            }
+        }
 
         /// <summary>
         /// A property that provides access to the text of the name area in a controlled manner.
@@ -254,17 +282,17 @@ public abstract class UIListMenu : MonoBehaviour
         /// </param>
         public void SetSelected(bool selected, Color enabledColor, Color disabledColor)
         {
-            if (_label == null)
+            if (_border == null)
             {
                 return;
             }
 
             if (selected)
             {
-                _label.color = enabledColor;
+                _border.color = enabledColor;
             } else
             {
-                _label.color = disabledColor;
+                _border.color = disabledColor;
             }
         }
     }
@@ -667,7 +695,7 @@ public abstract class UIListMenu : MonoBehaviour
     /// <summary>
     /// Method that updates the displayed elements.
     /// </summary>
-    private void UpdateUIElements()
+    protected virtual void UpdateUIElements()
     {
         if (NumberOfUIElements <= 0)
         {
@@ -698,7 +726,7 @@ public abstract class UIListMenu : MonoBehaviour
     /// <param name="index">The index of the element; starts from 1, not from 0</param>
     /// <param name="listElement">The GUI component to fill</param>
     /// <returns></returns>
-    private bool FillUIElement(int index, UIListElement listElement)
+    protected bool FillUIElement(int index, UIListElement listElement)
     {
         if (index < 1 || index > ElementsMetadata.Count)
         {

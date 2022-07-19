@@ -7,11 +7,21 @@ public class ProjectileChangeAbility : GenericAbility
 
     public override void Enable(PlayerController playerController)
     {
+        if (playerController == null)
+        {
+            return;
+        }
+        
         playerController.ProjectileType = ProjectileName;
     }
 
     public override void Disable(PlayerController playerController)
     {
+        if (playerController == null)
+        {
+            return;
+        }
+        
         playerController.ProjectileType = GameFormulas.NormalProjectileName;
     }
 }

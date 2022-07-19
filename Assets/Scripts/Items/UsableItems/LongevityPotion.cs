@@ -23,6 +23,11 @@ public class LongevityPotion : UsableItem
 
     public override void Use(PlayerController player)
     {
+        if (player == null)
+        {
+            return;
+        }
+
         if (UsePercentageIncrement)
         {
             player.Health.IncreaseMaxHealthPercentage(PercentageIncrement);

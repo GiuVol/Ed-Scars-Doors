@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class InventoryMenu : UIListMenu, ITabContent
 {
-    private const string InventoryOperationSelectorPath = "UI/InventoryOperationSelector";
+    private const string OperationSelectorPath = "UI/OperationSelector";
 
     private UIOperationSelector _uiOperationSelectorPrefab;
     
@@ -14,7 +14,7 @@ public class InventoryMenu : UIListMenu, ITabContent
     {
         base.Start();
         _uiOperationSelectorPrefab =
-            Resources.Load<InventoryOperationSelector>(InventoryOperationSelectorPath);
+            Resources.Load<GameMenuOperationSelector>(OperationSelectorPath);
     }
 
     void Update()

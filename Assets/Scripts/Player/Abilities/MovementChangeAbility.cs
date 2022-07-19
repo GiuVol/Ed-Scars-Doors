@@ -51,6 +51,11 @@ public class MovementChangeAbility : GenericAbility
 
     public override void Enable(PlayerController playerController)
     {
+        if (playerController == null)
+        {
+            return;
+        }
+
         playerController.CurrentWalkSpeed = (WalkSpeed > 0) ? WalkSpeed : playerController.StandardWalkSpeed;
         playerController.CurrentRunSpeed = (RunSpeed > 0) ? RunSpeed : playerController.StandardRunSpeed;
         playerController.CurrentJumpForce = (JumpForce > 0) ? JumpForce : playerController.StandardJumpForce;
@@ -64,6 +69,11 @@ public class MovementChangeAbility : GenericAbility
 
     public override void Disable(PlayerController playerController)
     {
+        if (playerController == null)
+        {
+            return;
+        }
+        
         playerController.ResetMovementValues();
     }
 }

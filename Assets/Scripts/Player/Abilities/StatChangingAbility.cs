@@ -12,6 +12,11 @@ public class StatChangeAbility : GenericAbility
 
     public override void Enable(PlayerController playerController)
     {
+        if (playerController == null)
+        {
+            return;
+        }
+        
         float actualAttackMultiplier = (AttackMultiplier <= 0) ? 1 : AttackMultiplier;
         float actualDefenceMultiplier = (DefenceMultiplier <= 0) ? 1 : DefenceMultiplier;
 
@@ -21,6 +26,11 @@ public class StatChangeAbility : GenericAbility
 
     public override void Disable(PlayerController playerController)
     {
+        if (playerController == null)
+        {
+            return;
+        }
+        
         float actualAttackMultiplier = (AttackMultiplier <= 0) ? 1 : AttackMultiplier;
         float actualDefenceMultiplier = (DefenceMultiplier <= 0) ? 1 : DefenceMultiplier;
 

@@ -23,6 +23,11 @@ public class StatsChangingPotion : UsableItem
 
     public override void Use(PlayerController player)
     {
+        if (player == null)
+        {
+            return;
+        }
+
         player.Stats.TemporarilyChangeStats(AttackMultiplier, DefenceMultiplier, TimeToLast);
     }
 }

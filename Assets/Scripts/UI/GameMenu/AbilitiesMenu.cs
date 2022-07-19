@@ -4,9 +4,30 @@ using UnityEngine;
 
 public class AbilitiesMenu : UIListMenu, ITabContent
 {
-    private const string AbilitiesOperationSelectorPath = "UI/InventoryOperationSelector";
+    private const string OperationSelectorPath = "UI/OperationSelector";
 
+    [SerializeField]
+    private Color _equippedColor;
+
+    [SerializeField]
+    private Color _unequippedColor;
+    
     private UIOperationSelector _uiOperationSelectorPrefab;
+
+    private List<int> _equippedIndexes;
+
+    private List<int> EquippedIndexes
+    {
+        get
+        {
+            if (_equippedIndexes == null)
+            {
+                _equippedIndexes = new List<int>();
+            }
+
+            return _equippedIndexes;
+        }
+    }
 
     public bool HasControl { get; set; }
 
@@ -14,7 +35,7 @@ public class AbilitiesMenu : UIListMenu, ITabContent
     {
         base.Start();
         _uiOperationSelectorPrefab =
-            Resources.Load<InventoryOperationSelector>(AbilitiesOperationSelectorPath);
+            Resources.Load<GameMenuOperationSelector>(OperationSelectorPath);
     }
 
     void Update()
@@ -87,6 +108,7 @@ public class AbilitiesMenu : UIListMenu, ITabContent
     protected override void FillElementsMetadata()
     {
         ElementsMetadata.Clear();
+        EquippedIndexes.Clear();
 
         #region Pre-conditions check
 
@@ -109,6 +131,8 @@ public class AbilitiesMenu : UIListMenu, ITabContent
 
         PlayerController player = GameManager.Instance.Player;
 
+        int counter = 1;
+
         foreach (GenericAbility ability in player.ObtainedAbilities)
         {
             ElementMetadata newElement = 
@@ -118,6 +142,7 @@ public class AbilitiesMenu : UIListMenu, ITabContent
 
             if (player.IsEquipped(ability))
             {
+                EquippedIndexes.Add(counter);
                 equipOperation =
                     new ListElementOperation(
                         "Disequipaggia",
@@ -129,6 +154,7 @@ public class AbilitiesMenu : UIListMenu, ITabContent
                     );
             } else 
             {
+                EquippedIndexes.Remove(counter);
                 equipOperation =
                     new ListElementOperation(
                         "Equipaggia",
@@ -143,6 +169,8 @@ public class AbilitiesMenu : UIListMenu, ITabContent
             newElement.Operations.Add(equipOperation);
 
             ElementsMetadata.Add(newElement);
+
+            counter++;
         }
     }
 
@@ -158,5 +186,41 @@ public class AbilitiesMenu : UIListMenu, ITabContent
         }
     }
 
+    /// <summary>
+    /// Method that updates the displayed elements.
+    /// </summary>
+    protected override void UpdateUIElements()
+    {
+        if (NumberOfUIElements <= 0)
+        {
+            return;
+        }
+
+        int counter = FirstElementIndex;
+
+        foreach (UIListElement uiElement in UIElements)
+        {
+            if (!FillUIElement(counter, uiElement))
+            {
+                uiElement.Clear();
+                uiElement.Enabled = false;
+            }
+            else
+            {
+                uiElement.Enabled = true;
+
+                if (EquippedIndexes.Contains(counter))
+                {
+                    uiElement.Label.color = _equippedColor;
+                } else
+                {
+                    uiElement.Label.color = _unequippedColor;
+                }
+            }
+
+            counter++;
+        }
+    }
+    
     #endregion
 }

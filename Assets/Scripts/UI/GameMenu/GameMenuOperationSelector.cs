@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class InventoryOperationSelector : UIOperationSelector
+public class GameMenuOperationSelector : UIOperationSelector
 {
-    private const string UIOperationElementPath = "UI/InventoryUIOE";
+    private const string UIOperationElementPath = "UI/OperationSelectorElement";
 
     protected override UIOperationElement OperationElementPrefab
     {

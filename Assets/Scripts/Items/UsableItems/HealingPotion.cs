@@ -21,6 +21,11 @@ public class HealingPotion : UsableItem
     
     public override void Use(PlayerController player)
     {
+        if (player == null)
+        {
+            return;
+        }
+
         if (UsePercentageIncrement)
         {
             player.Health.IncreasePercentage(PercentageIncrement);
