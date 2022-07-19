@@ -22,6 +22,6 @@ public class ProjectileChangeAbility : GenericAbility
             return;
         }
         
-        playerController.ProjectileType = GameFormulas.NormalProjectileName;
+        playerController.ProjectileType = Projectile.NormalProjectileName;
     }
 }

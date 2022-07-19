@@ -189,12 +189,12 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     {
         get
         {
-            Projectile currentProjectile = Resources.Load<Projectile>(GameFormulas.ProjectileResourcesPath + ProjectileType);
+            Projectile currentProjectile = Resources.Load<Projectile>(Projectile.ProjectileResourcesPath + ProjectileType);
 
             if (currentProjectile == null)
             {
                 currentProjectile = 
-                    Resources.Load<Projectile>(GameFormulas.ProjectileResourcesPath + GameFormulas.NormalProjectileName);
+                    Resources.Load<Projectile>(Projectile.ProjectileResourcesPath + Projectile.NormalProjectileName);
             }
 
             return currentProjectile;
@@ -355,7 +355,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         CanDash = true;
         CanShoot = true;
 
-        ProjectileType = GameFormulas.NormalProjectileName;
+        ProjectileType = Projectile.NormalProjectileName;
 
         EquippedAbilities = new List<GenericAbility>(MaxNumberOfEquippableAbilities);
 

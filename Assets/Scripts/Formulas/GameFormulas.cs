@@ -2,40 +2,10 @@ using UnityEngine;
 
 public class GameFormulas
 {
-    #region ResourcesPath
-
-    public const string PlayerResourcesPath = "Player/Player";
-    public const string CameraResourcesPath = "Player/MainCamera";
-
-    public const string MainMenuResourcesPath = "UI/MainMenu";
-    public const string GameMenuResourcesPath = "UI/GameMenu";
-    public const string HUDResourcesPath = "UI/HUD";
-    public const string SceneLoadingInfoResourcesPath = "UI/SceneLoadingInfo";
-
-    public const string ProjectileResourcesPath = "Projectiles/";
-    public const string NormalProjectileName = "LightProjectile";
-    public const string DarkProjectileName = "DarkProjectile";
-    public const string SwarmProjectileName = "SwarmProjectile";
-
-    #endregion
-
-    #region Names
-
-    public const string PlayerStartPositionName = "PlayerStartPosition";
-    public const string CameraStartPositionName = "CameraStartPosition";
-
-    #endregion
-
-    #region Numerical
-
     private const float MinDamageMultiplier = .1f;
     private const float MaxDamageMultiplier = 10;
 
     private const float SecondsToDoublePowerWithCharge = 5;
-
-    #endregion
-
-    #region Formulas
 
     public static int Damage(float power, float attackerAttack, float targetDefence)
     {
@@ -86,6 +56,4 @@ public class GameFormulas
 
         return desiredScale;
     }
-
-    #endregion
 }

@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
+    public const string ProjectileResourcesPath = "Projectiles/";
+    public const string NormalProjectileName = "LightProjectile";
+    public const string DarkProjectileName = "DarkProjectile";
+    public const string SwarmProjectileName = "SwarmProjectile";
+    
     /// <summary>
     /// The min scale that a Projectile can have.
     /// </summary>
@@ -25,11 +30,11 @@ public class Projectile : MonoBehaviour
     /// <returns></returns>
     public static Projectile InstantiateProjectile(string type, float chargeTime, Vector3 position, Quaternion rotation)
     {
-        Projectile prefab = Resources.Load<Projectile>(GameFormulas.ProjectileResourcesPath + type);
+        Projectile prefab = Resources.Load<Projectile>(ProjectileResourcesPath + type);
 
         if (prefab == null)
         {
-            prefab = Resources.Load<Projectile>(GameFormulas.ProjectileResourcesPath + GameFormulas.NormalProjectileName);
+            prefab = Resources.Load<Projectile>(ProjectileResourcesPath + NormalProjectileName);
         }
 
         Projectile projectile = Instantiate(prefab, position, rotation);
