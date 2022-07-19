@@ -110,7 +110,7 @@ public class UIBar : DynamicUIComponent
 
         do
         {
-            lerpFactor += Time.fixedDeltaTime;
+            lerpFactor += Time.fixedUnscaledDeltaTime;
             lerpFactor = Mathf.Clamp01(lerpFactor);
 
             CurrentValue = (int) Mathf.Lerp(oldValue, newValue, lerpFactor);
@@ -139,6 +139,21 @@ public class UIBar : DynamicUIComponent
         _bar.rectTransform.sizeDelta = new Vector2(currentLength, height);
     }
 
+    /// <summary>
+    /// Updates the max value of the bar.
+    /// </summary>
+    /// <param name="newMaxValue">The new max value</param>
+    public void UpdateMaxValue(int newMaxValue)
+    {
+        MaxValue = Mathf.Max(newMaxValue, 1);
+        CurrentValue = Mathf.Clamp(CurrentValue, 0, MaxValue);
+
+        float currentLength = MaxLength * ((float) CurrentValue / (float) MaxValue);
+        float height = _bar.rectTransform.rect.height;
+
+        _bar.rectTransform.sizeDelta = new Vector2(currentLength, height);
+    }
+    
     /// <summary>
     /// Updates the text value of the bar.
     /// </summary>

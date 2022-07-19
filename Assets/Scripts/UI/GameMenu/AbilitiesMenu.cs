@@ -5,6 +5,7 @@ using UnityEngine;
 public class AbilitiesMenu : UIListMenu, ITabContent
 {
     private const string OperationSelectorPath = "UI/OperationSelector";
+    private const string PromptPath = "UI/GameMenuPrompt";
 
     [SerializeField]
     private Color _equippedColor;
@@ -14,6 +15,8 @@ public class AbilitiesMenu : UIListMenu, ITabContent
     
     private UIOperationSelector _uiOperationSelectorPrefab;
 
+    private UIPrompt _uiPromptPrefab;
+    
     private List<int> _equippedIndexes;
 
     private List<int> EquippedIndexes
@@ -34,8 +37,8 @@ public class AbilitiesMenu : UIListMenu, ITabContent
     private new void Start()
     {
         base.Start();
-        _uiOperationSelectorPrefab =
-            Resources.Load<GameMenuOperationSelector>(OperationSelectorPath);
+        _uiOperationSelectorPrefab = Resources.Load<GameMenuOperationSelector>(OperationSelectorPath);
+        _uiPromptPrefab = Resources.Load<UIPrompt>(PromptPath);
     }
 
     void Update()
@@ -78,8 +81,7 @@ public class AbilitiesMenu : UIListMenu, ITabContent
             yield break;
         }
 
-        UIOperationSelector uiOperationSelector =
-            Instantiate(_uiOperationSelectorPrefab, transform);
+        UIOperationSelector uiOperationSelector = Instantiate(_uiOperationSelectorPrefab, transform);
 
         if (!uiOperationSelector.PromptOperations(SelectedElement.Operations))
         {
@@ -87,9 +89,13 @@ public class AbilitiesMenu : UIListMenu, ITabContent
             yield break;
         }
 
+        UIManager.Instance.GameMenu.HasControl = false;
         HasControl = false;
 
         yield return new WaitUntil(() => uiOperationSelector.SelectedOperation != null);
+
+        UIManager.Instance.GameMenu.HasControl = true;
+        HasControl = true;
 
         ListElementOperation selectedOperation = uiOperationSelector.SelectedOperation;
 
@@ -99,8 +105,6 @@ public class AbilitiesMenu : UIListMenu, ITabContent
         }
 
         Destroy(uiOperationSelector.gameObject);
-
-        HasControl = true;
     }
     
     #region Override and Implementation
@@ -160,13 +164,50 @@ public class AbilitiesMenu : UIListMenu, ITabContent
                         "Equipaggia",
                         delegate
                         {
-                            player.EquipAbility(ability);
-                            UpdateElements();
+                            try
+                            {
+                                player.EquipAbility(ability);
+                            } 
+                            catch (UnequippableAbilityException ex)
+                            {
+                                if (_uiPromptPrefab == null)
+                                {
+                                    return;
+                                }
+
+                                UIPrompt prompt = Instantiate(_uiPromptPrefab, gameObject.transform);
+
+                                if (prompt == null)
+                                {
+                                    return;
+                                }
+
+                                UIManager.Instance.GameMenu.HasControl = false;
+                                HasControl = false;
+
+                                Task promptTask = new Task(prompt.PromptText(ex.Message, 
+                                    delegate {
+                                        UIManager.Instance.GameMenu.HasControl = true;
+                                        HasControl = true;
+                                    }, true));
+                            }
+                            finally
+                            {
+                                UpdateElements();
+                            }
                         }
                     );
             }
 
+            ListElementOperation noOperation =
+                new ListElementOperation("Esci",
+                    delegate {
+
+                    }
+                );
+            
             newElement.Operations.Add(equipOperation);
+            newElement.Operations.Add(noOperation);
 
             ElementsMetadata.Add(newElement);
 
@@ -181,8 +222,8 @@ public class AbilitiesMenu : UIListMenu, ITabContent
         if (active)
         {
             UpdateElements();
-            FirstElementIndex = 1;
-            SelectedElementIndex = 1;
+            FirstElementIndex = FirstElementIndex;
+            SelectedElementIndex = SelectedElementIndex;
         }
     }
 

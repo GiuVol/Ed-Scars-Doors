@@ -48,8 +48,8 @@ public class CollectionMenu : UIListMenu, ITabContent
         if (active)
         {
             UpdateElements();
-            FirstElementIndex = 1;
-            SelectedElementIndex = 1;
+            FirstElementIndex = FirstElementIndex;
+            SelectedElementIndex = SelectedElementIndex;
         }
     }
 

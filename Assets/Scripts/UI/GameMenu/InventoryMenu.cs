@@ -13,8 +13,7 @@ public class InventoryMenu : UIListMenu, ITabContent
     private new void Start()
     {
         base.Start();
-        _uiOperationSelectorPrefab =
-            Resources.Load<GameMenuOperationSelector>(OperationSelectorPath);
+        _uiOperationSelectorPrefab = Resources.Load<GameMenuOperationSelector>(OperationSelectorPath);
     }
 
     void Update()
@@ -57,8 +56,7 @@ public class InventoryMenu : UIListMenu, ITabContent
             yield break;
         }
 
-        UIOperationSelector uiOperationSelector = 
-            Instantiate(_uiOperationSelectorPrefab, transform);
+        UIOperationSelector uiOperationSelector = Instantiate(_uiOperationSelectorPrefab, transform);
 
         if (!uiOperationSelector.PromptOperations(SelectedElement.Operations))
         {
@@ -66,9 +64,13 @@ public class InventoryMenu : UIListMenu, ITabContent
             yield break;
         }
 
+        UIManager.Instance.GameMenu.HasControl = false;
         HasControl = false;
         
         yield return new WaitUntil(() => uiOperationSelector.SelectedOperation != null);
+
+        UIManager.Instance.GameMenu.HasControl = true;
+        HasControl = true;
 
         ListElementOperation selectedOperation = uiOperationSelector.SelectedOperation;
 
@@ -78,8 +80,6 @@ public class InventoryMenu : UIListMenu, ITabContent
         }
 
         Destroy(uiOperationSelector.gameObject);
-
-        HasControl = true;
     }
 
     #region Override and Implementation
@@ -138,8 +138,16 @@ public class InventoryMenu : UIListMenu, ITabContent
                     }
                 );
 
+            ListElementOperation noOperation =
+                new ListElementOperation("Esci",
+                    delegate {
+
+                    }
+                );
+
             newElement.Operations.Add(useOperation);
             newElement.Operations.Add(throwOperation);
+            newElement.Operations.Add(noOperation);
 
             ElementsMetadata.Add(newElement);
         }
@@ -152,8 +160,8 @@ public class InventoryMenu : UIListMenu, ITabContent
         if (active)
         {
             UpdateElements();
-            FirstElementIndex = 1;
-            SelectedElementIndex = 1;
+            FirstElementIndex = FirstElementIndex;
+            SelectedElementIndex = SelectedElementIndex;
         }
     }
 

@@ -252,9 +252,13 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
                 GenericAbility ability1 = Resources.Load<GenericAbility>("Abilities/DarkShooter");
                 GenericAbility ability2 = Resources.Load<GenericAbility>("Abilities/DoubleJumper");
+                GenericAbility ability3 = Resources.Load<GenericAbility>("Abilities/x2Attack");
+                GenericAbility ability4 = Resources.Load<GenericAbility>("Abilities/x2Defence");
 
                 _obtainedAbilities.Add(ability1);
                 _obtainedAbilities.Add(ability2);
+                _obtainedAbilities.Add(ability3);
+                _obtainedAbilities.Add(ability4);
             }
 
             return _obtainedAbilities;
@@ -505,10 +509,10 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
         if (currentProjectileAsset.IsChargeable)
         {
-            while (InputHandler.Shoot())
+            while (InputHandler.Shoot() || Time.timeScale == 0)
             {
-                yield return null;
                 chargeTime += Time.deltaTime;
+                yield return null;
             }
         }
 
@@ -544,16 +548,16 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     {
         if (EquippedAbilities.Count >= MaxNumberOfEquippableAbilities)
         {
-            Debug.Log("You have already reached the max number of equipped abilities!");
-            return;
+            throw new UnequippableAbilityException(UnequippableAbilityException
+                .UnequippableAbilityExceptionType.NumberExceeded);
         }
 
         foreach (GenericAbility equippedAbility in EquippedAbilities)
         {
             if (equippedAbility.GetType().IsEquivalentTo(newAbility.GetType()))
             {
-                Debug.Log("An ability of this type is already equipped!");
-                return;
+                throw new UnequippableAbilityException(UnequippableAbilityException
+                    .UnequippableAbilityExceptionType.DuplicateType);
             }
         }
 

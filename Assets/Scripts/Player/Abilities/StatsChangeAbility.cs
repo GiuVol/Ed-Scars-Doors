@@ -1,4 +1,4 @@
-public class StatChangeAbility : GenericAbility
+public class StatsChangeAbility : GenericAbility
 {
     /// <summary>
     /// The attack multiplier given by this ability.

@@ -40,7 +40,7 @@ public class CreateStatChangeAbility
     [MenuItem("Assets/Create/Ability/StatChangeAbility")]
     public static void CreateMyAsset()
     {
-        StatChangeAbility asset = ScriptableObject.CreateInstance<StatChangeAbility>();
+        StatsChangeAbility asset = ScriptableObject.CreateInstance<StatsChangeAbility>();
 
         AssetDatabase.CreateAsset(asset, EditorUtilities.GetSelectedPathOrFallback() + "/NewStatChangeAbility.asset");
         AssetDatabase.SaveAssets();

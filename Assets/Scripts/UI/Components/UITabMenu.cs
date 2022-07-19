@@ -272,7 +272,7 @@ public class UITabMenu : MonoBehaviour
         }
     }
 
-    void Start()
+    protected void Start()
     {
         for (int i = 0; i < NumberOfTabs; i++)
         {
