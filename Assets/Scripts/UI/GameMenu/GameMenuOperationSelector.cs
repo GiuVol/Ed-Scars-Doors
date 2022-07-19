@@ -10,8 +10,7 @@ public class GameMenuOperationSelector : UIOperationSelector
         {
             if (_operationElementPrefab == null)
             {
-                _operationElementPrefab =
-                    Resources.Load<UIOperationElement>(UIOperationElementPath);
+                _operationElementPrefab = Resources.Load<UIOperationElement>(UIOperationElementPath);
             }
 
             return _operationElementPrefab;
