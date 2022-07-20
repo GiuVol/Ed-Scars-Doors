@@ -98,14 +98,16 @@ public class UIBar : DynamicUIComponent
     /// Updates the value of the bar.
     /// </summary>
     /// <param name="newValue">The new value to assign</param>
-    public void UpdateValue(int newValue)
+    public void UpdateCurrentValue(int newValue)
     {
         CurrentValue = Mathf.Clamp(newValue, 0, MaxValue);
 
-        float currentLength = MaxLength * ((float)CurrentValue / (float)MaxValue);
+        float currentLength = MaxLength * ((float) CurrentValue / (float) MaxValue);
         float height = _bar.rectTransform.rect.height;
 
         _bar.rectTransform.sizeDelta = new Vector2(currentLength, height);
+
+        UpdateValueTextComponent();
     }
 
     /// <summary>
@@ -121,6 +123,8 @@ public class UIBar : DynamicUIComponent
         float height = _bar.rectTransform.rect.height;
 
         _bar.rectTransform.sizeDelta = new Vector2(currentLength, height);
+
+        UpdateValueTextComponent();
     }
     
     /// <summary>
