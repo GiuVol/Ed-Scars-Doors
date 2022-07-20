@@ -364,7 +364,6 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         _testAbility1 = Resources.Load<GenericAbility>("Abilities/DarkShooter");
 
         #endregion
-        MobAI.SetPlayerTarget(gameObject.GetComponent<Transform>());
     }
 
     void Update()

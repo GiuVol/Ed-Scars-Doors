@@ -1,3 +1,4 @@
+using Pathfinding;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -64,7 +65,12 @@ public class GameManager : MonoBehaviour
     /// The <c>UIManager</c> component that handles the UI of the game.
     /// </summary>
     public UIManager UI { get; private set; }
-    
+
+    /// <summary>
+    /// Property that stores the current Pathfinder.
+    /// </summary>
+    private AstarPath AstarManager { get; set; }
+
     /// <summary>
     /// Returns whether the player is in Game Menu or not.
     /// </summary>
@@ -183,6 +189,28 @@ public class GameManager : MonoBehaviour
 
         Player = playerController;
         MainCamera = cameraController.CameraComponent;
+
+        GameObject astarManagerPrefab = Resources.Load<GameObject>("AI/AstarGrid");
+
+        if (astarManagerPrefab != null)
+        {
+            GameObject pathFindingObject = Instantiate(astarManagerPrefab, Vector3.zero, Quaternion.identity);
+
+            AstarPath astarManager = pathFindingObject.GetComponent<AstarPath>();
+
+            Pathfinding.ProceduralGridMover proceduralGridMover = 
+                pathFindingObject.GetComponent<Pathfinding.ProceduralGridMover>();
+
+            if (astarManager != null)
+            {
+                AstarManager = astarManager;
+            }
+
+            if (proceduralGridMover != null)
+            {
+                proceduralGridMover.target = playerController.transform;
+            }
+        }
 
         UI.LoadHUD();
     }

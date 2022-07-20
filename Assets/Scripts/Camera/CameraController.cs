@@ -100,6 +100,15 @@ public class CameraController : MonoBehaviour
     {
         PositionOffset = _standardPositionOffset;
         OrthographicSize = StandardOrthographicSize;
+
+        #region Debug
+
+        if (Target == null)
+        {
+            Target = GameObject.FindWithTag("Player").transform;
+        }
+
+        #endregion
     }
 
     void FixedUpdate()
