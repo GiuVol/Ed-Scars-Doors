@@ -95,50 +95,38 @@ public class UIBar : DynamicUIComponent
     }
 
     /// <summary>
-    /// Lerps the new value of the bar.
-    /// </summary>
-    /// <param name="newValue">The new value to assign</param>
-    public IEnumerator LerpValue(int newValue)
-    {
-        float oldValue = CurrentValue;
-        newValue = Mathf.Clamp(newValue, 0, MaxValue);
-
-        float currentLength;
-        float height = _bar.rectTransform.rect.height;
-        
-        float lerpFactor = 0;
-
-        do
-        {
-            lerpFactor += Time.fixedDeltaTime;
-            lerpFactor = Mathf.Clamp01(lerpFactor);
-
-            CurrentValue = (int) Mathf.Lerp(oldValue, newValue, lerpFactor);
-
-            currentLength = MaxLength * ((float) CurrentValue / (float) MaxValue);
-
-            _bar.rectTransform.sizeDelta = new Vector2(currentLength, height);
-            UpdateValueTextComponent();
-
-            yield return null;
-
-        } while (lerpFactor < 1);
-    }
-
-    /// <summary>
     /// Updates the value of the bar.
     /// </summary>
     /// <param name="newValue">The new value to assign</param>
-    public void UpdateValue(int newValue)
+    public void UpdateCurrentValue(int newValue)
     {
         CurrentValue = Mathf.Clamp(newValue, 0, MaxValue);
 
-        float currentLength = MaxLength * ((float)CurrentValue / (float)MaxValue);
+        float currentLength = MaxLength * ((float) CurrentValue / (float) MaxValue);
         float height = _bar.rectTransform.rect.height;
 
         _bar.rectTransform.sizeDelta = new Vector2(currentLength, height);
+
+        UpdateValueTextComponent();
     }
 
+    /// <summary>
+    /// Updates the max value of the bar.
+    /// </summary>
+    /// <param name="newMaxValue">The new max value</param>
+    public void UpdateMaxValue(int newMaxValue)
+    {
+        MaxValue = Mathf.Max(newMaxValue, 1);
+        CurrentValue = Mathf.Clamp(CurrentValue, 0, MaxValue);
+
+        float currentLength = MaxLength * ((float) CurrentValue / (float) MaxValue);
+        float height = _bar.rectTransform.rect.height;
+
+        _bar.rectTransform.sizeDelta = new Vector2(currentLength, height);
+
+        UpdateValueTextComponent();
+    }
+    
     /// <summary>
     /// Updates the text value of the bar.
     /// </summary>

@@ -5,6 +5,13 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    private static Vector2 ReferenceResolution = new Vector2(1024, 768);
+
+    private const string MainMenuResourcesPath = "UI/MainMenu";
+    private const string GameMenuResourcesPath = "UI/GameMenu";
+    private const string HUDResourcesPath = "UI/HUD";
+    private const string SceneLoadingInfoResourcesPath = "UI/SceneLoadingInfo";
+
     /// <summary>
     /// The only admissible instance of this singleton class.
     /// </summary>
@@ -48,6 +55,22 @@ public class UIManager : MonoBehaviour
     }
 
     /// <summary>
+    /// The game menu. This field is null if the game menu is not loaded.
+    /// </summary>
+    public GameMenu GameMenu { get; private set; }
+
+    /// <summary>
+    /// This property returns whether the main menu is loaded or not.
+    /// </summary>
+    public bool GameMenuIsLoaded
+    {
+        get
+        {
+            return GameMenu != null;
+        }
+    }
+    
+    /// <summary>
     /// The HUD. This field is null if the HUD is not loaded.
     /// </summary>
     public HUD CurrentHUD { get; private set; }
@@ -62,6 +85,8 @@ public class UIManager : MonoBehaviour
             return CurrentHUD != null;
         }
     }
+
+    private bool _wantsHudLoaded;
 
     /// <summary>
     /// The UI component that shows informations about the progress of the loading of a new scene.
@@ -88,7 +113,9 @@ public class UIManager : MonoBehaviour
         CurrentCanvas = new GameObject("Canvas", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster))
             .GetComponent<Canvas>();
         CurrentCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        CurrentCanvas.additionalShaderChannels -= AdditionalCanvasShaderChannels.Tangent;
+        CanvasScaler canvasScaler = CurrentCanvas.GetComponent<CanvasScaler>();
+        canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        canvasScaler.referenceResolution = ReferenceResolution;
 
         CurrentEventSystem = new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule))
             .GetComponent<EventSystem>();
@@ -117,7 +144,7 @@ public class UIManager : MonoBehaviour
 
         ClearCanvas();
 
-        MainMenu = Instantiate(Resources.Load<MainMenu>(GameFormulas.MainMenuResourcesPath), CurrentCanvas.transform);
+        MainMenu = Instantiate(Resources.Load<MainMenu>(MainMenuResourcesPath), CurrentCanvas.transform);
 
         MainMenu.PlayDemoButton.onClick.AddListener(
             delegate {
@@ -128,6 +155,70 @@ public class UIManager : MonoBehaviour
             );
     }
 
+    /// <summary>
+    /// This method enables/disables the game menu if it is disabled/enabled.
+    /// </summary>
+    /// <returns>The current state of the game menu, if it's active or not</returns>
+    public bool SwitchGameMenu()
+    {
+        if (!_initialized)
+        {
+            return false;
+        }
+
+        if (GameMenuIsLoaded)
+        {
+            UnloadGameMenu();
+        } else
+        {
+            LoadGameMenu();
+        }
+
+        return GameMenuIsLoaded;
+    }
+
+    /// <summary>
+    /// This method loads the game menu inside the canvas, if it's not already loaded.
+    /// </summary>
+    public void LoadGameMenu()
+    {
+        if (!_initialized)
+        {
+            return;
+        }
+
+        if (GameMenuIsLoaded)
+        {
+            return;
+        }
+
+        ClearCanvas();
+
+        GameMenu = Instantiate(Resources.Load<GameMenu>(GameMenuResourcesPath), CurrentCanvas.transform);
+    }
+
+    /// <summary>
+    /// This method unloads the game menu, if it's already loaded.
+    /// </summary>
+    public void UnloadGameMenu()
+    {
+        if (!_initialized || !GameMenuIsLoaded)
+        {
+            return;
+        }
+
+        Destroy(GameMenu.gameObject);
+        GameMenu = null;
+
+        if (_wantsHudLoaded)
+        {
+            LoadHUD();
+        } else
+        {
+            UnloadHUD();
+        }
+    }
+    
     /// <summary>
     /// This method enables/disables the HUD if it is disabled/enabled.
     /// </summary>
@@ -152,12 +243,14 @@ public class UIManager : MonoBehaviour
     /// </summary>
     public void LoadHUD()
     {
-        if (!_initialized || HUDIsLoaded)
+        if (!_initialized || HUDIsLoaded || GameMenuIsLoaded)
         {
             return;
         }
 
-        CurrentHUD = Instantiate(Resources.Load<HUD>(GameFormulas.HUDResourcesPath), CurrentCanvas.transform);
+        CurrentHUD = Instantiate(Resources.Load<HUD>(HUDResourcesPath), CurrentCanvas.transform);
+
+        _wantsHudLoaded = true;
     }
 
     /// <summary>
@@ -172,6 +265,8 @@ public class UIManager : MonoBehaviour
         
         Destroy(CurrentHUD.gameObject);
         CurrentHUD = null;
+
+        _wantsHudLoaded = false;
     }
 
     /// <summary>
@@ -184,7 +279,7 @@ public class UIManager : MonoBehaviour
             return;
         }
         
-        SceneLoadingInfo = Instantiate(Resources.Load<TextMeshProUGUI>(GameFormulas.SceneLoadingInfoResourcesPath), CurrentCanvas.transform);
+        SceneLoadingInfo = Instantiate(Resources.Load<TextMeshProUGUI>(SceneLoadingInfoResourcesPath), CurrentCanvas.transform);
     }
 
     /// <summary>
@@ -217,6 +312,7 @@ public class UIManager : MonoBehaviour
         }
 
         MainMenu = null;
+        GameMenu = null;
         CurrentHUD = null;
         SceneLoadingInfo = null;
     }

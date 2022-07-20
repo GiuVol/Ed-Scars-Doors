@@ -113,6 +113,11 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     public int CurrentNumberOfJumpsAllowedInAir { get; set; }
 
     #endregion
+
+    /// <summary>
+    /// Returns whether the character can be controlled through player's inpput or not.
+    /// </summary>
+    public bool HasControl { get; set; }
     
     /// <summary>
     /// The <c>MovementController2D</c> that moves the player.
@@ -184,12 +189,12 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     {
         get
         {
-            Projectile currentProjectile = Resources.Load<Projectile>(GameFormulas.ProjectileResourcesPath + ProjectileType);
+            Projectile currentProjectile = Resources.Load<Projectile>(Projectile.ProjectileResourcesPath + ProjectileType);
 
             if (currentProjectile == null)
             {
                 currentProjectile = 
-                    Resources.Load<Projectile>(GameFormulas.ProjectileResourcesPath + GameFormulas.NormalProjectileName);
+                    Resources.Load<Projectile>(Projectile.ProjectileResourcesPath + Projectile.NormalProjectileName);
             }
 
             return currentProjectile;
@@ -200,6 +205,110 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     /// Structure that stores the abilities currently equipped by the player.
     /// </summary>
     private List<GenericAbility> EquippedAbilities { get; set; }
+
+    #region Data
+
+    private Container<UsableItem> _inventory;
+
+    public Container<UsableItem> Inventory
+    {
+        get
+        {
+            if (_inventory == null)
+            {
+                _inventory = new Container<UsableItem>();
+
+                HealingPotion testItem1 = 
+                    Resources.Load<HealingPotion>("Items/Usable Items/WeakPotion");
+                HealingPotion testItem2 = 
+                    Resources.Load<HealingPotion>("Items/Usable Items/MediumPotion");
+                HealingPotion testItem3 = 
+                    Resources.Load<HealingPotion>("Items/Usable Items/StrongPotion");
+                HealingPotion testItem4 = 
+                    Resources.Load<HealingPotion>("Items/Usable Items/HalfLifePotion");
+                HealingPotion testItem5 = 
+                    Resources.Load<HealingPotion>("Items/Usable Items/FullLifePotion");
+
+                _inventory.AddItem(testItem1, 3);
+                _inventory.AddItem(testItem2, 2);
+                _inventory.AddItem(testItem3, 7);
+                _inventory.AddItem(testItem4, 5);
+                _inventory.AddItem(testItem5, 1);
+            }
+
+            return _inventory;
+        }
+    }
+
+    private List<GenericAbility> _obtainedAbilities;
+
+    public List<GenericAbility> ObtainedAbilities
+    {
+        get
+        {
+            if (_obtainedAbilities == null)
+            {
+                _obtainedAbilities = new List<GenericAbility>();
+
+                GenericAbility ability1 = Resources.Load<GenericAbility>("Abilities/DarkShooter");
+                GenericAbility ability2 = Resources.Load<GenericAbility>("Abilities/DoubleJumper");
+                GenericAbility ability3 = Resources.Load<GenericAbility>("Abilities/x2Attack");
+                GenericAbility ability4 = Resources.Load<GenericAbility>("Abilities/x2Defence");
+
+                _obtainedAbilities.Add(ability1);
+                _obtainedAbilities.Add(ability2);
+                _obtainedAbilities.Add(ability3);
+                _obtainedAbilities.Add(ability4);
+            }
+
+            return _obtainedAbilities;
+        }
+
+        set
+        {
+            if (_obtainedAbilities == null)
+            {
+                _obtainedAbilities = new List<GenericAbility>();
+            }
+
+            _obtainedAbilities.Clear();
+
+            if (value == null)
+            {
+                return;
+            }
+
+            foreach (GenericAbility ability in value)
+            {
+                _obtainedAbilities.Add(ability);
+            }
+        }
+    }
+
+    public Container<CollectableItem> _collection;
+
+    public Container<CollectableItem> Collection
+    {
+        get
+        {
+            if (_collection == null)
+            {
+                _collection = new Container<CollectableItem>();
+
+                CollectableItem collectable1 = 
+                    Resources.Load<CollectableItem>("Items/Collectable Items/OldScarf");
+                CollectableItem collectable2 =
+                    Resources.Load<CollectableItem>("Items/Collectable Items/Gramophone");
+
+                _collection.AddItem(collectable1, 1);
+                _collection.AddItem(collectable2, 1);
+            }
+
+            return _collection;
+        }
+    }
+
+    #endregion
 
     #region Test
 
@@ -214,26 +323,39 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             gameObject.AddComponent<MovementController2D>();
         }
 
+        if (gameObject.GetComponent<HealthComponent>() == null)
+        {
+            gameObject.AddComponent<HealthComponent>();
+        }
+
+        if (gameObject.GetComponent<StatsComponent>() == null)
+        {
+            gameObject.AddComponent<StatsComponent>();
+        }
+
         if (gameObject.GetComponent<StatusComponent>() == null)
         {
             gameObject.AddComponent<StatusComponent>();
         }
 
         ResetMovementValues();
+
+        HasControl = true;
         
         MovementController = gameObject.GetComponent<MovementController2D>();
 
-        Health = new HealthComponent(100, Die);
-
-        Stats = new StatsComponent(100, 50, 500, 100, 50, 500);
-
+        Health = gameObject.GetComponent<HealthComponent>();
+        Stats = gameObject.GetComponent<StatsComponent>();
         Status = gameObject.GetComponent<StatusComponent>();
+
+        Health.Setup(100, Die);
+        Stats.Setup(100, 50, 500, 100, 50, 500);
         Status.Setup(100, 5, 5, 0, 1, 20, 0);
 
         CanDash = true;
         CanShoot = true;
 
-        ProjectileType = GameFormulas.NormalProjectileName;
+        ProjectileType = Projectile.NormalProjectileName;
 
         EquippedAbilities = new List<GenericAbility>(MaxNumberOfEquippableAbilities);
 
@@ -247,43 +369,50 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
     void Update()
     {
-        if (InputHandler.Jump("Down"))
+        if (HasControl)
         {
-            Jump();
-        }
-
-        if (InputHandler.Dash("Down") && CanDash)
-        {
-            StartCoroutine(Dash());
-        }
-
-        if (InputHandler.Shoot("Down") && CanShoot)
-        {
-            StartCoroutine(Shoot());
-        }
-
-        #region Test
-
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            if (!IsEquipped(_testAbility1))
+            if (InputHandler.Jump("Down"))
             {
-                EquipAbility(_testAbility1);
-            } else
-            {
-                UnequipAbility(_testAbility1);
+                Jump();
             }
-        }
 
-        #endregion
+            if (InputHandler.Dash("Down") && CanDash)
+            {
+                StartCoroutine(Dash());
+            }
+
+            if (InputHandler.Shoot("Down") && CanShoot)
+            {
+                StartCoroutine(Shoot());
+            }
+
+            #region Test
+
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                if (!IsEquipped(_testAbility1))
+                {
+                    EquipAbility(_testAbility1);
+                }
+                else
+                {
+                    UnequipAbility(_testAbility1);
+                }
+            }
+
+            #endregion
+        }
     }
 
     void FixedUpdate()
     {
-        float horizontalInput = InputHandler.HorizontalInput;
-        float movementSpeed = Input.GetKey(KeyCode.B) ? CurrentRunSpeed : CurrentWalkSpeed;
+        if (HasControl)
+        {
+            float horizontalInput = InputHandler.HorizontalInput;
+            float movementSpeed = Input.GetKey(KeyCode.B) ? CurrentRunSpeed : CurrentWalkSpeed;
 
-        MovementController.HandleMovementWithSpeed(horizontalInput, movementSpeed);
+            MovementController.HandleMovementWithSpeed(horizontalInput, movementSpeed);
+        }
 
         MovementController.GravityScale = CurrentGravityScale;
 
@@ -381,10 +510,10 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
         if (currentProjectileAsset.IsChargeable)
         {
-            while (InputHandler.Shoot())
+            while (InputHandler.Shoot() || Time.timeScale == 0)
             {
-                yield return null;
                 chargeTime += Time.deltaTime;
+                yield return null;
             }
         }
 
@@ -420,16 +549,16 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     {
         if (EquippedAbilities.Count >= MaxNumberOfEquippableAbilities)
         {
-            Debug.Log("You have already reached the max number of equipped abilities!");
-            return;
+            throw new UnequippableAbilityException(UnequippableAbilityException
+                .UnequippableAbilityExceptionType.NumberExceeded);
         }
 
         foreach (GenericAbility equippedAbility in EquippedAbilities)
         {
             if (equippedAbility.GetType().IsEquivalentTo(newAbility.GetType()))
             {
-                Debug.Log("An ability of this type is already equipped!");
-                return;
+                throw new UnequippableAbilityException(UnequippableAbilityException
+                    .UnequippableAbilityExceptionType.DuplicateType);
             }
         }
 

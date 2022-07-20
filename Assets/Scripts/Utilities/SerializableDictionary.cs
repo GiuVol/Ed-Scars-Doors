@@ -87,17 +87,22 @@ public class SerializableDictionary<K, V>
 
     /// <summary>
     /// Procedure <c>ChangeValue</c>
-    /// Procedure that changes an element's value'
+    /// Procedure that changes the value of an entry, if the given key is in the dictionary.
     /// </summary>
     /// <param name="key"> the element's key </param>
-    /// <param name="value"> the new element's value </param>
-    public void ChangeValue(K key, V value)
+    /// <param name="newValue"> the new element's value </param>
+    public void ChangeValue(K key, V newValue)
     {
         if (KeyExists(key))
         {
-            Remove(key);
-            KeyValueEntry<K, V> newEntry = new KeyValueEntry<K, V>(key, value);
-            Dict.Add(newEntry);
+            foreach (KeyValueEntry<K, V> entry in Dict)
+            {
+                if (KeysAreEquals(entry.Key, key))
+                {
+                    entry.Value = newValue;
+                    break;
+                }
+            }
         }   
     }
 

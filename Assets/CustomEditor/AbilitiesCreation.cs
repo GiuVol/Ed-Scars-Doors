@@ -1,28 +1,53 @@
 #if UNITY_EDITOR
 
-using System.IO;
+using UnityEngine;
 using UnityEditor;
 
-public class EditorUtilities
+public class CreateMovementChangeAbility
 {
-    /// <summary>
-    /// Retrieves selected folder on Project view.
-    /// </summary>
-    /// <returns></returns>
-    public static string GetSelectedPathOrFallback()
+    [MenuItem("Assets/Create/Ability/MovementChangeAbility")]
+    public static void CreateMyAsset()
     {
-        string path = "Assets";
+        MovementChangeAbility asset = ScriptableObject.CreateInstance<MovementChangeAbility>();
 
-        foreach (UnityEngine.Object obj in Selection.GetFiltered(typeof(UnityEngine.Object), SelectionMode.Assets))
-        {
-            path = AssetDatabase.GetAssetPath(obj);
-            if (!string.IsNullOrEmpty(path) && File.Exists(path))
-            {
-                path = Path.GetDirectoryName(path);
-                break;
-            }
-        }
-        return path;
+        AssetDatabase.CreateAsset(asset, EditorUtilities.GetSelectedPathOrFallback() + "/NewMovementChangeAbility.asset");
+        AssetDatabase.SaveAssets();
+
+        EditorUtility.FocusProjectWindow();
+
+        Selection.activeObject = asset;
+    }
+}
+
+public class CreateProjectileChangeAbility
+{
+    [MenuItem("Assets/Create/Ability/ProjectileChangeAbility")]
+    public static void CreateMyAsset()
+    {
+        ProjectileChangeAbility asset = ScriptableObject.CreateInstance<ProjectileChangeAbility>();
+
+        AssetDatabase.CreateAsset(asset, EditorUtilities.GetSelectedPathOrFallback() + "/NewProjectileChangeAbility.asset");
+        AssetDatabase.SaveAssets();
+
+        EditorUtility.FocusProjectWindow();
+
+        Selection.activeObject = asset;
+    }
+}
+
+public class CreateStatChangeAbility
+{
+    [MenuItem("Assets/Create/Ability/StatChangeAbility")]
+    public static void CreateMyAsset()
+    {
+        StatsChangeAbility asset = ScriptableObject.CreateInstance<StatsChangeAbility>();
+
+        AssetDatabase.CreateAsset(asset, EditorUtilities.GetSelectedPathOrFallback() + "/NewStatChangeAbility.asset");
+        AssetDatabase.SaveAssets();
+
+        EditorUtility.FocusProjectWindow();
+
+        Selection.activeObject = asset;
     }
 }
 
