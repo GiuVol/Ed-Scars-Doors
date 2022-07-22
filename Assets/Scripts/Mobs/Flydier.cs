@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Pathfinding;
 
 public class Flydier : GenericMob
 {
@@ -25,9 +26,81 @@ public class Flydier : GenericMob
 
     }
 
-    private void Update()
+    protected new void Start()
     {
+        base.Start();
+    }
 
+    private IEnumerator HandleMobLife()
+    {
+        while (isActiveAndEnabled)
+        {
+            PlayerController player = _mobAI.FindPlayerInRadius(transform.position, 50);
+
+            if (player != null)
+            {
+                
+            } else
+            {
+                yield return null;
+                continue;
+            }
+
+            Vector2 targetPosition = new Vector2(transform.position.x, player.transform.position.y);
+
+            List<Vector3> waypoints = new List<Vector3>();
+            yield return _mobAI.GetPath(transform.position, targetPosition, waypoints);
+
+            if (waypoints != null)
+            {
+                for (int i = 0; i < waypoints.Count - 1; i++)
+                {
+                    Vector3 currentPoint = waypoints[i];
+                    Vector3 nextPoint = waypoints[i + 1];
+
+                    float lerpFactor = 0;
+
+                    while (lerpFactor < 1)
+                    {
+                        Vector3 newPosition = Vector3.Lerp(currentPoint, nextPoint, lerpFactor);
+
+                        _attachedRigidbody.MovePosition(newPosition);
+
+                        lerpFactor = Mathf.Clamp01(lerpFactor + Time.fixedDeltaTime * _speed);
+                        yield return null;
+                    }
+
+                    yield return null;
+                }
+            }
+
+            yield return new WaitForSeconds(2);
+        }
+    }
+
+    PlayerController player;
+
+    private void FixedUpdate()
+    {
+        if (player == null)
+        {
+            player = _mobAI.FindPlayerInRadius(transform.position, _rangeToCheck);
+            _mobAI.Target = null;
+            return;
+        }
+
+        _mobAI.Target = player.transform;
+
+        float distance = Vector2.Distance(transform.position, _mobAI.Target.position);
+
+        if (distance > _attackRange)
+        {
+            _attachedRigidbody.AddForce(_mobAI.DesiredDirection * _speed * _attachedRigidbody.mass);
+        }
+        else if(distance <= _attackRange)
+        {
+
+        }
     }
 
     #region OldCode

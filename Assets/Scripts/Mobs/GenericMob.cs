@@ -129,17 +129,11 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     protected float _attackRange;
     
     /// <summary>
-    /// 
-    /// </summary>
-    [SerializeField]
-    public Transform _attackPoint;
-
-    /// <summary>
     /// Attribute <c>Speed</c>
     /// Represents the speed at which the mob moves.
     /// </summary>
     [SerializeField]
-    private float _speed;
+    protected float _speed;
 
     /// <summary>
     /// Stores whether the mob can fly or not.
@@ -159,9 +153,13 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
 
     /// <summary>
     /// The <c>_mobAI</c> that stores values and method related to the Artificial Intelligence of the mob.
-    /// to pathfinding
     /// </summary>
     protected MobAI _mobAI;
+
+    /// <summary>
+    /// The rigidbody attached to the character.
+    /// </summary>
+    protected Rigidbody2D _attachedRigidbody;
     
     protected void Start()
     {
@@ -196,11 +194,26 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
             gameObject.AddComponent<MobAI>();
         }
 
+        if (gameObject.GetComponent<Rigidbody2D>() == null)
+        {
+            gameObject.AddComponent<Rigidbody2D>();
+        }
+        
         Health = gameObject.GetComponent<HealthComponent>();
         Stats = gameObject.GetComponent<StatsComponent>();
         Status = gameObject.GetComponent<StatusComponent>();
 
         _mobAI = gameObject.GetComponent<MobAI>();
+
+        _attachedRigidbody = gameObject.GetComponent<Rigidbody2D>();
+
+        _attachedRigidbody.drag = 3;
+        _attachedRigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
+
+        if (_canFly)
+        {
+            _attachedRigidbody.gravityScale = 0;
+        }
 
         SetupHealth();
         SetupStats();

@@ -5,17 +5,60 @@ using Pathfinding;
 
 public class MobAI : MonoBehaviour
 {
-    public Transform target;
+    private Seeker _seeker;
 
-    public float speed = 50f;
-    public float nextWaypointDistance = 3f;
+    public Seeker AttachedSeeker
+    {
+        get
+        {
+            return _seeker;
+        }
+    }
+    
+    private Transform _target;
 
-    public Seeker _seeker;
-    public Rigidbody2D _attachedRigidbody;
+    public Transform Target
+    {
+        get
+        {
+            return _target;
+        }
 
-    Path currentPath;
-    int currentWaypoint = 0;
-    bool reachedEndOfPath;
+        set
+        {
+            if (_target == value)
+            {
+                return;
+            }
+
+            CancelInvoke();
+
+            if (value == null)
+            {
+                return;
+            }
+
+            _target = value;
+            InvokeRepeating("UpdatePath", 0, .5f);
+        }
+    }
+
+    private Vector2 _desiredDirection;
+
+    public Vector2 DesiredDirection
+    {
+        get
+        {
+            return _desiredDirection;
+        }
+
+        private set
+        {
+            _desiredDirection = value;
+        }
+    }
+
+    private SimpleSmoothModifier _smoothModifier;
 
     private void OnEnable()
     {
@@ -24,81 +67,141 @@ public class MobAI : MonoBehaviour
             gameObject.AddComponent<Seeker>();
         }
 
-        if (gameObject.GetComponent<Rigidbody2D>() == null)
+        if (gameObject.GetComponent<SimpleSmoothModifier>() == null)
         {
-            gameObject.AddComponent<Rigidbody2D>();
+            gameObject.AddComponent<SimpleSmoothModifier>();
         }
 
         _seeker = gameObject.GetComponent<Seeker>();
-        _attachedRigidbody = gameObject.GetComponent<Rigidbody2D>();
-
-        _attachedRigidbody.drag = 3;
-        _attachedRigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
-
-        MobAI ai = GetComponent<MobAI>();
-
-        if (ai != null)
-        {
-            if (ai.target == null)
-            {
-                ai.target = GameObject.FindWithTag("Player").transform;
-            }
-        }
-
-        InvokeRepeating("UpdatePath", 0, .5f);
+        _smoothModifier = gameObject.GetComponent<SimpleSmoothModifier>();
     }
 
+    #region Current Path Calculation
+
+    #region fields for path calculation
+
+    private Path _currentPath;
+    private int _currentWaypoint = 0;
+    private float _nextWaypointDistance = 3f;
+
+    #endregion
+    
     void UpdatePath()
     {
-        _seeker.StartPath(_attachedRigidbody.position, target.position, OnPathComplete);
+        if (Target == null)
+        {
+            _currentPath = null;
+            return;
+        }
+
+        _seeker.StartPath(transform.position, Target.position, OnPathComplete);
     }
 
     void OnPathComplete(Path p)
     {
         if (!p.error)
         {
-            currentPath = p;
-            currentWaypoint = 0;
+            _currentPath = p;
+            _currentWaypoint = 0;
+        } else
+        {
+            _currentPath = null;
         }
     }
 
     private void FixedUpdate()
     {
-        if (currentPath == null)
+        if (Target == null || _currentPath == null)
         {
+            _desiredDirection = Vector3.zero;
             return;
         }
 
-        if (currentWaypoint >= currentPath.vectorPath.Count)
+        _currentWaypoint = Mathf.Max(_currentWaypoint, 0);
+
+        if (_currentWaypoint >= _currentPath.vectorPath.Count)
         {
-            reachedEndOfPath = true;
+            _desiredDirection = Vector3.zero;
             return;
-        } else
-        {
-            reachedEndOfPath = false;
         }
 
-        Vector2 direction = 
-            ((Vector2)currentPath.vectorPath[currentWaypoint] - _attachedRigidbody.position).normalized;
-        Vector2 force = direction * speed * Time.deltaTime;
+        _desiredDirection = (_currentPath.vectorPath[_currentWaypoint] - transform.position).normalized;
 
-        _attachedRigidbody.AddForce(direction * speed);
+        float distance = Vector2.Distance(transform.position, _currentPath.vectorPath[_currentWaypoint]);
 
-        float distance = 
-            Vector2.Distance(_attachedRigidbody.position, currentPath.vectorPath[currentWaypoint]);
-
-        if (distance <= nextWaypointDistance)
+        if (distance < _nextWaypointDistance)
         {
-            currentWaypoint++;
+            _currentWaypoint++;
+        }
+    }
+
+    #endregion
+
+    public IEnumerator GetPath(Vector2 startPosition, Vector2 endPosition, List<Vector3> waypoints)
+    {
+        if (waypoints == null)
+        {
+            yield break;
         }
 
-        if (_attachedRigidbody.velocity.x >= .01f)
+        waypoints.Clear();
+
+        bool operationCompleted = false;
+
+        _seeker.StartPath(startPosition,
+                          endPosition,
+                          (Path p) =>
+                          {
+                              operationCompleted = true;
+
+                              if (!p.error)
+                              {
+                                  foreach (Vector3 waypoint in p.vectorPath)
+                                  {
+                                      waypoints.Add(waypoint);
+                                  }
+                              }
+                          }
+                          );
+
+        yield return new WaitUntil(() => operationCompleted);
+    }
+
+    public bool IsPositionReachable(Vector2 startPosition, Vector2 endPosition)
+    {
+        GraphNode mobNode = AstarPath.active.GetNearest(startPosition).node;
+        GraphNode targetNode = AstarPath.active.GetNearest(endPosition).node;
+
+        return targetNode.Walkable && PathUtilities.IsPathPossible(mobNode, targetNode);
+    }
+
+    public PlayerController FindPlayerInRadius(Vector2 center, float radiusToCheck)
+    {
+        Collider2D[] collidersWithinRadius = Physics2D.OverlapCircleAll(center, radiusToCheck);
+
+        PlayerController player = null;
+
+        foreach (Collider2D collider in collidersWithinRadius)
         {
-            transform.rotation = Quaternion.Euler(0, 0, 0);
-        } else if (_attachedRigidbody.velocity.x <= -.01f)
-        {
-            transform.rotation = Quaternion.Euler(0, -180, 0);
+            player = collider.gameObject.GetComponent<PlayerController>();
+
+            if (player == null)
+            {
+                player = collider.gameObject.GetComponentInParent<PlayerController>();
+            }
+
+            if (player == null)
+            {
+                player = collider.gameObject.GetComponentInChildren<PlayerController>();
+            }
+
+            if (player != null)
+            {
+                break;
+            }
         }
+
+        return player;
     }
 
     #region ToKeep
