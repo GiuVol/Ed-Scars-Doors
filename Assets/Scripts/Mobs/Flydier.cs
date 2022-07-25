@@ -6,24 +6,15 @@ using Pathfinding;
 
 public class Flydier : GenericMob
 {
-    protected override void SetupMob()
-    {
-
-    }
-
-    public override void SetupAI()
-    {
-
-    }
-
-    public override bool Attack()
-    {
-        return false;
-    }
-
+    /// <summary>
+    /// Specifies if the flydier should strictly follow the patrol points.
+    /// </summary>
+    [SerializeField]
+    private bool _stayOnPattern;
+    
     public override void Die()
     {
-
+        Destroy(gameObject);
     }
 
     protected new void Start()
@@ -31,166 +22,137 @@ public class Flydier : GenericMob
         base.Start();
     }
 
-    private IEnumerator HandleMobLife()
+    private void FixedUpdate()
     {
-        while (isActiveAndEnabled)
+        if (_isAttacking)
         {
-            PlayerController player = _mobAI.FindPlayerInRadius(transform.position, 50);
+            return;
+        }
+        
+        PlayerController player = _mobAI.FindPlayerInRadius(transform.position, _rangeToCheck);
+        
+        if (_stayOnPattern)
+        {
+            Patrol();
+            
+            Vector3 lookDirection;
+
+            if (player == null)
+            {
+                lookDirection = (CurrentPatrolPoint.position - transform.position).normalized;
+            } else
+            {
+                lookDirection = (player.transform.position - transform.position).normalized;
+            }
+
+            if (lookDirection.x > 0)
+            {
+                transform.rotation = Quaternion.Euler(0, 0, 0);
+            }
+            else if (lookDirection.x < 0)
+            {
+                transform.rotation = Quaternion.Euler(0, -180, 0);
+            }
 
             if (player != null)
             {
-                
-            } else
-            {
-                yield return null;
-                continue;
-            }
+                float heightDistance = Mathf.Abs(transform.position.y - player.transform.position.y);
 
-            Vector2 targetPosition = new Vector2(transform.position.x, player.transform.position.y);
-
-            List<Vector3> waypoints = new List<Vector3>();
-            yield return _mobAI.GetPath(transform.position, targetPosition, waypoints);
-
-            if (waypoints != null)
-            {
-                for (int i = 0; i < waypoints.Count - 1; i++)
+                if (heightDistance < 3)
                 {
-                    Vector3 currentPoint = waypoints[i];
-                    Vector3 nextPoint = waypoints[i + 1];
-
-                    float lerpFactor = 0;
-
-                    while (lerpFactor < 1)
-                    {
-                        Vector3 newPosition = Vector3.Lerp(currentPoint, nextPoint, lerpFactor);
-
-                        _attachedRigidbody.MovePosition(newPosition);
-
-                        lerpFactor = Mathf.Clamp01(lerpFactor + Time.fixedDeltaTime * _speed);
-                        yield return null;
-                    }
-
-                    yield return null;
+                    StartCoroutine(HandleAttack(player));
                 }
             }
 
-            yield return new WaitForSeconds(2);
-        }
-    }
-
-    PlayerController player;
-
-    private void FixedUpdate()
-    {
-        if (player == null)
-        {
-            player = _mobAI.FindPlayerInRadius(transform.position, _rangeToCheck);
-            _mobAI.Target = null;
             return;
         }
 
-        _mobAI.Target = player.transform;
-
-        float distance = Vector2.Distance(transform.position, _mobAI.Target.position);
-
-        if (distance > _attackRange)
+        if (player == null)
         {
-            _attachedRigidbody.AddForce(_mobAI.DesiredDirection * _speed * _attachedRigidbody.mass);
-        }
-        else if(distance <= _attackRange)
+            Patrol();
+            _mobAI.Target = null;
+        } else
         {
+            float distance = Vector3.Distance(transform.position, player.transform.position);
 
-        }
-    }
-
-    #region OldCode
-
-    /*
-
-    /// <summary>
-    /// Attribute <c>_father</c>
-    /// if flydier is spawnest by a spawnest, this attribute stores the spawnest that he generate flydier
-    /// </summary>
-    private Spawnest _father;
-
-    public override bool Attack()
-    {
-        if (_mobAI.IsHookedPlayer) // check if flydier hookeds the player to check if can attack
+            if (distance > _attackRange)
             {
-                float distance = Vector2.Distance(_mobAI.GetMobTransform().position, MobAI.GetPlayerTarget().position);
-                if (distance <= _attackRange)
+                ChasePlayer(player.transform);
+            } else
+            {
+                if (_canAttack)
                 {
-                //posso iniziare con l'attacco
-
-                //play attck animation
-                //shot of the enemy
-
-                //detectk enemy in range to point attck
-                Instantiate(Resources.Load<Projectile>("Projectiles/FireballPrefab"),
-                _attackPoint.position, _attackPoint.rotation).Power *= Stats.Attack.CurrentValue;
-
-                return true;
-            }
-            else
-                {
-                    // the palyer is not in attack range
-                    return false;
+                    StartCoroutine(HandleAttack(player));
                 }
             }
-        else
-        {
-            // the player has not been hooked
-            return false;
         }
-    }
-
-    /// <summary>
-    /// Method <c>SetFather</c>
-    /// this methos is called when a spawnest spawn flydier and set the father
-    /// </summary>
-    /// <param name="father"></param>
-    internal void SetFather(Spawnest father)
-    {
-        _father = father;
-    }
-
-    public override void SetupMobAI()
-    {
-        _attackRange = 2.5f;
-        _attackInterval = 5f;
     }
     
-    protected override void SetupMob()
+    private void Patrol()
     {
-        _attackRange = 2.5f;
-        _attackInterval = 5f;
-    }
-
-    protected override void AttackTime(Func<bool> Attack)
-    {
-        if (_timeLeftToAttack < 0f)
+        if (FirstPatrolPoint == null)
         {
-            if (Attack())
-            {
-                _timeLeftToAttack = _attackInterval;
-            }
+            return;
         }
-        else
+
+        Vector3 direction = (CurrentPatrolPoint.position - transform.position).normalized;
+        float distance = Vector3.Distance(transform.position, CurrentPatrolPoint.position);
+
+        if (distance > 3)
         {
-            _timeLeftToAttack -= Time.deltaTime;
+            _attachedRigidbody.AddForce(direction * _speed * Time.deltaTime);
+        } else
+        {
+            IncreasePatrolPoint();
         }
     }
 
-    public override void Die()
+    private void ChasePlayer(Transform playerTransform)
     {
-        if (_father != null) // check if flydier was created by a spawnest
+        _mobAI.Target = playerTransform;
+
+        Vector3 direction = (playerTransform.position - transform.position).normalized;
+
+        if (direction.x > 0)
         {
-            _father.DecrementCountFlydier();
+            transform.rotation = Quaternion.Euler(0, 0, 0);
         }
-        Destroy(gameObject);
+        else if (direction.x < 0)
+        {
+            transform.rotation = Quaternion.Euler(0, -180, 0);
+        }
+        
+        _attachedRigidbody.AddForce(_mobAI.DesiredDirection * _speed * Time.deltaTime);
     }
 
-    */
+    protected override IEnumerator Attack(PlayerController target)
+    {
+        Transform playerTransform = target.transform;
 
-    #endregion
+        Vector3 direction = 
+            ((playerTransform.position + playerTransform.up * 2) - transform.position).normalized;
+
+        if (direction.x > 0)
+        {
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+        else if (direction.x < 0)
+        {
+            transform.rotation = Quaternion.Euler(0, -180, 0);
+        }
+
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        Quaternion desiredRotation = Quaternion.AngleAxis(angle, Vector3.forward);
+
+        Vector3 spawnPoint = transform.position + direction * 4;
+
+        Projectile resource =
+            Resources.Load<Projectile>(Projectile.ProjectileResourcesPath + Projectile.NormalProjectileName);
+
+        Projectile projectile = Instantiate(resource, spawnPoint, desiredRotation);
+
+        projectile.AttackerAttack = Stats.Attack.CurrentValue;
+
+        yield break;
+    }
 }

@@ -1,4 +1,5 @@
-using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStatusable
@@ -140,9 +141,134 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// </summary>
     [SerializeField]
     private bool _canFly;
-    
+
     #endregion
 
+    #region Patrolling
+
+    [Header("Patrolling")]
+    /// <summary>
+    /// The points that the mob could cover when it has not found the player.
+    /// </summary>
+    [SerializeField]
+    private List<Transform> _patrolPoints;
+    /// <summary>
+    /// Specifies the way in which patrol points will be covered.
+    /// </summary>
+    [SerializeField]
+    private bool _circular;
+
+    /// <summary>
+    /// Specifies the order in which the patrol points list is being checked.
+    /// </summary>
+    private bool _descending;
+    /// <summary>
+    /// Stores the current target patrol point.
+    /// </summary>
+    private int _currentPatrolPointIndex;
+    
+    /// <summary>
+    /// Returns the first patrol point in the list, or null, if it doesn't exist.
+    /// </summary>
+    protected Transform FirstPatrolPoint
+    {
+        get
+        {
+            if (_patrolPoints == null)
+            {
+                return null;
+            }
+
+            if (_patrolPoints.Count == 0)
+            {
+                return null;
+            }
+
+            return _patrolPoints[0];
+        }
+    }
+
+    /// <summary>
+    /// Returns the current patrol point.
+    /// </summary>
+    protected Transform CurrentPatrolPoint
+    {
+        get
+        {
+            if (_patrolPoints == null)
+            {
+                return null;
+            }
+
+            if (_patrolPoints.Count == 0)
+            {
+                return null;
+            }
+            
+            int index = Mathf.Clamp(_currentPatrolPointIndex, 0, _patrolPoints.Count - 1);
+
+            return _patrolPoints[index];
+        }
+    }
+
+    /// <summary>
+    /// Method that increases the current patrol point index in a controlled manner.
+    /// </summary>
+    protected void IncreasePatrolPoint()
+    {
+        if (_patrolPoints == null)
+        {
+            return;
+        }
+
+        if (_patrolPoints.Count == 0)
+        {
+            return;
+        }
+        
+        if (_descending)
+        {
+            _currentPatrolPointIndex--;
+        }
+        else
+        {
+            _currentPatrolPointIndex++;
+        }
+
+        if (_currentPatrolPointIndex >= _patrolPoints.Count)
+        {
+            if (_circular)
+            {
+                _currentPatrolPointIndex = 0;
+            }
+            else
+            {
+                _descending = true;
+                _currentPatrolPointIndex = Mathf.Max(_patrolPoints.Count - 2, 0);
+            }
+        }
+
+        if (_currentPatrolPointIndex < 0)
+        {
+            if (_circular)
+            {
+
+            }
+            else
+            {
+                _descending = false;
+                _currentPatrolPointIndex = Mathf.Min(_patrolPoints.Count - 1, 1);
+            }
+        }
+
+        _currentPatrolPointIndex = Mathf.Clamp(_currentPatrolPointIndex, 0, _patrolPoints.Count - 1);
+    }
+
+    #endregion
+
+    /// <summary>
+    /// Returns the name of the mob.
+    /// </summary>
     public virtual string Name
     {
         get
@@ -160,6 +286,10 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// The rigidbody attached to the character.
     /// </summary>
     protected Rigidbody2D _attachedRigidbody;
+
+    protected bool _isAttacking;
+
+    protected bool _canAttack;
     
     protected void Start()
     {
@@ -215,11 +345,12 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
             _attachedRigidbody.gravityScale = 0;
         }
 
+        _isAttacking = false;
+        _canAttack = true;
+
         SetupHealth();
         SetupStats();
         SetupStatus();
-        SetupMob();
-        SetupAI();
     }
 
     /// <summary>
@@ -260,29 +391,36 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
         }
     }
 
-    /// <summary>
-    /// Procedure <c>SetupMob</c>
-    /// It is used to set the another values
-    /// To customize the components according
-    /// to the mob being implemented.
-    /// </summary>
-    abstract protected void SetupMob();
-    
-    /// <summary>
-    /// Procedure <c>SetupMobAI</c>
-    /// It is used to set the _mobAI's values
-    /// It is used to customize the components according
-    /// to the mob being implemented.
-    /// </summary>
-    public abstract void SetupAI();
-
     #endregion
 
     /// <summary>
-    /// The procedure that handles the attack of the mob.
+    /// The IEnumerator that handles the attack of the mob.
     /// </summary>
-    /// <returns></returns>
-    public abstract bool Attack();
+    /// <param name="target">the player to attack</param>
+    protected virtual IEnumerator HandleAttack(PlayerController target)
+    {
+        if (!_canAttack)
+        {
+            yield break;
+        }
+
+        _isAttacking = true;
+        _canAttack = false;
+
+        yield return StartCoroutine(Attack(target));
+
+        _isAttacking = false;
+
+        yield return new WaitForSeconds(_attackInterval);
+
+        _canAttack = true;
+    }
+
+    /// <summary>
+    /// The IEnumerator that specifies how the mob attacks.
+    /// </summary>
+    /// <param name="target">the player to attack</param>
+    protected abstract IEnumerator Attack(PlayerController target);
 
     /// <summary>
     /// It's used to destroy the mob and perform other additional actions when he dies.

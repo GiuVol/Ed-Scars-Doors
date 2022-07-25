@@ -31,6 +31,7 @@ public class MobAI : MonoBehaviour
                 return;
             }
 
+            _target = value;
             CancelInvoke();
 
             if (value == null)
@@ -38,7 +39,6 @@ public class MobAI : MonoBehaviour
                 return;
             }
 
-            _target = value;
             InvokeRepeating("UpdatePath", 0, .5f);
         }
     }
@@ -51,16 +51,11 @@ public class MobAI : MonoBehaviour
         {
             return _desiredDirection;
         }
-
-        private set
-        {
-            _desiredDirection = value;
-        }
     }
 
     private SimpleSmoothModifier _smoothModifier;
 
-    private void OnEnable()
+    private void Start()
     {
         if (gameObject.GetComponent<Seeker>() == null)
         {
@@ -169,10 +164,10 @@ public class MobAI : MonoBehaviour
 
     public bool IsPositionReachable(Vector2 startPosition, Vector2 endPosition)
     {
-        GraphNode mobNode = AstarPath.active.GetNearest(startPosition).node;
-        GraphNode targetNode = AstarPath.active.GetNearest(endPosition).node;
+        GraphNode startNode = AstarPath.active.GetNearest(startPosition).node;
+        GraphNode endNode = AstarPath.active.GetNearest(endPosition).node;
 
-        return targetNode.Walkable && PathUtilities.IsPathPossible(mobNode, targetNode);
+        return endNode.Walkable && PathUtilities.IsPathPossible(startNode, endNode);
     }
 
     public PlayerController FindPlayerInRadius(Vector2 center, float radiusToCheck)
@@ -203,75 +198,4 @@ public class MobAI : MonoBehaviour
 
         return player;
     }
-
-    #region ToKeep
-
-    /*
-
-    /// <summary>
-    /// Generates a random position;
-    /// </summary>
-    /// <returns></returns>
-    private Vector3 GenerateRandomPosition()
-    {
-        float casualY;
-        float casualX;
-        if (_nextCasualPositionDirectionX) // If _nextCasualPositionDirection is equal to true then go to the right otherwise go to the left
-        {
-            _nextCasualPositionDirectionX = false; // The next target will be on the left
-            casualX = Random.Range(_mob.position.x + MinCasualRangeX, MaxCasualRangeX + _mob.position.x);
-            // Generate a random dot to the right of the mob
-        }
-        else
-        {
-            _nextCasualPositionDirectionX = true; // The next target will be on the right
-            casualX = Random.Range(_mob.position.x - MaxCasualRangeX, _mob.position.x - MinCasualRangeX);
-            // Generate a random dot to the left of the mob
-        }
-
-
-        if (_canFly)
-        {
-            if (_nextCasualPositionDirectionY)
-            {
-                casualY = Random.Range(MaxCasualRangeY+_mob.position.y, _mob.position.y);
-                _nextCasualPositionDirectionY = false;
-            }
-            else
-            {
-                casualY = _yMob;
-                _nextCasualPositionDirectionY = true;
-            }
-        }
-        else
-        {
-            casualY = _yMob;
-        }
-        return CheckRandomPositionCorrectness(new Vector3(casualX, casualY, 0));
-    }
-
-
-    /// <summary>
-    /// Checks if the generated position is within the bounds of the graph.
-    /// </summary>
-    /// <param name="randomPosition">The generated position to check</param>
-    /// <returns>
-    /// Returns the position given in input, if it's correct, otherwise it returns a new position 
-    /// randomly generated.
-    /// </returns>
-    private Vector3 CheckRandomPositionCorrectness(Vector3 randomPosition)
-    {
-        if (randomPosition.x <= XStartGraph || randomPosition.x >= XEndGraph)
-        {
-            return GenerateRandomPosition();
-        }
-        else
-        {
-            return randomPosition;
-        }
-    }
-
-    */
-
-    #endregion
 }
