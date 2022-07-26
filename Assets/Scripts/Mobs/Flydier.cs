@@ -82,7 +82,7 @@ public class Flydier : GenericMob
 
             Vector3 targetPosition = (leftDistance < rightDistance) ? leftPosition : rightPosition;
             
-            _target.position = targetPosition;
+            _target.position = _mobAI.GetNearestReachablePosition(targetPosition);
 
             float distance = Vector3.Distance(transform.position, _target.position);
             
