@@ -173,7 +173,6 @@ public class MobAI : MonoBehaviour
     public Vector3 GetNearestReachablePosition(Vector3 desiredPosition)
     {
         NNConstraint constraint = NNConstraint.None;
-
         constraint.constrainWalkability = true;
         constraint.walkable = true;
 
