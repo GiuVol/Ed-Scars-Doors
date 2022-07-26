@@ -77,7 +77,7 @@ public class MobAI : MonoBehaviour
 
     private Path _currentPath;
     private int _currentWaypoint = 0;
-    private float _nextWaypointDistance = 3f;
+    private float _nextWaypointDistance = .5f;
 
     #endregion
     
@@ -168,6 +168,18 @@ public class MobAI : MonoBehaviour
         GraphNode endNode = AstarPath.active.GetNearest(endPosition).node;
 
         return endNode.Walkable && PathUtilities.IsPathPossible(startNode, endNode);
+    }
+
+    public Vector3 GetNearestReachablePosition(Vector3 desiredPosition)
+    {
+        NNConstraint constraint = NNConstraint.None;
+
+        constraint.constrainWalkability = true;
+        constraint.walkable = true;
+
+        GraphNode reachableNode = AstarPath.active.GetNearest(desiredPosition, constraint).node;
+
+        return (Vector3) reachableNode.position;
     }
 
     public PlayerController FindPlayerInRadius(Vector2 center, float radiusToCheck)

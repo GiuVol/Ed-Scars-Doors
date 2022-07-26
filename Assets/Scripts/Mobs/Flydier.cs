@@ -11,15 +11,13 @@ public class Flydier : GenericMob
     /// </summary>
     [SerializeField]
     private bool _stayOnPattern;
-    
-    public override void Die()
-    {
-        Destroy(gameObject);
-    }
 
+    private Transform _target;
+    
     protected new void Start()
     {
         base.Start();
+        _target = new GameObject("FlydierTarget").transform;
     }
 
     private void FixedUpdate()
@@ -73,12 +71,34 @@ public class Flydier : GenericMob
             _mobAI.Target = null;
         } else
         {
-            float distance = Vector3.Distance(transform.position, player.transform.position);
+            Vector3 leftPosition = player.transform.position + Vector3.left * _attackRange;
+            Vector3 rightPosition = player.transform.position + Vector3.right * _attackRange;
 
-            if (distance > _attackRange)
+            float leftDistance = Vector3.Distance(transform.position, leftPosition);
+            float rightDistance = Vector3.Distance(transform.position, rightPosition);
+
+            Vector3 targetPosition = (leftDistance < rightDistance) ? leftPosition : rightPosition;
+            
+            _target.position = _mobAI.GetNearestReachablePosition(targetPosition);
+
+            float distance = Vector3.Distance(transform.position, _target.position);
+            
+            if (distance > 2)
             {
-                ChasePlayer(player.transform);
-            } else
+                Chase(_target);
+
+                Vector3 lookDirection = (player.transform.position - transform.position).normalized;
+
+                if (lookDirection.x > 0)
+                {
+                    transform.rotation = Quaternion.Euler(0, 0, 0);
+                }
+                else if (lookDirection.x < 0)
+                {
+                    transform.rotation = Quaternion.Euler(0, -180, 0);
+                }
+            }
+            else
             {
                 if (_canAttack)
                 {
@@ -107,21 +127,10 @@ public class Flydier : GenericMob
         }
     }
 
-    private void ChasePlayer(Transform playerTransform)
+    private void Chase(Transform playerTransform)
     {
         _mobAI.Target = playerTransform;
 
-        Vector3 direction = (playerTransform.position - transform.position).normalized;
-
-        if (direction.x > 0)
-        {
-            transform.rotation = Quaternion.Euler(0, 0, 0);
-        }
-        else if (direction.x < 0)
-        {
-            transform.rotation = Quaternion.Euler(0, -180, 0);
-        }
-        
         _attachedRigidbody.AddForce(_mobAI.DesiredDirection * _speed * Time.deltaTime);
     }
 
@@ -129,22 +138,25 @@ public class Flydier : GenericMob
     {
         Transform playerTransform = target.transform;
 
-        Vector3 direction = 
+        Vector3 lookDirection = 
             ((playerTransform.position + playerTransform.up * 2) - transform.position).normalized;
 
-        if (direction.x > 0)
+        if (lookDirection.x > 0)
         {
             transform.rotation = Quaternion.Euler(0, 0, 0);
         }
-        else if (direction.x < 0)
+        else if (lookDirection.x < 0)
         {
             transform.rotation = Quaternion.Euler(0, -180, 0);
         }
 
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        Vector3 shootDirection = target.transform.position - transform.position;
+        shootDirection.y = 0;
+
+        float angle = Mathf.Atan2(shootDirection.y, shootDirection.x) * Mathf.Rad2Deg;
         Quaternion desiredRotation = Quaternion.AngleAxis(angle, Vector3.forward);
 
-        Vector3 spawnPoint = transform.position + direction * 4;
+        Vector3 spawnPoint = transform.position + transform.right * 2;
 
         Projectile resource =
             Resources.Load<Projectile>(Projectile.ProjectileResourcesPath + Projectile.NormalProjectileName);
@@ -154,5 +166,11 @@ public class Flydier : GenericMob
         projectile.AttackerAttack = Stats.Attack.CurrentValue;
 
         yield break;
+    }
+
+    public override void Die()
+    {
+        Destroy(_target.gameObject);
+        Destroy(gameObject);
     }
 }

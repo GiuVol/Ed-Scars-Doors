@@ -239,9 +239,9 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 1.5}
   serializedVersion: 2
-  m_Radius: 2
+  m_Radius: 1.75
 --- !u!4 &324652599 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6348619705466406948, guid: ec33dc47eedda4d48bda44fc11445b82, type: 3}
@@ -272,7 +272,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 478084972}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 2, z: 0}
   m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -355,8 +355,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 595106253}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 2, z: 0}
   m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -498,9 +498,9 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 1.5}
   serializedVersion: 2
-  m_Radius: 2
+  m_Radius: 1.75
 --- !u!114 &919842239
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -636,6 +636,10 @@ PrefabInstance:
     - target: {fileID: 6348619705466406948, guid: ec33dc47eedda4d48bda44fc11445b82, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6348619705466406949, guid: ec33dc47eedda4d48bda44fc11445b82, type: 3}
+      propertyPath: StandardJumpInterval
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: 6348619705466406949, guid: ec33dc47eedda4d48bda44fc11445b82, type: 3}
       propertyPath: StandardNumberOfJumpsAllowedInAir
@@ -1372,7 +1376,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8450870014546383578, guid: e3ed13c080254c54ea8a14c80da2012b, type: 3}
       propertyPath: data.dataString
-      value: UEsDBBQAAAgIAAAIIewuMrujWwIAABMFAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQF1VE1zmzAQ/SseneuOcUka99YSx+khiSduJxcusrQYjYXE6CO24/F/70qAoXR6Qrz3dvX2A85EKFsDc9qsjOBPmgP5NiHhTD5NevIRjnSn1UZ8QKd5E9yVQUSj5pU6oRFPQpjVFTgj2He1k0E8Q9ArUWhTLfkOMm2dRbig0gJSRrsQrRA6T8gRH9NFCDnhaf41nD7wtJhNLnhkoByYXtoJO1mj8opJWtXAg+VePJ918mTWCBWW02qCdaalFLb1QtypjrVmtLYeK0EBFxRriwZSfC1B7EoXMg+DX4rCgmtNGXq6FwZb1GQlP3TTt4rafePsnUof7rlNo6Um59M/9DSJdGF09dhdm8SCXCnY/pWeGLVu0NchfN/7TmJ/DlTu6VbCWwnqWa+M9ooj6YwPod7C/L5/vVaWlcD2Pd5YHYG+/v90Qg2XWPwxk6LaBupz2gAbqWO74+zB4GB+ouG4GbZNgWhw8dvCL7obrlBLPAhjHVJtlSrY22pvgpQsY89CNd5l2iiIcGu6BkWlO60xjRtPcMQNrh0xDzR8LO3lLdd9A6OQCPf62WxErfXhOixb6sMT2PLFOykU9KYD8Yx9yrRSzYINe9KFbbwpKBuE7bzgf68W+bLl/I4lBdymPL2jN9NkAXRb8HRxe3N3k84ZibsnFNZJ5box2rYHp6b65Ar3rPuHTFaG1nHZuaGHlfio9KDlQhV6wwyAemkyXI2DwUvwo+RLLrBBG3BOqDhvcs6J1GwPPL8mymOly6MzNO+z5KQW79oFJCdZ/GnkJMDXXV4beBdwCJd3yS7k8gdQSwMEFAAACAgAAAgh7KZzrldtAAAAeAAAAAkAJABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQGrVipLLSrOzM9TslIw0TPSMzTXUVBKL0osyCgGihiCOKWZKSB2tJJxUkqKRbJhWqqZSYqJRaKprqFlamJSWoqJpZmphamJUbJSLFB9SWVBql9ibipET0BiSUZaZl5KZl66nntRZoo7yGil2FoAUEsBAi0AFAAACAgAAAgh7C4yu6NbAgAAEwUAAAsAJAAAAAAAAAAAAAAAAAAAAGdyYXBoMC5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsBAi0AFAAACAgAAAgh7KZzrldtAAAAeAAAAAkAJAAAAAAAAAAAAAAAqAIAAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLBQYAAAAAAgACALgAAABgAwAAAAA=
+      value: UEsDBBQAAAgIAAAIIexCaE+/XAIAABUFAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQF1VMty2jAU/RVG6yaDCUmhu9YQ0gUJE9rJxhshXWMNsuTRg0cY/r1Xso1dOl0hzjn36tyHfCZC2QqY02ZhBF9qDuTbgIQz+TLoyBc40q1Wa/EJreZDcFcEEY2ad+qERjwJYVaX4Ixg39VWBvEQQa9Erk0551tItXUW4ZxKC0gZ7UK0Qug8IEf8uZuGkBOeRl/D6RNP0+HggkcGyoHppK2wldUqr5ikZQU8WO7Eo2ErT4a1UGE5jSZYZ1pKYRsvxJ2qWGtKK+uxEhRwQbG2aCC5f0CgALEtXMjdD3/LcwuusWXoaSYMNqnOS37ounMltbva255KH256GkdTdc7lP/RdEunc6PKlvTaJJblCsN07PTFqXa+zfXjWcx47dKByRzcSPgpQr3phtFccSWd8CPUWRrPu77WytAC26/Da6g3oq//PJ9RwicUfUynKTaDuxzWwljo2PE4fDI7mJxqOu2GbFIgGF78t/KLb/hI1xLMw1iHVVKmCvY32JkjJPPYsVONdqo2CCDemK1BUutMK07jbCd5wvWtvmGcanktzecO1r+AmJMKdfji8oVb6cB2WLfRhCbZ4804KBZ3pQLxin1KtVL1g/Z60YWtvcsp6YVsv+N+rRR42nE9YksPTmI8n9PEumQLd5Hw8fXqcPI5HjMTdEwrrpHJVG23ag1NTXXKFe9Z+RQYLQ6u47NzQw0J8lrrXcqFyvWYGQL3VGa7GweAl+Cz5nAts0BqcEyrOm5wzIjXbAc+uibJY6fzoDM26LBmpxF67gGQkjZ+NjAT4ussrA3sBh3B5m+xCLn8AUEsDBBQAAAgIAAAIIeymc65XbQAAAHgAAAAJACQAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0Bq1YqSy0qzszPU7JSMNEz0jM011FQSi9KLMgoBooYgjilmSkgdrSScVJKikWyYVqqmUmKiUWiqa6hZWpiUlqKiaWZqYWpiVGyUixQfUllQapfYm4qRE9AYklGWmZeSmZeup57UWaKO8hopdhaAFBLAQItABQAAAgIAAAIIexCaE+/XAIAABUFAAALACQAAAAAAAAAAAAAAAAAAABncmFwaDAuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLAQItABQAAAgIAAAIIeymc65XbQAAAHgAAAAJACQAAAAAAAAAAAAAAKkCAABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwUGAAAAAAIAAgC4AAAAYQMAAAAA
       objectReference: {fileID: 0}
     - target: {fileID: 8480139315098128086, guid: e3ed13c080254c54ea8a14c80da2012b, type: 3}
       propertyPath: target
