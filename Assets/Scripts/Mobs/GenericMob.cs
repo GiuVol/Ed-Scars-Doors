@@ -287,8 +287,14 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// </summary>
     protected Rigidbody2D _attachedRigidbody;
 
+    /// <summary>
+    /// Stores whether the mob is currently attacking.
+    /// </summary>
     protected bool _isAttacking;
 
+    /// <summary>
+    /// Stores whether the mob can attack or not.
+    /// </summary>
     protected bool _canAttack;
     
     protected void Start()
