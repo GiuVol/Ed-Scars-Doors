@@ -442,4 +442,30 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// It's used to destroy the mob and perform other additional actions when he dies.
     /// </summary>
     public abstract void Die();
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
+        {
+            Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>());
+        }
+
+        Rigidbody2D rigidbody = collision.rigidbody;
+
+        if (rigidbody == null)
+        {
+            return;
+        }
+
+        PlayerController player = rigidbody.GetComponent<PlayerController>();
+
+        if (player == null)
+        {
+            return;
+        }
+
+        Vector2 conjunctionLine = (player.transform.position - transform.position).normalized;
+
+        rigidbody.AddForce(conjunctionLine * 500);
+    }
 }

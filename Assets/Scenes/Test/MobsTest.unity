@@ -185,13 +185,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: Flydier
-  _maxHealthValue: 50
+  _maxHealthValue: 500
   _attackStandardValue: 50
   _attackMinValue: 25
   _attackMaxValue: 100
-  _defenceStandardValue: 50
+  _defenceStandardValue: 100
   _defenceMinValue: 25
-  _defenceMaxValue: 100
+  _defenceMaxValue: 150
   _maxBlindnessLevel: 10
   _blindnessDuration: 5
   _blindnessCooldownTime: 2
@@ -199,9 +199,9 @@ MonoBehaviour:
   _blindnessLevelDecrementSpeed: 1
   _maxCorrosionTime: 10
   _corrosionResistence: 0.25
-  _attackInterval: 2
   _rangeToCheck: 25
   _attackRange: 10
+  _attackInterval: 2
   _speed: 500
   _canFly: 1
   _patrolPoints:
@@ -528,9 +528,9 @@ MonoBehaviour:
   _blindnessLevelDecrementSpeed: 1
   _maxCorrosionTime: 10
   _corrosionResistence: 0.25
-  _attackInterval: 2
   _rangeToCheck: 25
   _attackRange: 10
+  _attackInterval: 2
   _speed: 500
   _canFly: 1
   _patrolPoints:

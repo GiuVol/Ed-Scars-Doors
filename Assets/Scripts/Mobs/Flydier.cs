@@ -12,6 +12,9 @@ public class Flydier : GenericMob
     [SerializeField]
     private bool _stayOnPattern;
 
+    /// <summary>
+    /// The custom Flydier target, that specifies where to go.
+    /// </summary>
     private Transform _target;
     
     protected new void Start()
@@ -79,7 +82,7 @@ public class Flydier : GenericMob
 
             Vector3 targetPosition = (leftDistance < rightDistance) ? leftPosition : rightPosition;
             
-            _target.position = _mobAI.GetNearestReachablePosition(targetPosition);
+            _target.position = player.transform.position;
 
             float distance = Vector3.Distance(transform.position, _target.position);
             
