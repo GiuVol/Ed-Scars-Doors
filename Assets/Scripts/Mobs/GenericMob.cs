@@ -4,6 +4,9 @@ using UnityEngine;
 
 public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStatusable
 {
+    public const string MobLayerName = "Mob";
+    public const string MobProjectileLayerName = "MobProjectile";
+
     /// <summary>
     /// The <c>HealthComponent</c> that stores values and methods related to the health of the mob.
     /// </summary>
@@ -350,6 +353,8 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
 
         _isAttacking = false;
         _canAttack = true;
+
+        CustomUtilities.SetLayerRecursively(gameObject, LayerMask.NameToLayer(MobLayerName));
     }
 
     /// <summary>
@@ -445,9 +450,14 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
+        bool ignoreCollision = 
+            collision.gameObject.layer == LayerMask.NameToLayer(GameFormulas.ObstacleLayerName) ||
+            collision.gameObject.layer == LayerMask.NameToLayer(MobLayerName);
+
+        if (ignoreCollision)
         {
             Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>());
+            return;
         }
 
         Rigidbody2D rigidbody = collision.rigidbody;

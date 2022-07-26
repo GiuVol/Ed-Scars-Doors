@@ -167,10 +167,67 @@ public class Projectile : MonoBehaviour
     }
 
     /// <summary>
-    /// Stores the <c>GameObject</c> of the character who shot the projectile.
+    /// The layer of the projectile.
     /// </summary>
-    public GameObject Shooter { get; set; }
+    public int Layer
+    {
+        get
+        {
+            return gameObject.layer;
+        }
 
+        set
+        {
+            if (value < 0)
+            {
+                return;
+            }
+
+            CustomUtilities.SetLayerRecursively(gameObject, value);
+        }
+    }
+
+    /// <summary>
+    /// Set that contains all the layers that the projectile should ignore.
+    /// </summary>
+    private HashSet<int> _layersToIgnore;
+    
+    /// <summary>
+    /// Property that provides access to the layers to ignore in a controlled manner.
+    /// </summary>
+    public HashSet<int> LayersToIgnore
+    {
+        get
+        {
+            if (_layersToIgnore == null)
+            {
+                _layersToIgnore = new HashSet<int>();
+            }
+
+            return _layersToIgnore;
+        }
+
+        set
+        {
+            if (_layersToIgnore == null)
+            {
+                _layersToIgnore = new HashSet<int>();
+            }
+
+            _layersToIgnore.Clear();
+
+            if (value == null)
+            {
+                return;
+            }
+
+            foreach (int layer in value)
+            {
+                _layersToIgnore.Add(layer);
+            }
+        }
+    }
+    
     void Start()
     {
         if (gameObject.GetComponent<Rigidbody2D>() == null)
@@ -220,11 +277,9 @@ public class Projectile : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Rigidbody2D attachedRigidbody = collision.gameObject.GetComponent<Rigidbody2D>();
-
-        if (attachedRigidbody != null && attachedRigidbody.gameObject == Shooter)
+        if (LayersToIgnore.Contains(collision.gameObject.layer))
         {
-            Destroy(gameObject);
+            Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>());
             return;
         }
 

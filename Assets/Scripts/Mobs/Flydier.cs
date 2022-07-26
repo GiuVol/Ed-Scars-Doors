@@ -82,7 +82,7 @@ public class Flydier : GenericMob
 
             Vector3 targetPosition = (leftDistance < rightDistance) ? leftPosition : rightPosition;
             
-            _target.position = player.transform.position;
+            _target.position = targetPosition;
 
             float distance = Vector3.Distance(transform.position, _target.position);
             
@@ -167,6 +167,11 @@ public class Flydier : GenericMob
         Projectile projectile = Instantiate(resource, spawnPoint, desiredRotation);
 
         projectile.AttackerAttack = Stats.Attack.CurrentValue;
+
+        projectile.Layer = LayerMask.NameToLayer(MobProjectileLayerName);
+
+        projectile.LayersToIgnore.Add(LayerMask.NameToLayer(MobLayerName));
+        projectile.LayersToIgnore.Add(LayerMask.NameToLayer(MobProjectileLayerName));
 
         yield break;
     }

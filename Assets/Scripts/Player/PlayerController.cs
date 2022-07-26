@@ -6,6 +6,9 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 {
     public const int MaxNumberOfEquippableAbilities = 4;
 
+    public const string PlayerLayerName = "Player";
+    public const string PlayerProjectileLayerName = "PlayerProjectile";
+
     #region Movement Parameters
 
     /// <summary>
@@ -523,7 +526,11 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
         projectile.ChargeTime = chargeTime;
 
-        projectile.Shooter = gameObject;
+        projectile.Layer = LayerMask.NameToLayer(PlayerProjectileLayerName);
+
+        projectile.LayersToIgnore.Add(LayerMask.NameToLayer(PlayerLayerName));
+        projectile.LayersToIgnore.Add(LayerMask.NameToLayer(PlayerProjectileLayerName));
+        projectile.LayersToIgnore.Add(LayerMask.NameToLayer(GameFormulas.ObstacleLayerName));
 
         CanShoot = false;
 
