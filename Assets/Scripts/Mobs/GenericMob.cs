@@ -112,12 +112,6 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     private float _corrosionResistence;
 
     /// <summary>
-    /// How much the mob should wait to attack again after it has already attacked.
-    /// </summary>
-    [SerializeField]
-    protected float _attackInterval;
-
-    /// <summary>
     /// The distance that the mob must have from a target to hook it.
     /// </summary>
     [SerializeField]
@@ -129,6 +123,12 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     [SerializeField]
     protected float _attackRange;
     
+    /// <summary>
+    /// How much the mob should wait to attack again after it has already attacked.
+    /// </summary>
+    [SerializeField]
+    protected float _attackInterval;
+
     /// <summary>
     /// Attribute <c>Speed</c>
     /// Represents the speed at which the mob moves.
@@ -343,20 +343,13 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
 
         _attachedRigidbody = gameObject.GetComponent<Rigidbody2D>();
 
-        _attachedRigidbody.drag = 3;
-        _attachedRigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
-
-        if (_canFly)
-        {
-            _attachedRigidbody.gravityScale = 0;
-        }
-
-        _isAttacking = false;
-        _canAttack = true;
-
         SetupHealth();
         SetupStats();
         SetupStatus();
+        SetupRigidbody();
+
+        _isAttacking = false;
+        _canAttack = true;
     }
 
     /// <summary>
@@ -397,6 +390,23 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
         }
     }
 
+    /// <summary>
+    /// It is used to setup the Rigidbody component.
+    /// </summary>
+    public virtual void SetupRigidbody()
+    {
+        if (_attachedRigidbody != null)
+        {
+            _attachedRigidbody.drag = 3;
+            _attachedRigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
+
+            if (_canFly)
+            {
+                _attachedRigidbody.gravityScale = 0;
+            }
+        }
+    }
+    
     #endregion
 
     /// <summary>
