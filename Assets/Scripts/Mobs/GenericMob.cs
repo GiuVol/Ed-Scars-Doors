@@ -145,6 +145,18 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     [SerializeField]
     private bool _canFly;
 
+    /// <summary>
+    /// Stores the force with which the mob should repel the player.
+    /// </summary>
+    [SerializeField]
+    private float _repulsiveForce;
+
+    /// <summary>
+    /// Stores the damage that the mob inflicts to the player if they collide.
+    /// </summary>
+    [SerializeField]
+    private int _contactDamage;
+    
     #endregion
 
     #region Patrolling
@@ -299,6 +311,47 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// Stores whether the mob can attack or not.
     /// </summary>
     protected bool _canAttack;
+
+    /// <summary>
+    /// Set that contains all the layers that the mob should ignore.
+    /// </summary>
+    private HashSet<int> _layersToIgnore;
+
+    /// <summary>
+    /// Property that provides access to the layers to ignore in a controlled manner.
+    /// </summary>
+    public HashSet<int> LayersToIgnore
+    {
+        get
+        {
+            if (_layersToIgnore == null)
+            {
+                _layersToIgnore = new HashSet<int>();
+            }
+
+            return _layersToIgnore;
+        }
+
+        set
+        {
+            if (_layersToIgnore == null)
+            {
+                _layersToIgnore = new HashSet<int>();
+            }
+
+            _layersToIgnore.Clear();
+
+            if (value == null)
+            {
+                return;
+            }
+
+            foreach (int layer in value)
+            {
+                _layersToIgnore.Add(layer);
+            }
+        }
+    }
     
     protected void Start()
     {
@@ -355,6 +408,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
         _canAttack = true;
 
         CustomUtilities.SetLayerRecursively(gameObject, LayerMask.NameToLayer(MobLayerName));
+        SetupLayers();
     }
 
     /// <summary>
@@ -411,6 +465,14 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
             }
         }
     }
+
+    /// <summary>
+    /// Procedure needed to setup the layers.
+    /// </summary>
+    public virtual void SetupLayers()
+    {
+        LayersToIgnore.Add(LayerMask.NameToLayer(MobLayerName));
+    }
     
     #endregion
 
@@ -450,11 +512,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        bool ignoreCollision = 
-            collision.gameObject.layer == LayerMask.NameToLayer(GameFormulas.ObstacleLayerName) ||
-            collision.gameObject.layer == LayerMask.NameToLayer(MobLayerName);
-
-        if (ignoreCollision)
+        if (LayersToIgnore.Contains(collision.gameObject.layer))
         {
             Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>());
             return;
@@ -476,6 +534,8 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
 
         Vector2 conjunctionLine = (player.transform.position - transform.position).normalized;
 
-        rigidbody.AddForce(conjunctionLine * 500);
+        rigidbody.AddForce(conjunctionLine * _repulsiveForce);
+        player.Health.DecreaseHealth(_contactDamage);
+        player.ChangeColorTemporarily(Color.red, .5f);
     }
 }

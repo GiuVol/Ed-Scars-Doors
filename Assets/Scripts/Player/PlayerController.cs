@@ -209,6 +209,20 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     /// </summary>
     private List<GenericAbility> EquippedAbilities { get; set; }
 
+    #region Graphics
+
+    /// <summary>
+    /// The components that render the sprite.
+    /// </summary>
+    private List<SpriteRenderer> Renderers { get; set; }
+
+    /// <summary>
+    /// Specifies if the player currently has a different color.
+    /// </summary>
+    private bool _isChangingColor;
+
+    #endregion
+
     #region Data
 
     private Container<UsableItem> _inventory;
@@ -313,12 +327,6 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
     #endregion
 
-    #region Test
-
-    private GenericAbility _testAbility1;
-
-    #endregion
-
     void Start()
     {
         if (gameObject.GetComponent<MovementController2D>() == null)
@@ -351,7 +359,9 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         Stats = gameObject.GetComponent<StatsComponent>();
         Status = gameObject.GetComponent<StatusComponent>();
 
-        Health.Setup(100, Die);
+        Health.Setup(100, Die, 
+                     delegate { ChangeColorTemporarily(Color.green, .25f); }, 
+                     delegate { ChangeColorTemporarily(Color.red, .25f); });
         Stats.Setup(100, 50, 500, 100, 50, 500);
         Status.Setup(100, 5, 5, 0, 1, 20, 0);
 
@@ -362,11 +372,12 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
         EquippedAbilities = new List<GenericAbility>(MaxNumberOfEquippableAbilities);
 
-        #region Test
+        Renderers = new List<SpriteRenderer>();
 
-        _testAbility1 = Resources.Load<GenericAbility>("Abilities/DarkShooter");
-
-        #endregion
+        foreach (SpriteRenderer renderer in GetComponentsInChildren<SpriteRenderer>())
+        {
+            Renderers.Add(renderer);
+        }
     }
 
     void Update()
@@ -387,22 +398,6 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             {
                 StartCoroutine(Shoot());
             }
-
-            #region Test
-
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                if (!IsEquipped(_testAbility1))
-                {
-                    EquipAbility(_testAbility1);
-                }
-                else
-                {
-                    UnequipAbility(_testAbility1);
-                }
-            }
-
-            #endregion
         }
     }
 
@@ -514,7 +509,11 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         {
             while (InputHandler.Shoot() || Time.timeScale == 0)
             {
-                chargeTime += Time.deltaTime;
+                if (Time.timeScale != 0)
+                {
+                    chargeTime += Time.deltaTime;
+                }
+
                 yield return null;
             }
         }
@@ -530,7 +529,6 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
         projectile.LayersToIgnore.Add(LayerMask.NameToLayer(PlayerLayerName));
         projectile.LayersToIgnore.Add(LayerMask.NameToLayer(PlayerProjectileLayerName));
-        projectile.LayersToIgnore.Add(LayerMask.NameToLayer(GameFormulas.ObstacleLayerName));
 
         CanShoot = false;
 
@@ -595,5 +593,51 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     public bool IsEquipped(GenericAbility ability)
     {
         return EquippedAbilities.Contains(ability);
+    }
+
+    /// <summary>
+    /// Allows to change the color of the player for a while.
+    /// </summary>
+    /// <param name="color">The new color</param>
+    /// <param name="duration">The duration of the change</param>
+    public void ChangeColorTemporarily(Color color, float duration)
+    {
+        if (_isChangingColor)
+        {
+            return;
+        }
+
+        StartCoroutine(ChangeColorCoroutine(color, duration));
+    }
+
+    /// <summary>
+    /// Handles the player's colors change.
+    /// </summary>
+    /// <param name="color">The new color</param>
+    /// <param name="duration">The duration of the change</param>
+    private IEnumerator ChangeColorCoroutine(Color color, float duration)
+    {
+        if (_isChangingColor)
+        {
+            yield break;
+        }
+
+        _isChangingColor = true;
+
+        Color oldColor = Color.white;
+
+        foreach (SpriteRenderer renderer in Renderers)
+        {
+            renderer.color = color;
+        }
+
+        yield return new WaitForSeconds(duration);
+
+        foreach (SpriteRenderer renderer in Renderers)
+        {
+            renderer.color = oldColor;
+        }
+
+        _isChangingColor = false;
     }
 }

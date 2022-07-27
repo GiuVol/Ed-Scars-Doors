@@ -40,14 +40,34 @@ public class HealthComponent : MonoBehaviour
     }
 
     /// <summary>
-    /// A new delegate type, to store the die procedure.
+    /// A new delegate type.
     /// </summary>
     public delegate void Die();
+
+    /// <summary>
+    /// A new delegate type.
+    /// </summary>
+    public delegate void OnHealthIncrease();
+    
+    /// <summary>
+    /// A new delegate type.
+    /// </summary>
+    public delegate void OnHealthDecrease();
 
     /// <summary>
     /// It will store the procedure called when the health of the character reaches <c>DeathThreshold</c>.
     /// </summary>
     public Die DieProcedure { get; set; }
+
+    /// <summary>
+    /// It will store the procedure called when the health of the character is increased.
+    /// </summary>
+    public OnHealthIncrease OnHealthIncreaseProcedure { get; set; }
+    
+    /// <summary>
+    /// It will store the procedure called when the health of the character decreases.
+    /// </summary>
+    public OnHealthDecrease OnHealthDecreaseProcedure { get; set; }
 
     /// <summary>
     /// Stores whether the component is initialized or not.
@@ -59,11 +79,15 @@ public class HealthComponent : MonoBehaviour
     /// </summary>
     /// <param name="maxHealth">The integer value to assign to <c>MaxHealth</c> and <c>CurrentHealth</c></param>
     /// <param name="dieProcedure">The desired procedure to call when the character dies</param>
-    public void Setup(int maxHealth, Die dieProcedure)
+    public void Setup(int maxHealth, Die dieProcedure, 
+                      OnHealthIncrease onHealthIncreaseProcedure = null,
+                      OnHealthDecrease onHealthDecreaseProcedure = null)
     {
         MaxHealth = Math.Max(maxHealth, 0);
         CurrentHealth = MaxHealth; // a character when created will have CurrentHealth equal to MaxHealth
         DieProcedure = dieProcedure;
+        OnHealthIncreaseProcedure = onHealthIncreaseProcedure;
+        OnHealthDecreaseProcedure = onHealthDecreaseProcedure;
 
         _initialized = true;
     }
@@ -80,8 +104,18 @@ public class HealthComponent : MonoBehaviour
             return;
         }
 
-        increment = Math.Max(increment, 0); // if increment has a negative value it will assume a value of 0, otherwise it remains unchanged
-        CurrentHealth = Math.Min(CurrentHealth + increment, MaxHealth); // if the sum between the increase and the CurrentHealth is greater than the Maxhealth, then the CurrentHealth will be equal to the Maxhealth, otherwise it will be equal to the sum
+        int oldValue = CurrentHealth;
+
+        increment = Math.Max(increment, 0);
+        CurrentHealth = Math.Min(CurrentHealth + increment, MaxHealth);
+
+        if (CurrentHealth != oldValue)
+        {
+            if (OnHealthIncreaseProcedure != null)
+            {
+                OnHealthIncreaseProcedure();
+            }
+        }
     }
 
     /// <summary>
@@ -95,9 +129,19 @@ public class HealthComponent : MonoBehaviour
         {
             return;
         }
+
+        int oldValue = CurrentHealth;
         
-        decrement = Math.Max(decrement, 0); // if decrement has a negative value it will assume a value of 0, otherwise it remains unchanged
-        CurrentHealth = Math.Max(CurrentHealth - decrement, DeathThreshold); // if the decrement greater than CurrentHealth, the CurrentHealth will be 0, otherwise it will be equal to the difference
+        decrement = Math.Max(decrement, 0);
+        CurrentHealth = Math.Max(CurrentHealth - decrement, DeathThreshold);
+
+        if (CurrentHealth != oldValue)
+        {
+            if (OnHealthDecreaseProcedure != null)
+            {
+                OnHealthDecreaseProcedure();
+            }
+        }
 
         if (CurrentHealth <= DeathThreshold)
         {
