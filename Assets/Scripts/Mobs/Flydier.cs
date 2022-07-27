@@ -37,25 +37,13 @@ public class Flydier : GenericMob
         {
             return;
         }
-        
-        PlayerController player = _mobAI.FindPlayerInRadius(transform.position, _rangeToCheck);
-        
+
         if (_stayOnPattern)
         {
-            if (PPGroup == null || PPGroup.FirstPatrolPoint == null)
-            {
-                if (!IsInvoking("SearchForPatrolPoints"))
-                {
-                    InvokeRepeating("SearchForPatrolPoints", 0, 2f);
-                }
-            } else
-            {
-                CancelInvoke("SearchForPatrolPoints");
-                FollowPattern(player);
-            }
+            FollowPattern(_player);
         } else
         {
-            if (player == null)
+            if (_player == null)
             {
                 if (_mobAI.Target != null)
                 {
@@ -66,7 +54,7 @@ public class Flydier : GenericMob
             }
             else
             {
-                HandlePlayer(player);
+                HandlePlayer(_player);
             }
         }
     }
@@ -75,18 +63,68 @@ public class Flydier : GenericMob
 
     private void FollowPattern(PlayerController player)
     {
-        Patrol();
+        Transform lookTarget = (player != null) ? player.transform : null;
+
+        Patrol(lookTarget);
+
+        if (player != null)
+        {
+            float heightDistance = Mathf.Abs(transform.position.y - player.transform.position.y);
+
+            if (heightDistance <= .5f)
+            {
+                StartCoroutine(HandleAttack(player));
+            }
+        }
+    }
+
+    private void Patrol(Transform lookTarget = null)
+    {
+        bool canPatrol = false;
+
+        if (PPGroup != null)
+        {
+            canPatrol = (PPGroup.FirstPatrolPoint != null);
+        }
+
+        if (!canPatrol)
+        {
+            if (!IsInvoking("SearchForPatrolPoints"))
+            {
+                InvokeRepeating("SearchForPatrolPoints", 0, 2f);
+            }
+
+            return;
+        }
+
+        Vector3 moveDirection = (CurrentPatrolPoint.position - transform.position).normalized;
 
         Vector3 lookDirection;
 
-        if (player == null)
+        if (lookTarget == null)
         {
-            lookDirection = (CurrentPatrolPoint.position - transform.position).normalized;
+            lookDirection = moveDirection;
         }
         else
         {
-            lookDirection = (player.transform.position - transform.position).normalized;
+            lookDirection = (lookTarget.position - transform.position).normalized;
         }
+
+        float distance = Vector3.Distance(transform.position, CurrentPatrolPoint.position);
+
+        #region Moving
+
+        if (distance > 1.5f)
+        {
+            _attachedRigidbody.AddForce(moveDirection * _speed * Time.deltaTime);
+        } else
+        {
+            IncreasePatrolPoint();
+        }
+
+        #endregion
+
+        #region Rotating
 
         if (lookDirection.x > 0)
         {
@@ -97,43 +135,7 @@ public class Flydier : GenericMob
             transform.rotation = Quaternion.Euler(0, -180, 0);
         }
 
-        if (player != null)
-        {
-            float heightDistance = Mathf.Abs(transform.position.y - player.transform.position.y);
-
-            if (heightDistance < 3)
-            {
-                StartCoroutine(HandleAttack(player));
-            }
-        }
-    }
-
-    private void Patrol()
-    {
-        if (PPGroup == null || PPGroup.FirstPatrolPoint == null)
-        {
-            if (!IsInvoking("SearchForPatrolPoints"))
-            {
-                InvokeRepeating("SearchForPatrolPoints", 0, 2f);
-            }
-
-            return;
-        }
-        else
-        {
-            CancelInvoke("SearchForPatrolPoints");
-        }
-
-        Vector3 direction = (CurrentPatrolPoint.position - transform.position).normalized;
-        float distance = Vector3.Distance(transform.position, CurrentPatrolPoint.position);
-
-        if (distance > 3)
-        {
-            _attachedRigidbody.AddForce(direction * _speed * Time.deltaTime);
-        } else
-        {
-            IncreasePatrolPoint();
-        }
+        #endregion
     }
 
     private void HandlePlayer(PlayerController player)

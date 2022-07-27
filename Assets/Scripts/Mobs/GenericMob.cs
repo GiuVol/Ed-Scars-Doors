@@ -116,6 +116,12 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     private float _corrosionResistence;
 
     /// <summary>
+    /// How much time does it take to update the mob's perception of the player.
+    /// </summary>
+    [SerializeField]
+    protected float _playerCheckInterval;
+    
+    /// <summary>
     /// The distance that the mob must have from a target to hook it.
     /// </summary>
     [SerializeField]
@@ -320,6 +326,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
         if (foundResults)
         {
             PPGroup = orderedPPGroups.ToList()[0];
+            CancelInvoke("SearchForPatrolPoints");
         }
 
         return foundResults;
@@ -399,6 +406,23 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
         }
     }
 
+    #region Player
+
+    /// <summary>
+    /// Stores the player, if the mob has found it, null otherwise.
+    /// </summary>
+    protected PlayerController _player;
+
+    /// <summary>
+    /// Updates the mob's perception of the player.
+    /// </summary>
+    protected void UpdatePlayer()
+    {
+        _player = _mobAI.FindPlayerInRadius(transform.position, _rangeToCheck);
+    }
+
+    #endregion
+
     #region Graphics
 
     /// <summary>
@@ -413,6 +437,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
         Setup();
 
         PPGroup = _patrolPointsGroup;
+        InvokeRepeating("UpdatePlayer", 0, Mathf.Max(_playerCheckInterval, .1f));
     }
 
     #region Setup
