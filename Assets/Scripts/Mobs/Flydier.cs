@@ -44,83 +44,68 @@ public class Flydier : GenericMob
         
         if (_stayOnPattern)
         {
-            Patrol();
-            
-            Vector3 lookDirection;
-
-            if (player == null)
+            if (FirstPatrolPoint == null)
             {
-                lookDirection = (CurrentPatrolPoint.position - transform.position).normalized;
+
             } else
             {
-                lookDirection = (player.transform.position - transform.position).normalized;
+                FollowPattern(player);
             }
-
-            if (lookDirection.x > 0)
-            {
-                transform.rotation = Quaternion.Euler(0, 0, 0);
-            }
-            else if (lookDirection.x < 0)
-            {
-                transform.rotation = Quaternion.Euler(0, -180, 0);
-            }
-
-            if (player != null)
-            {
-                float heightDistance = Mathf.Abs(transform.position.y - player.transform.position.y);
-
-                if (heightDistance < 3)
-                {
-                    StartCoroutine(HandleAttack(player));
-                }
-            }
-
-            return;
-        }
-
-        if (player == null)
-        {
-            Patrol();
-            _mobAI.Target = null;
         } else
         {
-            Vector3 leftPosition = player.transform.position + Vector3.left * _attackRange;
-            Vector3 rightPosition = player.transform.position + Vector3.right * _attackRange;
-
-            float leftDistance = Vector3.Distance(transform.position, leftPosition);
-            float rightDistance = Vector3.Distance(transform.position, rightPosition);
-
-            Vector3 targetPosition = (leftDistance < rightDistance) ? leftPosition : rightPosition;
-            
-            _target.position = _mobAI.GetNearestReachablePosition(targetPosition);
-
-            float distance = Vector3.Distance(transform.position, _target.position);
-            
-            if (distance > 2)
+            if (player == null)
             {
-                Chase(_target);
-
-                Vector3 lookDirection = (player.transform.position - transform.position).normalized;
-
-                if (lookDirection.x > 0)
+                if (_mobAI.Target != null)
                 {
-                    transform.rotation = Quaternion.Euler(0, 0, 0);
+                    _mobAI.Target = null;
                 }
-                else if (lookDirection.x < 0)
-                {
-                    transform.rotation = Quaternion.Euler(0, -180, 0);
-                }
+
+                Patrol();
             }
             else
             {
-                if (_canAttack)
-                {
-                    StartCoroutine(HandleAttack(player));
-                }
+                HandlePlayer(player);
             }
         }
     }
-    
+
+    #region Behaviour
+
+    private void FollowPattern(PlayerController player)
+    {
+        Patrol();
+
+        Vector3 lookDirection;
+
+        if (player == null)
+        {
+            lookDirection = (CurrentPatrolPoint.position - transform.position).normalized;
+        }
+        else
+        {
+            lookDirection = (player.transform.position - transform.position).normalized;
+        }
+
+        if (lookDirection.x > 0)
+        {
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+        else if (lookDirection.x < 0)
+        {
+            transform.rotation = Quaternion.Euler(0, -180, 0);
+        }
+
+        if (player != null)
+        {
+            float heightDistance = Mathf.Abs(transform.position.y - player.transform.position.y);
+
+            if (heightDistance < 3)
+            {
+                StartCoroutine(HandleAttack(player));
+            }
+        }
+    }
+
     private void Patrol()
     {
         if (FirstPatrolPoint == null)
@@ -140,9 +125,47 @@ public class Flydier : GenericMob
         }
     }
 
-    private void Chase(Transform playerTransform)
+    private void HandlePlayer(PlayerController player)
     {
-        _mobAI.Target = playerTransform;
+        Vector3 leftPosition = player.transform.position + Vector3.left * _attackRange;
+        Vector3 rightPosition = player.transform.position + Vector3.right * _attackRange;
+
+        float leftDistance = Vector3.Distance(transform.position, leftPosition);
+        float rightDistance = Vector3.Distance(transform.position, rightPosition);
+
+        Vector3 targetPosition = (leftDistance < rightDistance) ? leftPosition : rightPosition;
+
+        _target.position = _mobAI.GetNearestReachablePosition(targetPosition);
+
+        float distance = Vector3.Distance(transform.position, _target.position);
+
+        if (distance > 2)
+        {
+            Chase(_target);
+
+            Vector3 lookDirection = (player.transform.position - transform.position).normalized;
+
+            if (lookDirection.x > 0)
+            {
+                transform.rotation = Quaternion.Euler(0, 0, 0);
+            }
+            else if (lookDirection.x < 0)
+            {
+                transform.rotation = Quaternion.Euler(0, -180, 0);
+            }
+        }
+        else
+        {
+            if (_canAttack)
+            {
+                StartCoroutine(HandleAttack(player));
+            }
+        }
+    }
+
+    private void Chase(Transform targetTransform)
+    {
+        _mobAI.Target = targetTransform;
 
         _attachedRigidbody.AddForce(_mobAI.DesiredDirection * _speed * Time.deltaTime);
     }
@@ -191,4 +214,6 @@ public class Flydier : GenericMob
         Destroy(_target.gameObject);
         Destroy(gameObject);
     }
+
+    #endregion
 }

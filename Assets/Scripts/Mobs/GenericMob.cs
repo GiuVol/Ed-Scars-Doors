@@ -183,23 +183,54 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     private int _currentPatrolPointIndex;
     
     /// <summary>
+    /// Property to access in a controlled way to the patrol points.
+    /// </summary>
+    protected List<Transform> PatrolPoints
+    {
+        get
+        {
+            if (_patrolPoints == null)
+            {
+                _patrolPoints = new List<Transform>();
+            }
+
+            return _patrolPoints;
+        }
+
+        set
+        {
+            if (_patrolPoints == null)
+            {
+                _patrolPoints = new List<Transform>();
+            }
+
+            _patrolPoints.Clear();
+
+            if (value == null)
+            {
+                return;
+            }
+
+            foreach (Transform patrolPoint in value)
+            {
+                _patrolPoints.Add(patrolPoint);
+            }
+        }
+    }
+
+    /// <summary>
     /// Returns the first patrol point in the list, or null, if it doesn't exist.
     /// </summary>
     protected Transform FirstPatrolPoint
     {
         get
         {
-            if (_patrolPoints == null)
+            if (PatrolPoints.Count == 0)
             {
                 return null;
             }
 
-            if (_patrolPoints.Count == 0)
-            {
-                return null;
-            }
-
-            return _patrolPoints[0];
+            return PatrolPoints[0];
         }
     }
 
@@ -210,19 +241,14 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     {
         get
         {
-            if (_patrolPoints == null)
-            {
-                return null;
-            }
-
-            if (_patrolPoints.Count == 0)
+            if (PatrolPoints.Count == 0)
             {
                 return null;
             }
             
-            int index = Mathf.Clamp(_currentPatrolPointIndex, 0, _patrolPoints.Count - 1);
+            int index = Mathf.Clamp(_currentPatrolPointIndex, 0, PatrolPoints.Count - 1);
 
-            return _patrolPoints[index];
+            return PatrolPoints[index];
         }
     }
 
@@ -231,12 +257,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// </summary>
     protected void IncreasePatrolPoint()
     {
-        if (_patrolPoints == null)
-        {
-            return;
-        }
-
-        if (_patrolPoints.Count == 0)
+        if (PatrolPoints.Count == 0)
         {
             return;
         }
@@ -250,7 +271,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
             _currentPatrolPointIndex++;
         }
 
-        if (_currentPatrolPointIndex >= _patrolPoints.Count)
+        if (_currentPatrolPointIndex >= PatrolPoints.Count)
         {
             if (_circular)
             {
@@ -259,7 +280,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
             else
             {
                 _descending = true;
-                _currentPatrolPointIndex = Mathf.Max(_patrolPoints.Count - 2, 0);
+                _currentPatrolPointIndex = Mathf.Max(PatrolPoints.Count - 2, 0);
             }
         }
 
@@ -267,16 +288,17 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
         {
             if (_circular)
             {
-
+                _descending = false;
+                _currentPatrolPointIndex = 0;
             }
             else
             {
                 _descending = false;
-                _currentPatrolPointIndex = Mathf.Min(_patrolPoints.Count - 1, 1);
+                _currentPatrolPointIndex = Mathf.Min(PatrolPoints.Count - 1, 1);
             }
         }
 
-        _currentPatrolPointIndex = Mathf.Clamp(_currentPatrolPointIndex, 0, _patrolPoints.Count - 1);
+        _currentPatrolPointIndex = Mathf.Clamp(_currentPatrolPointIndex, 0, PatrolPoints.Count - 1);
     }
 
     #endregion
@@ -352,7 +374,16 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
             }
         }
     }
+
+    #region Graphics
+
+    /// <summary>
+    /// A property which returns the eventual health bar of the mob; it's optional.
+    /// </summary>
+    protected UIBar HealthBar { get; set; }
     
+    #endregion
+
     protected void Start()
     {
         Setup();
