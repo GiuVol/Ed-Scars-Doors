@@ -535,7 +535,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
         Vector2 conjunctionLine = (player.transform.position - transform.position).normalized;
 
         rigidbody.AddForce(conjunctionLine * _repulsiveForce);
-        player.Health.DecreaseHealth(_contactDamage);
         player.ChangeColorTemporarily(Color.red, .5f);
+        player.Health.DecreaseHealth(_contactDamage);
     }
 }
