@@ -10,7 +10,7 @@ public class Spawnest : GenericMob
         throw new NotImplementedException();
     }
     
-    public override void Die()
+    protected override void Die()
     {
 
     }

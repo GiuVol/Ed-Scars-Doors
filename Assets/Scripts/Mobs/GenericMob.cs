@@ -143,19 +143,19 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// Stores whether the mob can fly or not.
     /// </summary>
     [SerializeField]
-    private bool _canFly;
+    protected bool _canFly;
 
     /// <summary>
     /// Stores the force with which the mob should repel the player.
     /// </summary>
     [SerializeField]
-    private float _repulsiveForce;
+    protected float _repulsiveForce;
 
     /// <summary>
     /// Stores the damage that the mob inflicts to the player if they collide.
     /// </summary>
     [SerializeField]
-    private int _contactDamage;
+    protected int _contactDamage;
     
     #endregion
 
@@ -315,12 +315,12 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// <summary>
     /// Set that contains all the layers that the mob should ignore.
     /// </summary>
-    private HashSet<int> _layersToIgnore;
+    protected HashSet<int> _layersToIgnore;
 
     /// <summary>
     /// Property that provides access to the layers to ignore in a controlled manner.
     /// </summary>
-    public HashSet<int> LayersToIgnore
+    protected HashSet<int> LayersToIgnore
     {
         get
         {
@@ -415,7 +415,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// Procedure <c>SetupHealth</c>
     /// It is used to setup the Health component.
     /// </summary>
-    public virtual void SetupHealth()
+    protected virtual void SetupHealth()
     {
         if (Health != null)
         {
@@ -427,7 +427,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// Procedure <c>SetupStats</c>
     /// It is used to setup the Stats component.
     /// </summary>
-    public virtual void SetupStats()
+    protected virtual void SetupStats()
     {
         if (Stats != null)
         {
@@ -440,7 +440,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// Procedure <c>SetupStatus</c>
     /// It is used to setup the Status component.
     /// </summary>
-    public virtual void SetupStatus()
+    protected virtual void SetupStatus()
     {
         if (Status != null)
         {
@@ -452,7 +452,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// <summary>
     /// It is used to setup the Rigidbody component.
     /// </summary>
-    public virtual void SetupRigidbody()
+    protected virtual void SetupRigidbody()
     {
         if (_attachedRigidbody != null)
         {
@@ -469,7 +469,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// <summary>
     /// Procedure needed to setup the layers.
     /// </summary>
-    public virtual void SetupLayers()
+    protected virtual void SetupLayers()
     {
         LayersToIgnore.Add(LayerMask.NameToLayer(MobLayerName));
     }
@@ -508,9 +508,9 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// <summary>
     /// It's used to destroy the mob and perform other additional actions when he dies.
     /// </summary>
-    public abstract void Die();
+    protected abstract void Die();
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    protected void OnCollisionEnter2D(Collision2D collision)
     {
         if (LayersToIgnore.Contains(collision.gameObject.layer))
         {

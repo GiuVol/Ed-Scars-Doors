@@ -16,12 +16,22 @@ public class Flydier : GenericMob
     /// The custom Flydier target, that specifies where to go.
     /// </summary>
     private Transform _target;
-    
+
+    #region Start and Setup
+
     protected new void Start()
     {
         base.Start();
         _target = new GameObject("FlydierTarget").transform;
     }
+
+    protected override void SetupLayers()
+    {
+        base.SetupLayers();
+        LayersToIgnore.Add(LayerMask.NameToLayer(GameFormulas.ObstacleLayerName));
+    }
+
+    #endregion
 
     private void FixedUpdate()
     {
@@ -176,7 +186,7 @@ public class Flydier : GenericMob
         yield break;
     }
 
-    public override void Die()
+    protected override void Die()
     {
         Destroy(_target.gameObject);
         Destroy(gameObject);
