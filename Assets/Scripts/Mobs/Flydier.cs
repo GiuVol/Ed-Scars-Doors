@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
 
@@ -44,11 +42,15 @@ public class Flydier : GenericMob
         
         if (_stayOnPattern)
         {
-            if (FirstPatrolPoint == null)
+            if (PPGroup == null || PPGroup.FirstPatrolPoint == null)
             {
-
+                if (!IsInvoking("SearchForPatrolPoints"))
+                {
+                    InvokeRepeating("SearchForPatrolPoints", 0, 2f);
+                }
             } else
             {
+                CancelInvoke("SearchForPatrolPoints");
                 FollowPattern(player);
             }
         } else
@@ -108,9 +110,18 @@ public class Flydier : GenericMob
 
     private void Patrol()
     {
-        if (FirstPatrolPoint == null)
+        if (PPGroup == null || PPGroup.FirstPatrolPoint == null)
         {
+            if (!IsInvoking("SearchForPatrolPoints"))
+            {
+                InvokeRepeating("SearchForPatrolPoints", 0, 2f);
+            }
+
             return;
+        }
+        else
+        {
+            CancelInvoke("SearchForPatrolPoints");
         }
 
         Vector3 direction = (CurrentPatrolPoint.position - transform.position).normalized;

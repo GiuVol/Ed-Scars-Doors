@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStatusable
@@ -140,10 +141,10 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     protected float _speed;
 
     /// <summary>
-    /// Stores whether the mob can fly or not.
+    /// Stores whether the gravity force must be removed the mob.
     /// </summary>
     [SerializeField]
-    protected bool _canFly;
+    protected bool _canFloat;
 
     /// <summary>
     /// Stores the force with which the mob should repel the player.
@@ -156,17 +157,17 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// </summary>
     [SerializeField]
     protected int _contactDamage;
-    
+
     #endregion
 
     #region Patrolling
 
     [Header("Patrolling")]
     /// <summary>
-    /// The points that the mob could cover when it has not found the player.
+    /// The group of patrol points that this mob will be able to cover.
     /// </summary>
     [SerializeField]
-    private List<Transform> _patrolPoints;
+    private PatrolPointsGroup _patrolPointsGroup;
     /// <summary>
     /// Specifies the way in which patrol points will be covered.
     /// </summary>
@@ -181,59 +182,49 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// Stores the current target patrol point.
     /// </summary>
     private int _currentPatrolPointIndex;
-    
+
     /// <summary>
-    /// Property to access in a controlled way to the patrol points.
+    /// Property to access to the patrol points group in a controlled way.
+    /// </summary>
+    protected PatrolPointsGroup PPGroup
+    {
+        get
+        {
+            return _patrolPointsGroup;
+        }
+
+        set
+        {
+            if (value != null)
+            {
+                if (!value.IsBusy)
+                {
+                    _patrolPointsGroup = value;
+                    _patrolPointsGroup.Subscriber = this;
+                    return;
+                }
+            }
+
+            _patrolPointsGroup = null;
+        }
+    }
+
+    /// <summary>
+    /// Property that returns the patrol points of the current patrol points group.
     /// </summary>
     protected List<Transform> PatrolPoints
     {
         get
         {
-            if (_patrolPoints == null)
-            {
-                _patrolPoints = new List<Transform>();
-            }
-
-            return _patrolPoints;
-        }
-
-        set
-        {
-            if (_patrolPoints == null)
-            {
-                _patrolPoints = new List<Transform>();
-            }
-
-            _patrolPoints.Clear();
-
-            if (value == null)
-            {
-                return;
-            }
-
-            foreach (Transform patrolPoint in value)
-            {
-                _patrolPoints.Add(patrolPoint);
-            }
-        }
-    }
-
-    /// <summary>
-    /// Returns the first patrol point in the list, or null, if it doesn't exist.
-    /// </summary>
-    protected Transform FirstPatrolPoint
-    {
-        get
-        {
-            if (PatrolPoints.Count == 0)
+            if (_patrolPointsGroup == null)
             {
                 return null;
             }
 
-            return PatrolPoints[0];
+            return _patrolPointsGroup.PatrolPoints;
         }
     }
-
+    
     /// <summary>
     /// Returns the current patrol point.
     /// </summary>
@@ -241,6 +232,11 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     {
         get
         {
+            if (PatrolPoints == null)
+            {
+                return null;
+            }
+            
             if (PatrolPoints.Count == 0)
             {
                 return null;
@@ -257,6 +253,11 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// </summary>
     protected void IncreasePatrolPoint()
     {
+        if (PatrolPoints == null)
+        {
+            return;
+        }
+        
         if (PatrolPoints.Count == 0)
         {
             return;
@@ -301,6 +302,29 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
         _currentPatrolPointIndex = Mathf.Clamp(_currentPatrolPointIndex, 0, PatrolPoints.Count - 1);
     }
 
+    /// <summary>
+    /// This method allows to search for the nearest patrol points group.
+    /// </summary>
+    /// <returns>Whether the patrol points group is found or not</returns>
+    protected bool SearchForPatrolPoints()
+    {
+        List<PatrolPointsGroup> ppGroupsList = FindObjectsOfType<PatrolPointsGroup>().ToList();
+
+        ppGroupsList.RemoveAll(ppGroup => ppGroup.IsBusy);
+
+        IEnumerable<PatrolPointsGroup> orderedPPGroups = ppGroupsList
+            .OrderBy(ppGroup => Vector3.Distance(ppGroup.transform.position, transform.position));
+
+        bool foundResults = ppGroupsList.Count > 0;
+
+        if (foundResults)
+        {
+            PPGroup = orderedPPGroups.ToList()[0];
+        }
+
+        return foundResults;
+    }
+    
     #endregion
 
     /// <summary>
@@ -387,6 +411,8 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     protected void Start()
     {
         Setup();
+
+        PPGroup = _patrolPointsGroup;
     }
 
     #region Setup
@@ -490,7 +516,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
             _attachedRigidbody.drag = 3;
             _attachedRigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
 
-            if (_canFly)
+            if (_canFloat)
             {
                 _attachedRigidbody.gravityScale = 0;
             }
