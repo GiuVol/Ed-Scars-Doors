@@ -141,7 +141,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     protected float _speed;
 
     /// <summary>
-    /// Stores whether the gravity force must be removed the mob.
+    /// Stores whether the mob can float in the air, without the gravity force applied to it.
     /// </summary>
     [SerializeField]
     protected bool _canFloat;
