@@ -8,8 +8,14 @@ public class Flydier : GenericMob
     /// Specifies if the flydier should strictly follow the patrol points.
     /// </summary>
     [SerializeField]
-    private bool _stayOnPattern;
+    private bool _remainsOnPattern;
 
+    /// <summary>
+    /// Specifies where does the projectiles come from.
+    /// </summary>
+    [SerializeField]
+    private Transform _projectileSpawnPoint;
+    
     /// <summary>
     /// The custom Flydier target, that specifies where to go.
     /// </summary>
@@ -38,7 +44,7 @@ public class Flydier : GenericMob
             return;
         }
 
-        if (_stayOnPattern)
+        if (_remainsOnPattern)
         {
             FollowPattern(_player);
         } else
@@ -140,6 +146,13 @@ public class Flydier : GenericMob
 
     private void HandlePlayer(PlayerController player)
     {
+        if (player == null)
+        {
+            return;
+        }
+
+        #region Assigning the desired position to the target
+
         Vector3 leftPosition = player.transform.position + Vector3.left * _attackRange;
         Vector3 rightPosition = player.transform.position + Vector3.right * _attackRange;
 
@@ -150,22 +163,13 @@ public class Flydier : GenericMob
 
         _target.position = _mobAI.GetNearestReachablePosition(targetPosition);
 
+        #endregion
+        
         float distance = Vector3.Distance(transform.position, _target.position);
 
-        if (distance > 2)
+        if (distance >= 1f)
         {
-            Chase(_target);
-
-            Vector3 lookDirection = (player.transform.position - transform.position).normalized;
-
-            if (lookDirection.x > 0)
-            {
-                transform.rotation = Quaternion.Euler(0, 0, 0);
-            }
-            else if (lookDirection.x < 0)
-            {
-                transform.rotation = Quaternion.Euler(0, -180, 0);
-            }
+            Chase(_target, player.transform);
         }
         else
         {
@@ -176,19 +180,26 @@ public class Flydier : GenericMob
         }
     }
 
-    private void Chase(Transform targetTransform)
+    private void Chase(Transform positionTarget, Transform lookTarget = null)
     {
-        _mobAI.Target = targetTransform;
+        if (positionTarget == null)
+        {
+            return;
+        }
 
+        _mobAI.Target = positionTarget;
+
+        //Moving
         _attachedRigidbody.AddForce(_mobAI.DesiredDirection * _speed * Time.deltaTime);
-    }
 
-    protected override IEnumerator Attack(PlayerController target)
-    {
-        Transform playerTransform = target.transform;
+        #region Rotating
 
-        Vector3 lookDirection = 
-            ((playerTransform.position + playerTransform.up * 2) - transform.position).normalized;
+        if (lookTarget == null)
+        {
+            lookTarget = positionTarget;
+        }
+
+        Vector3 lookDirection = (lookTarget.position - transform.position).normalized;
 
         if (lookDirection.x > 0)
         {
@@ -199,18 +210,60 @@ public class Flydier : GenericMob
             transform.rotation = Quaternion.Euler(0, -180, 0);
         }
 
-        Vector3 shootDirection = target.transform.position - transform.position;
-        shootDirection.y = 0;
+        #endregion
+    }
+
+    protected override IEnumerator Attack(PlayerController target)
+    {
+        if (target == null)
+        {
+            yield break;
+        }
+
+        Transform playerTransform = target.transform;
+
+        Vector3 lookDirection = (playerTransform.position - transform.position).normalized;
+        lookDirection.y = 0;
+        Vector3 shootDirection = lookDirection;
+
+        #region Rotating according to lookDirection
+
+        if (lookDirection.x > 0)
+        {
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+        else if (lookDirection.x < 0)
+        {
+            transform.rotation = Quaternion.Euler(0, -180, 0);
+        }
+
+        #endregion
+
+        #region Calculating the spawn position of the projectile
+
+        Vector3 spawnPosition;
+
+        if (_projectileSpawnPoint == null)
+        {
+            spawnPosition = transform.position + transform.right * 2;
+        } else
+        {
+            spawnPosition = _projectileSpawnPoint.position;
+        }
+
+        #endregion
+
+        #region Calculating the desired rotation of the projectile
 
         float angle = Mathf.Atan2(shootDirection.y, shootDirection.x) * Mathf.Rad2Deg;
         Quaternion desiredRotation = Quaternion.AngleAxis(angle, Vector3.forward);
 
-        Vector3 spawnPoint = transform.position + transform.right * 2;
+        #endregion
 
         Projectile resource =
             Resources.Load<Projectile>(Projectile.ProjectileResourcesPath + Projectile.NormalProjectileName);
 
-        Projectile projectile = Instantiate(resource, spawnPoint, desiredRotation);
+        Projectile projectile = Instantiate(resource, spawnPosition, desiredRotation);
 
         projectile.AttackerAttack = Stats.Attack.CurrentValue;
 

@@ -84,7 +84,7 @@ public class MobAI : MonoBehaviour
         _smoothModifier = gameObject.GetComponent<SimpleSmoothModifier>();
 
         _currentWaypoint = 0;
-        _nextWaypointDistance = 1.5f;
+        _nextWaypointDistance = .5f;
     }
 
     #region Current Path Calculation
