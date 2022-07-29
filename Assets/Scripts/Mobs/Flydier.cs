@@ -122,7 +122,7 @@ public class Flydier : GenericMob
 
         if (distance > 1.5f)
         {
-            _attachedRigidbody.AddForce(moveDirection * _speed * Time.deltaTime);
+            _attachedRigidbody.AddForce(moveDirection * _mass * _speed * Time.deltaTime);
         } else
         {
             IncreasePatrolPoint();
@@ -190,7 +190,7 @@ public class Flydier : GenericMob
         _mobAI.Target = positionTarget;
 
         //Moving
-        _attachedRigidbody.AddForce(_mobAI.DesiredDirection * _speed * Time.deltaTime);
+        _attachedRigidbody.AddForce(_mobAI.DesiredDirection * _mass * _speed * Time.deltaTime);
 
         #region Rotating
 

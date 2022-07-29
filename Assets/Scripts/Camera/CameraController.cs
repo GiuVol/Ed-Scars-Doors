@@ -124,7 +124,12 @@ public class CameraController : MonoBehaviour
     /// </summary>
     private void FollowTarget()
     {
-        _desiredPosition = new Vector3(Target.position.x, Target.position.y) + PositionOffset;
+        bool flipX = Target.transform.right.x < 0;
+
+        float actualPositionOffsetX = flipX ? -PositionOffset.x : PositionOffset.x;
+        Vector3 actualPositionOffset = new Vector3(actualPositionOffsetX, PositionOffset.y, PositionOffset.z);
+
+        _desiredPosition = new Vector3(Target.position.x, Target.position.y) + actualPositionOffset;
         _desiredPosition.z = -5;
 
         transform.position = Vector3.SmoothDamp(transform.position, _desiredPosition, ref _currentVelocity, _smoothTime);

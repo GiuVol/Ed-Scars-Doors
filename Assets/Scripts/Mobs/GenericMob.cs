@@ -140,12 +140,19 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     protected float _attackInterval;
 
     /// <summary>
+    /// Attribute <c>Mass</c>
+    /// Stores the mass of the rigidbody component that will be attached to the mob.
+    /// </summary>
+    [SerializeField]
+    protected float _mass;
+
+    /// <summary>
     /// Attribute <c>Speed</c>
     /// Represents the speed at which the mob moves.
     /// </summary>
     [SerializeField]
     protected float _speed;
-
+    
     /// <summary>
     /// Stores whether the mob can float in the air, without the gravity force applied to it.
     /// </summary>
@@ -538,6 +545,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     {
         if (_attachedRigidbody != null)
         {
+            _attachedRigidbody.mass = Mathf.Max(_mass, 1);
             _attachedRigidbody.drag = 3;
             _attachedRigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
 
