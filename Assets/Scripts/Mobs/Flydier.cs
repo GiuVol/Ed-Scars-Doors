@@ -1,14 +1,39 @@
 using System.Collections;
 using UnityEngine;
-using Pathfinding;
 
 public class Flydier : GenericMob
 {
+    /// <summary>
+    /// Const which represent how variable the x position offset is.
+    /// </summary>
+    private const float XOffsetVariance = 2;
+
+    /// <summary>
+    /// The minimum difference of positions y component that the flydier needs to attack the target.
+    /// </summary>
+    private const float HeightDistanceToAttack = 2;
+
+    /// <summary>
+    /// Stores the path to the prefab of the flydier.
+    /// </summary>
+    public const string PrefabPath = "Enemies/Flydier";
+
     /// <summary>
     /// Specifies if the flydier should strictly follow the patrol points.
     /// </summary>
     [SerializeField]
     private bool _remainsOnPattern;
+
+    /// <summary>
+    /// This property is used to set _remainsOnPattern field from outside.
+    /// </summary>
+    public bool RemainsOnPattern
+    {
+        set
+        {
+            _remainsOnPattern = value;
+        }
+    }
 
     /// <summary>
     /// Specifies where does the projectiles come from.
@@ -21,12 +46,54 @@ public class Flydier : GenericMob
     /// </summary>
     private Transform _target;
 
+    /// <summary>
+    /// Property that returns whether the mob can patrol or not.
+    /// </summary>
+    private bool CanPatrol
+    {
+        get
+        {
+            bool canPatrol = false;
+
+            if (PPGroup != null)
+            {
+                canPatrol = (PPGroup.FirstPatrolPoint != null);
+            }
+
+            return canPatrol;
+        }
+    }
+
+    /// <summary>
+    /// The eventual Spawnest that spawned this mob.
+    /// </summary>
+    private Spawnest _spawner;
+
+    /// <summary>
+    /// A property to set the value of the spawner.
+    /// </summary>
+    public Spawnest Spawner
+    {
+        set
+        {
+            _spawner = value;
+        }
+    }
+
+    /// <summary>
+    /// Stores a randomly generated value that gives variability to the target position of the flydier.
+    /// </summary>
+    private float _xPositionOffset;
+    
     #region Start and Setup
 
     protected new void Start()
     {
         base.Start();
+
         _target = new GameObject("FlydierTarget").transform;
+
+        InvokeRepeating("UpdateXOffset", 0, 5);
     }
 
     protected override void SetupLayers()
@@ -44,7 +111,7 @@ public class Flydier : GenericMob
             return;
         }
 
-        if (_remainsOnPattern)
+        if (_remainsOnPattern && CanPatrol)
         {
             FollowPattern(_player);
         } else
@@ -65,6 +132,14 @@ public class Flydier : GenericMob
         }
     }
 
+    /// <summary>
+    /// Method used to change the x position offset that the flydier should follow when chasing the player.
+    /// </summary>
+    private void UpdateXOffset()
+    {
+        _xPositionOffset = Random.Range(-XOffsetVariance, XOffsetVariance);
+    }
+
     #region Behaviour
 
     private void FollowPattern(PlayerController player)
@@ -77,7 +152,7 @@ public class Flydier : GenericMob
         {
             float heightDistance = Mathf.Abs(transform.position.y - player.transform.position.y);
 
-            if (heightDistance <= .5f)
+            if (heightDistance <= HeightDistanceToAttack)
             {
                 StartCoroutine(HandleAttack(player));
             }
@@ -86,14 +161,7 @@ public class Flydier : GenericMob
 
     private void Patrol(Transform lookTarget = null)
     {
-        bool canPatrol = false;
-
-        if (PPGroup != null)
-        {
-            canPatrol = (PPGroup.FirstPatrolPoint != null);
-        }
-
-        if (!canPatrol)
+        if (!CanPatrol)
         {
             if (!IsInvoking("SearchForPatrolPoints"))
             {
@@ -153,8 +221,8 @@ public class Flydier : GenericMob
 
         #region Assigning the desired position to the target
 
-        Vector3 leftPosition = player.transform.position + Vector3.left * _attackRange;
-        Vector3 rightPosition = player.transform.position + Vector3.right * _attackRange;
+        Vector3 leftPosition = player.transform.position + Vector3.left * (_attackRange + _xPositionOffset);
+        Vector3 rightPosition = player.transform.position + Vector3.right * (_attackRange + _xPositionOffset);
 
         float leftDistance = Vector3.Distance(transform.position, leftPosition);
         float rightDistance = Vector3.Distance(transform.position, rightPosition);
@@ -165,18 +233,13 @@ public class Flydier : GenericMob
 
         #endregion
         
-        float distance = Vector3.Distance(transform.position, _target.position);
+        Chase(_target, player.transform);
 
-        if (distance >= 1f)
+        float heightDistance = Mathf.Abs(transform.position.y - _target.position.y);
+        
+        if (_canAttack && heightDistance <= HeightDistanceToAttack)
         {
-            Chase(_target, player.transform);
-        }
-        else
-        {
-            if (_canAttack)
-            {
-                StartCoroutine(HandleAttack(player));
-            }
+            StartCoroutine(HandleAttack(player));
         }
     }
 
@@ -279,6 +342,11 @@ public class Flydier : GenericMob
     {
         Destroy(_target.gameObject);
         Destroy(gameObject);
+
+        if (_spawner != null)
+        {
+            _spawner.SpawnedFlydiers.Remove(this);
+        }
     }
 
     #endregion

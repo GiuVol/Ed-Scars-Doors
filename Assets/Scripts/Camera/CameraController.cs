@@ -5,7 +5,7 @@ public class CameraController : MonoBehaviour
     /// <summary>
     /// The orthographic size that the camera has at the start.
     /// </summary>
-    private const float StandardOrthographicSize = 7f;
+    private const float StandardOrthographicSize = 10f;
 
     /// <summary>
     /// The min orthographic size that the camera can have.
@@ -15,7 +15,7 @@ public class CameraController : MonoBehaviour
     /// <summary>
     /// The max orthographic size that the camera can have.
     /// </summary>
-    private const float MaxOrthographicSize = 10;
+    private const float MaxOrthographicSize = 15;
 
     /// <summary>
     /// The time (in seconds) that the camera needs to reach the desired position.
@@ -27,7 +27,14 @@ public class CameraController : MonoBehaviour
     /// The standard position offset of the camera.
     /// </summary>
     [SerializeField]
-    public Vector3 _standardPositionOffset;
+    private Vector3 _standardPositionOffset;
+
+    /// <summary>
+    /// Stores whether the x component of the position offset must be inverted when the player 
+    /// changes direction.
+    /// </summary>
+    [SerializeField]
+    private bool _canFlipX;
 
     /// <summary>
     /// The <c>Camera</c> attached to the controller.
@@ -124,7 +131,7 @@ public class CameraController : MonoBehaviour
     /// </summary>
     private void FollowTarget()
     {
-        bool flipX = Target.transform.right.x < 0;
+        bool flipX = _canFlipX && Target.transform.right.x < 0;
 
         float actualPositionOffsetX = flipX ? -PositionOffset.x : PositionOffset.x;
         Vector3 actualPositionOffset = new Vector3(actualPositionOffsetX, PositionOffset.y, PositionOffset.z);
