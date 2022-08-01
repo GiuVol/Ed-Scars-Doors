@@ -93,11 +93,11 @@ public class HealthComponent : MonoBehaviour
     }
 
     /// <summary>
-    /// Method <c>IncreaseHealth</c>
+    /// Method <c>Increase/c>
     /// Increases the health of the character.
     /// </summary>
     /// <param name="increment">The integer value of the healing the character received</param>
-    public void Increase(int increment)
+    public void Increase(int increment, bool callOptionalProcedure = true)
     {
         if (!_initialized)
         {
@@ -109,7 +109,7 @@ public class HealthComponent : MonoBehaviour
         increment = Math.Max(increment, 0);
         CurrentHealth = Math.Min(CurrentHealth + increment, MaxHealth);
 
-        if (CurrentHealth != oldValue)
+        if (CurrentHealth != oldValue && callOptionalProcedure)
         {
             if (OnHealthIncreaseProcedure != null)
             {
@@ -119,11 +119,11 @@ public class HealthComponent : MonoBehaviour
     }
 
     /// <summary>
-    /// Method <c>DecreaseHealth</c>
+    /// Method <c>Decrease</c>
     /// Decreases the health of the character
     /// </summary>
     /// <param name="decrement">The integer value of the damage the character received</param>
-    public void DecreaseHealth(int decrement)
+    public void Decrease(int decrement, bool callOptionalProcedure = true)
     {
         if (!_initialized)
         {
@@ -135,7 +135,7 @@ public class HealthComponent : MonoBehaviour
         decrement = Math.Max(decrement, 0);
         CurrentHealth = Math.Max(CurrentHealth - decrement, DeathThreshold);
 
-        if (CurrentHealth != oldValue)
+        if (CurrentHealth != oldValue && callOptionalProcedure)
         {
             if (OnHealthDecreaseProcedure != null)
             {
@@ -157,7 +157,7 @@ public class HealthComponent : MonoBehaviour
     /// the percentage of the increment
     /// pre: this value should be clamped between 0 and 1.
     /// </param>
-    public void IncreasePercentage(float variation)
+    public void IncreasePercentage(float variation, bool callOptionalProcedure = true)
     {
         if (!_initialized)
         {
@@ -167,7 +167,7 @@ public class HealthComponent : MonoBehaviour
         variation = Mathf.Clamp01(variation);
         int increment = Mathf.FloorToInt((float)MaxHealth * variation);
 
-        Increase(increment);
+        Increase(increment, callOptionalProcedure);
     }
 
     /// <summary>
@@ -178,7 +178,7 @@ public class HealthComponent : MonoBehaviour
     /// the percentage of the decrement
     /// pre: this value should be clamped between 0 and 1.
     /// </param>
-    public void DecreasePercentage(float variation)
+    public void DecreasePercentage(float variation, bool callOptionalProcedure = true)
     {
         if (!_initialized)
         {
@@ -188,7 +188,7 @@ public class HealthComponent : MonoBehaviour
         variation = Mathf.Clamp01(variation);
         int decrement = Mathf.FloorToInt((float)MaxHealth * variation);
 
-        DecreaseHealth(decrement);
+        Decrease(decrement, callOptionalProcedure);
     }
 
     /// <summary>

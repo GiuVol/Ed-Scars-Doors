@@ -433,6 +433,37 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     #region Graphics
 
     /// <summary>
+    /// The list of the sprite renderers that make up the sprite.
+    /// </summary>
+    private List<SpriteRenderer> _renderers;
+
+    /// <summary>
+    /// A property that provides access in a controlled way to the list of sprite renderers.
+    /// </summary>
+    protected List<SpriteRenderer> Renderers
+    {
+        get
+        {
+            if (_renderers == null)
+            {
+                _renderers = new List<SpriteRenderer>();
+
+                foreach (SpriteRenderer renderer in GetComponentsInChildren<SpriteRenderer>())
+                {
+                    _renderers.Add(renderer);
+                }
+            }
+
+            return _renderers;
+        }
+    }
+
+    /// <summary>
+    /// Stores whether this mob is changing color.
+    /// </summary>
+    protected bool _isChangingColor;
+
+    /// <summary>
     /// A property which returns the eventual health bar of the mob; it's optional.
     /// </summary>
     protected UIBar HealthBar { get; set; }
@@ -508,7 +539,9 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     {
         if (Health != null)
         {
-            Health.Setup(_maxHealthValue, Die);
+            Health.Setup(_maxHealthValue, Die, 
+                         delegate { ChangeColorTemporarily(Color.green, .15f); }, 
+                         delegate { ChangeColorTemporarily(Color.red, .15f); });
         }
     }
 
@@ -600,6 +633,52 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// </summary>
     protected abstract void Die();
 
+    /// <summary>
+    /// Allows to change the color of the player for a while.
+    /// </summary>
+    /// <param name="color">The new color</param>
+    /// <param name="duration">The duration of the change</param>
+    public void ChangeColorTemporarily(Color color, float duration)
+    {
+        if (_isChangingColor)
+        {
+            return;
+        }
+
+        StartCoroutine(ChangeColorCoroutine(color, duration));
+    }
+
+    /// <summary>
+    /// Handles the player's colors change.
+    /// </summary>
+    /// <param name="color">The new color</param>
+    /// <param name="duration">The duration of the change</param>
+    private IEnumerator ChangeColorCoroutine(Color color, float duration)
+    {
+        if (_isChangingColor)
+        {
+            yield break;
+        }
+
+        _isChangingColor = true;
+
+        Color oldColor = Color.white;
+
+        foreach (SpriteRenderer renderer in Renderers)
+        {
+            renderer.color = color;
+        }
+
+        yield return new WaitForSeconds(duration);
+
+        foreach (SpriteRenderer renderer in Renderers)
+        {
+            renderer.color = oldColor;
+        }
+
+        _isChangingColor = false;
+    }
+
     protected void OnCollisionEnter2D(Collision2D collision)
     {
         if (LayersToIgnore.Contains(collision.gameObject.layer))
@@ -626,6 +705,6 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
 
         rigidbody.AddForce(conjunctionLine * _repulsiveForce);
         player.ChangeColorTemporarily(Color.red, .5f);
-        player.Health.DecreaseHealth(_contactDamage);
+        player.Health.Decrease(_contactDamage);
     }
 }

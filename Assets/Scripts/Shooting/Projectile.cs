@@ -309,7 +309,7 @@ public class Projectile : MonoBehaviour
 
             int damage = GameFormulas.Damage(basePower, attackerAttack, targetDefence);
 
-            collidedHealthable.Health.DecreaseHealth(damage);
+            collidedHealthable.Health.Decrease(damage);
         }
 
         foreach (AdditionalEffect effect in AdditionalEffects)
