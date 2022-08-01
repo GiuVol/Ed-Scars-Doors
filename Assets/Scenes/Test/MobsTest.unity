@@ -154,6 +154,37 @@ Transform:
   m_Father: {fileID: 572178387}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &143452083
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 143452084}
+  m_Layer: 0
+  m_Name: FlydiersSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &143452084
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 143452083}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.91, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1964712193425007824}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &324652599 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6348619705466406948, guid: ec33dc47eedda4d48bda44fc11445b82, type: 3}
@@ -285,9 +316,9 @@ MonoBehaviour:
   _maxSpawnableFlydiers: 2
   _egg: {fileID: 3463259769679275435}
   _eggGrowingSpeed: 0.25
-  _flydiersSpawnPoint: {fileID: 1964712193425007824}
+  _flydiersSpawnPoint: {fileID: 143452084}
   _flydiersRemainOnPattern: 0
-  _shouldEscape: 0
+  _canEscape: 0
   _dangerDistance: 15
 --- !u!4 &1229699440
 Transform:
@@ -1380,7 +1411,8 @@ Transform:
   m_LocalPosition: {x: 3.3550012, y: 10.8, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 143452084}
   m_Father: {fileID: 1670789330407496636}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

@@ -43,10 +43,10 @@ public class Spawnest : GenericMob
     private bool _flydiersRemainOnPattern;
 
     /// <summary>
-    /// Stores whether the spawnest can escape from the player or not.
+    /// Stores whether the spawnest should escape from the player or not.
     /// </summary>
     [SerializeField]
-    private bool _canEscape;
+    private bool _shouldEscape;
 
     /// <summary>
     /// Specifies how far from the player the nest must be.
@@ -55,13 +55,13 @@ public class Spawnest : GenericMob
     private float _dangerDistance;
 
     /// <summary>
-    /// Returns whether the spawnest should escape from the player or not.
+    /// Returns whether the spawnest can escape from the player or not.
     /// </summary>
-    private bool ShouldEscape
+    private bool CanEscape
     {
         get
         {
-            return _canEscape && _dangerDistance > 0;
+            return _shouldEscape && _dangerDistance > 0;
         }
     }
     
@@ -117,7 +117,7 @@ public class Spawnest : GenericMob
         {
             float distanceFromPlayer = Vector3.Distance(transform.position, _player.transform.position);
 
-            if (ShouldEscape && distanceFromPlayer < _dangerDistance)
+            if (CanEscape && distanceFromPlayer < _dangerDistance)
             {
                 Vector3 escapeDirection = (transform.position - _player.transform.position).normalized;
                 escapeDirection.y = 0;
