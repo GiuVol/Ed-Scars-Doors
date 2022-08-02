@@ -467,6 +467,11 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// A property which returns the eventual health bar of the mob; it's optional.
     /// </summary>
     protected UIBar HealthBar { get; set; }
+
+    /// <summary>
+    /// An auto-implemented property which stores the animator controller of the mob.
+    /// </summary>
+    protected Animator AnimController { get; set; }
     
     #endregion
 

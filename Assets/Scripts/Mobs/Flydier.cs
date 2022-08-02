@@ -14,6 +14,25 @@ public class Flydier : GenericMob
     private const float HeightDistanceToAttack = 2;
 
     /// <summary>
+    /// Consts useful for the Animator's handling.
+    /// </summary>
+    #region Animator's consts
+
+    private const string FlyCycleStateName = "FlyCycle";
+    private const string AttackStateName = "Attack";
+    private const string DieStateName = "Die";
+
+    private const string SpeedParameterName = "Speed";
+    private const string AttackParameterName = "Attack";
+    private const string DieParameterName = "Die";
+
+    private const float AttackProjectileSpawnPercentage = .25f;
+    private const float DieWaitPercentage = .5f;
+    private const float DieScaleLerpingSpeed = .5f;
+
+    #endregion
+
+    /// <summary>
     /// Stores the path to the prefab of the flydier.
     /// </summary>
     public const string PrefabPath = "Enemies/Flydier";
@@ -91,6 +110,8 @@ public class Flydier : GenericMob
     {
         base.Start();
 
+        AnimController = GetComponentInChildren<Animator>();
+
         _target = new GameObject("FlydierTarget").transform;
 
         InvokeRepeating("UpdateXOffset", 0, 5);
@@ -110,6 +131,10 @@ public class Flydier : GenericMob
         {
             return;
         }
+
+        float normalizedSpeed = Mathf.Abs(_attachedRigidbody.velocity.x) / (3);
+
+        AnimController.SetFloat("Speed", normalizedSpeed);
 
         if (_remainsOnPattern && CanPatrol)
         {
@@ -302,6 +327,16 @@ public class Flydier : GenericMob
 
         #endregion
 
+        AnimController.SetTrigger(AttackParameterName);
+
+        yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName(AttackStateName));
+
+        AnimatorStateInfo info = AnimController.GetCurrentAnimatorStateInfo(0);
+        
+        float animationDuration = info.length / info.speed;
+
+        yield return new WaitForSeconds(animationDuration * AttackProjectileSpawnPercentage);
+
         #region Calculating the spawn position of the projectile
 
         Vector3 spawnPosition;
@@ -309,7 +344,8 @@ public class Flydier : GenericMob
         if (_projectileSpawnPoint == null)
         {
             spawnPosition = transform.position + transform.right * 2;
-        } else
+        }
+        else
         {
             spawnPosition = _projectileSpawnPoint.position;
         }
@@ -322,7 +358,7 @@ public class Flydier : GenericMob
         Quaternion desiredRotation = Quaternion.AngleAxis(angle, Vector3.forward);
 
         #endregion
-
+        
         Projectile resource =
             Resources.Load<Projectile>(Projectile.ProjectileResourcesPath + Projectile.NormalProjectileName);
 
@@ -334,12 +370,41 @@ public class Flydier : GenericMob
 
         projectile.LayersToIgnore.Add(LayerMask.NameToLayer(MobLayerName));
         projectile.LayersToIgnore.Add(LayerMask.NameToLayer(MobProjectileLayerName));
+        projectile.LayersToIgnore.Add(LayerMask.NameToLayer(GameFormulas.ObstacleLayerName));
+
+        yield return new WaitUntil(() => !AnimController.GetCurrentAnimatorStateInfo(0).IsName(AttackStateName));
 
         yield break;
     }
 
     protected override void Die()
     {
+        StartCoroutine(DieCoroutine());
+    }
+
+    private IEnumerator DieCoroutine()
+    {
+        AnimController.SetTrigger(DieParameterName);
+
+        yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName(DieStateName));
+
+        AnimatorStateInfo info = AnimController.GetCurrentAnimatorStateInfo(0);
+
+        float animationDuration = info.length / info.speed;
+
+        yield return new WaitForSeconds(animationDuration * DieWaitPercentage);
+
+        Vector3 startScale = transform.localScale;
+        float lerpFactor = 0;
+
+        while (transform.localScale != Vector3.zero)
+        {
+            lerpFactor = Mathf.Clamp01(lerpFactor + (Time.fixedDeltaTime * DieScaleLerpingSpeed));
+            transform.localScale = Vector3.Lerp(startScale, Vector3.zero, lerpFactor);
+
+            yield return null;
+        }
+
         Destroy(_target.gameObject);
         Destroy(gameObject);
 
