@@ -223,6 +223,24 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     }
 
     /// <summary>
+    /// Property that returns whether the mob can patrol or not.
+    /// </summary>
+    protected bool CanPatrol
+    {
+        get
+        {
+            bool canPatrol = false;
+
+            if (PPGroup != null)
+            {
+                canPatrol = (PPGroup.FirstPatrolPoint != null);
+            }
+
+            return canPatrol;
+        }
+    }
+    
+    /// <summary>
     /// Property that returns the patrol points of the current patrol points group.
     /// </summary>
     protected List<Transform> PatrolPoints

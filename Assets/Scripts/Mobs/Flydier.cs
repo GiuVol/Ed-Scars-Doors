@@ -66,24 +66,6 @@ public class Flydier : GenericMob
     private Transform _target;
 
     /// <summary>
-    /// Property that returns whether the mob can patrol or not.
-    /// </summary>
-    private bool CanPatrol
-    {
-        get
-        {
-            bool canPatrol = false;
-
-            if (PPGroup != null)
-            {
-                canPatrol = (PPGroup.FirstPatrolPoint != null);
-            }
-
-            return canPatrol;
-        }
-    }
-
-    /// <summary>
     /// The eventual Spawnest that spawned this mob.
     /// </summary>
     private Spawnest _spawner;
@@ -132,11 +114,6 @@ public class Flydier : GenericMob
             return;
         }
 
-        Vector3 localSpaceVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
-        float normalizedSpeed = localSpaceVelocity.x / 3;
-
-        AnimController.SetFloat(SpeedParameterName, normalizedSpeed);
-
         if (_remainsOnPattern && CanPatrol)
         {
             FollowPattern(_player);
@@ -156,6 +133,11 @@ public class Flydier : GenericMob
                 HandlePlayer(_player);
             }
         }
+
+        Vector3 localSpaceVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
+        float normalizedSpeed = localSpaceVelocity.x / (_speed / _attachedRigidbody.drag);
+
+        AnimController.SetFloat(SpeedParameterName, normalizedSpeed);
     }
 
     /// <summary>
@@ -216,7 +198,7 @@ public class Flydier : GenericMob
 
         if (distance > 1.5f)
         {
-            _attachedRigidbody.AddForce(moveDirection * _mass * _speed * Time.deltaTime);
+            _attachedRigidbody.AddForce(moveDirection * _mass * _speed);
         } else
         {
             IncreasePatrolPoint();
@@ -279,7 +261,7 @@ public class Flydier : GenericMob
         _mobAI.Target = positionTarget;
 
         //Moving
-        _attachedRigidbody.AddForce(_mobAI.DesiredDirection * _mass * _speed * Time.deltaTime);
+        _attachedRigidbody.AddForce(_mobAI.DesiredDirection * _mass * _speed);
 
         #region Rotating
 
