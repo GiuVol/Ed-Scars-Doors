@@ -6,6 +6,19 @@ using UnityEngine;
 public class Spawnest : GenericMob
 {
     /// <summary>
+    /// Consts useful for the Animator's handling.
+    /// </summary>
+    #region Animator's consts
+    
+    private const string WalkCycleStateName = "WalkCycle";
+    private const string DieStateName = "Die";
+
+    private const string SpeedParameterName = "Speed";
+    private const string DieParameterName = "Die";
+
+    #endregion
+
+    /// <summary>
     /// The max scale that the egg must reach before the flydier comes out.
     /// </summary>
     private const float EggMaxScale = 1.75f;
@@ -106,6 +119,8 @@ public class Spawnest : GenericMob
     {
         base.Start();
 
+        AnimController = GetComponentInChildren<Animator>();
+
         _maxSpawnableFlydiers = Mathf.Max(_maxSpawnableFlydiers, 1);
 
         _eggStartLocalPosition = _egg.transform.localPosition;
@@ -113,6 +128,11 @@ public class Spawnest : GenericMob
 
     private void FixedUpdate()
     {
+        Vector3 localSpaceVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
+        float normalizedSpeed = localSpaceVelocity.x / 3;
+
+        AnimController.SetFloat(SpeedParameterName, normalizedSpeed);
+        
         if (_player != null)
         {
             float distanceFromPlayer = Vector3.Distance(transform.position, _player.transform.position);

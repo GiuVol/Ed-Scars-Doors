@@ -132,9 +132,10 @@ public class Flydier : GenericMob
             return;
         }
 
-        float normalizedSpeed = Mathf.Abs(_attachedRigidbody.velocity.x) / (3);
+        Vector3 localSpaceVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
+        float normalizedSpeed = localSpaceVelocity.x / 3;
 
-        AnimController.SetFloat("Speed", normalizedSpeed);
+        AnimController.SetFloat(SpeedParameterName, normalizedSpeed);
 
         if (_remainsOnPattern && CanPatrol)
         {
