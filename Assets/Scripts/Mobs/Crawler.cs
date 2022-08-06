@@ -10,8 +10,8 @@ public class Crawler : GenericMob
         throw new NotImplementedException();
     }
 
-    protected override void Die()
+    protected override IEnumerator Die()
     {
-
+        throw new NotImplementedException();
     }
 }

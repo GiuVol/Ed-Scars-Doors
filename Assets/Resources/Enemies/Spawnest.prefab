@@ -1859,7 +1859,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: Spawnest
-  _maxHealthValue: 150
+  _maxHealthValue: 1000
   _attackStandardValue: 0
   _attackMinValue: 0
   _attackMaxValue: 0
@@ -1891,7 +1891,6 @@ MonoBehaviour:
   _flydiersRemainOnPattern: 0
   _shouldEscape: 1
   _dangerDistance: 10
-  _remainsOnPattern: 0
 --- !u!70 &6372165237859632024
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

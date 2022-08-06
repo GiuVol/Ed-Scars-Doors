@@ -26,6 +26,14 @@ public class Spawnest : GenericMob
     /// </summary>
     private const float EggMaxScale = 1.75f;
 
+    protected override Vector3 HealthBarPositionOffset
+    {
+        get
+        {
+            return new Vector3(0, 10, 0);
+        }
+    }
+    
     /// <summary>
     /// Stores how many flydiers spawned by this nest can be alive at the same time;
     /// after the spawnest reaches this threshold, it will stop spawning, until some flydiers die.
@@ -118,11 +126,6 @@ public class Spawnest : GenericMob
         }
     }
 
-    /// <summary>
-    /// Stores whether the spawnest is dying.
-    /// </summary>
-    private bool _isDying;
-
     protected new void Start()
     {
         base.Start();
@@ -136,6 +139,11 @@ public class Spawnest : GenericMob
 
     private void FixedUpdate()
     {
+        if (HealthBar != null)
+        {
+            HealthBar.UpdateCurrentValue(Health.CurrentHealth);
+        }
+
         if (_isDying)
         {
             return;
@@ -155,7 +163,7 @@ public class Spawnest : GenericMob
                 _timeSafe = 0;
             }
 
-            if (CanEscape && _timeSafe < timeThatMustBeSafe)
+            if (CanEscape && _timeSafe < timeThatMustBeSafe && IsGrounded)
             {
                 Vector3 escapeDirection = (transform.position - _player.transform.position).normalized;
                 escapeDirection.y = 0;
@@ -245,17 +253,9 @@ public class Spawnest : GenericMob
         _egg.transform.localScale = Vector3.one * desiredScaleFactor;
     }
 
-    protected override void Die()
-    {
-        StopAllCoroutines();
-
-        StartCoroutine(DieCoroutine());
-    }
-
-    private IEnumerator DieCoroutine()
+    protected override IEnumerator Die()
     {
         _attachedRigidbody.velocity = Vector3.zero;
-        _isDying = true;
 
         AnimController.SetTrigger(DieParameterName);
 

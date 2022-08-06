@@ -391,6 +391,11 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     protected bool _canAttack;
 
     /// <summary>
+    /// Stores whether the mob is dying.
+    /// </summary>
+    protected bool _isDying;
+    
+    /// <summary>
     /// Set that contains all the layers that the mob should ignore.
     /// </summary>
     protected HashSet<int> _layersToIgnore;
@@ -482,7 +487,29 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     protected bool _isChangingColor;
 
     /// <summary>
-    /// A property which returns the eventual health bar of the mob; it's optional.
+    /// A property which returns the eventual health bar prefab of the mob.
+    /// </summary>
+    protected virtual UIBar HealthBarResource
+    {
+        get
+        {
+            return Resources.Load<UIBar>("UI/MobHealthbar");
+        }
+    }
+
+    /// <summary>
+    /// Stores the position offset of the healthbar.
+    /// </summary>
+    protected virtual Vector3 HealthBarPositionOffset
+    {
+        get
+        {
+            return Vector3.zero;
+        }
+    }
+    
+    /// <summary>
+    /// A property which returns the eventual health bar of the mob.
     /// </summary>
     protected UIBar HealthBar { get; set; }
 
@@ -490,8 +517,29 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// An auto-implemented property which stores the animator controller of the mob.
     /// </summary>
     protected Animator AnimController { get; set; }
-    
+
     #endregion
+
+    /// <summary>
+    /// A boolean property (get only) that returns whether the mob has something beneath him or not.
+    /// </summary>
+    public bool IsGrounded
+    {
+        get
+        {
+            LayerMask toCast = ~(1 << gameObject.layer);
+
+            Vector3 positionOffset = Vector3.up * .1f;
+            Vector3 offsettedPosition = transform.position + positionOffset;
+
+            float range = 1.15f;
+
+            RaycastHit2D hit =
+                Physics2D.Raycast(offsettedPosition, Vector3.down, range, toCast);
+
+            return hit;
+        }
+    }
 
     protected void Start()
     {
@@ -552,6 +600,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
 
         CustomUtilities.SetLayerRecursively(gameObject, LayerMask.NameToLayer(MobLayerName));
         SetupLayers();
+        SetupHealthBar();
     }
 
     /// <summary>
@@ -562,7 +611,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     {
         if (Health != null)
         {
-            Health.Setup(_maxHealthValue, Die, 
+            Health.Setup(_maxHealthValue, DieProcedure, 
                          delegate { ChangeColorTemporarily(Color.green, .15f); }, 
                          delegate { ChangeColorTemporarily(Color.red, .15f); });
         }
@@ -608,6 +657,9 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
             if (_canFloat)
             {
                 _attachedRigidbody.gravityScale = 0;
+            } else
+            {
+                _attachedRigidbody.gravityScale = 7;
             }
         }
     }
@@ -619,7 +671,19 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     {
         LayersToIgnore.Add(LayerMask.NameToLayer(MobLayerName));
     }
-    
+
+    /// <summary>
+    /// Procedure needed to setup the health bar.
+    /// </summary>
+    protected virtual void SetupHealthBar()
+    {
+        if (HealthBarResource != null)
+        {
+            HealthBar = Instantiate(HealthBarResource, GameObject.FindObjectOfType<Canvas>().transform);
+            HealthBar.InitializeDynamic(transform, HealthBarPositionOffset, Health.MaxHealth);
+        }
+    }
+
     #endregion
 
     /// <summary>
@@ -652,10 +716,35 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     protected abstract IEnumerator Attack(PlayerController target);
 
     /// <summary>
+    /// The procedure called when the mob dies.
+    /// </summary>
+    protected void DieProcedure()
+    {
+        StartCoroutine(HandleDeath());
+    }
+
+    /// <summary>
+    /// The Coroutine started when the mob dies.
+    /// </summary>
+    protected IEnumerator HandleDeath()
+    {
+        _isDying = true;
+
+        if (HealthBar != null)
+        {
+            Destroy(HealthBar.gameObject);
+        }
+
+        yield return StartCoroutine(Die());
+
+        _isDying = false;
+    }
+
+    /// <summary>
     /// It's used to destroy the mob and perform other additional actions when he dies.
     /// </summary>
-    protected abstract void Die();
-
+    protected abstract IEnumerator Die();
+    
     /// <summary>
     /// Allows to change the color of the player for a while.
     /// </summary>
@@ -704,6 +793,17 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
 
     protected void OnCollisionEnter2D(Collision2D collision)
     {
+        if (_isDying)
+        {
+            if (collision.gameObject.layer != LayerMask.NameToLayer(GameFormulas.TerrainLayerName))
+            {
+                Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>());
+                return;
+            }
+
+            return;
+        }
+
         if (LayersToIgnore.Contains(collision.gameObject.layer))
         {
             Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>());

@@ -37,6 +37,14 @@ public class Flydier : GenericMob
     /// </summary>
     public const string PrefabPath = "Enemies/Flydier";
 
+    protected override Vector3 HealthBarPositionOffset
+    {
+        get
+        {
+            return new Vector3(0, 3, 0);
+        }
+    }
+
     /// <summary>
     /// Specifies if the flydier should strictly follow the patrol points.
     /// </summary>
@@ -109,7 +117,12 @@ public class Flydier : GenericMob
 
     private void FixedUpdate()
     {
-        if (_isAttacking)
+        if (HealthBar != null)
+        {
+            HealthBar.UpdateCurrentValue(Health.CurrentHealth);
+        }
+
+        if (_isAttacking || _isDying)
         {
             return;
         }
@@ -360,12 +373,7 @@ public class Flydier : GenericMob
         yield break;
     }
 
-    protected override void Die()
-    {
-        StartCoroutine(DieCoroutine());
-    }
-
-    private IEnumerator DieCoroutine()
+    protected override IEnumerator Die()
     {
         AnimController.SetTrigger(DieParameterName);
 
@@ -388,13 +396,13 @@ public class Flydier : GenericMob
             yield return null;
         }
 
-        Destroy(_target.gameObject);
-        Destroy(gameObject);
-
         if (_spawner != null)
         {
             _spawner.SpawnedFlydiers.Remove(this);
         }
+
+        Destroy(_target.gameObject);
+        Destroy(gameObject);
     }
 
     #endregion
