@@ -394,6 +394,27 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// Stores whether the mob is dying.
     /// </summary>
     protected bool _isDying;
+
+    /// <summary>
+    /// A boolean property (get only) that returns whether the mob has something beneath him or not.
+    /// </summary>
+    public bool IsGrounded
+    {
+        get
+        {
+            LayerMask toCast = ~(1 << gameObject.layer);
+
+            Vector3 positionOffset = Vector3.up * .1f;
+            Vector3 offsettedPosition = transform.position + positionOffset;
+
+            float range = 1.15f;
+
+            RaycastHit2D hit =
+                Physics2D.Raycast(offsettedPosition, Vector3.down, range, toCast);
+
+            return hit;
+        }
+    }
     
     /// <summary>
     /// Set that contains all the layers that the mob should ignore.
@@ -458,12 +479,12 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// <summary>
     /// The list of the sprite renderers that make up the sprite.
     /// </summary>
-    private List<SpriteRenderer> _renderers;
+    protected List<SpriteRenderer> _renderers;
 
     /// <summary>
     /// A property that provides access in a controlled way to the list of sprite renderers.
     /// </summary>
-    protected List<SpriteRenderer> Renderers
+    protected virtual List<SpriteRenderer> Renderers
     {
         get
         {
@@ -519,27 +540,6 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     protected Animator AnimController { get; set; }
 
     #endregion
-
-    /// <summary>
-    /// A boolean property (get only) that returns whether the mob has something beneath him or not.
-    /// </summary>
-    public bool IsGrounded
-    {
-        get
-        {
-            LayerMask toCast = ~(1 << gameObject.layer);
-
-            Vector3 positionOffset = Vector3.up * .1f;
-            Vector3 offsettedPosition = transform.position + positionOffset;
-
-            float range = 1.15f;
-
-            RaycastHit2D hit =
-                Physics2D.Raycast(offsettedPosition, Vector3.down, range, toCast);
-
-            return hit;
-        }
-    }
 
     protected void Start()
     {
