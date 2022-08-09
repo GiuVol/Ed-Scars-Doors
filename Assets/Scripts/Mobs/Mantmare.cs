@@ -88,7 +88,7 @@ public class Mantmare : GenericMob
 
         if (IsOnScreen)
         {
-            _timeOnScreen = Mathf.Clamp(_timeOnScreen + Time.deltaTime, 0, 100);
+            _timeOnScreen = Mathf.Clamp(_timeOnScreen + Time.deltaTime, 0, 50);
         } else
         {
             _timeOnScreen = 0;

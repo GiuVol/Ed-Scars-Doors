@@ -66,7 +66,7 @@ MonoBehaviour:
   _attackInterval: 2
   _mass: 100
   _speed: 150
-  _canFloat: 0
+  _canFloat: 1
   _repulsiveForce: 1000
   _contactDamage: 1
   _patrolPointsGroup: {fileID: 0}

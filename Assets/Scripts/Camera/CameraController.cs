@@ -155,8 +155,8 @@ public class CameraController : MonoBehaviour
 
         #region Debug
 
-        LockToPosition(transform.position, 2);
-        _lockBoundries = true;
+        //LockToPosition(transform.position, 2);
+        //_lockBoundries = true;
         
         if (Target == null)
         {

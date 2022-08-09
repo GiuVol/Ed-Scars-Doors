@@ -1189,6 +1189,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Mantmare
       objectReference: {fileID: 0}
+    - target: {fileID: 8053133358580239728, guid: 0b11050be0856de489c7ab9bedcb5f55, type: 3}
+      propertyPath: _canFloat
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0b11050be0856de489c7ab9bedcb5f55, type: 3}
 --- !u!1 &1982929966
