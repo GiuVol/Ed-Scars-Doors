@@ -30,6 +30,35 @@ public class Mantmare : GenericMob
     }
 
     /// <summary>
+    /// Returns the stage of Mantmare, based on its health.
+    /// </summary>
+    private int MantmareStageByHealth
+    {
+        get
+        {
+            int stage = 1;
+
+            int currentHealth = Health.CurrentHealth;
+            int maxHealth = Health.MaxHealth;
+            
+            if (currentHealth > Mathf.RoundToInt(0.6f * maxHealth))
+            {
+                stage = 1;
+            }
+            else if (currentHealth > Mathf.RoundToInt(0.4f * maxHealth))
+            {
+                stage = 2;
+            }
+            else
+            {
+                stage = 3;
+            }
+            
+            return stage;
+        }
+    }
+
+    /// <summary>
     /// Returns a random attack interval, based on the stage of Mantmare.
     /// </summary>
     private float AttackIntervalByStage
@@ -38,24 +67,84 @@ public class Mantmare : GenericMob
         {
             float attackInterval;
 
-            int currentHealth = Health.CurrentHealth;
-            int maxHealth = Health.MaxHealth;
-
-            if (currentHealth > Mathf.RoundToInt(0.6f * maxHealth))
+            switch (MantmareStageByHealth)
             {
-                attackInterval = Random.Range(4, 6);
-            } else if (currentHealth > Mathf.RoundToInt(0.4f * maxHealth))
-            {
-                attackInterval = Random.Range(2, 4);
-            } else
-            {
-                attackInterval = Random.Range(1.5f, 3.5f);
+                case 1:
+                    attackInterval = Random.Range(4, 6);
+                    break;
+                case 2:
+                    attackInterval = Random.Range(2, 4);
+                    break;
+                case 3:
+                    attackInterval = Random.Range(1.5f, 3.5f);
+                    break;
+                default:
+                    attackInterval = Random.Range(4, 6);
+                    break;
             }
 
             return attackInterval;
         }
     }
 
+    /// <summary>
+    /// Returns a value that will be multiplied by the time that Mantmare has to wait to do a specific action.
+    /// </summary>
+    private float TimeMultiplierByStage
+    {
+        get
+        {
+            float timeMultiplier;
+
+            switch (MantmareStageByHealth)
+            {
+                case 1:
+                    timeMultiplier = 1;
+                    break;
+                case 2:
+                    timeMultiplier = .75f;
+                    break;
+                case 3:
+                    timeMultiplier = .5f;
+                    break;
+                default:
+                    timeMultiplier = 1;
+                    break;
+            }
+
+            return timeMultiplier;
+        }
+    }
+
+    /// <summary>
+    /// Returns a value that will multiply the capacities of Mantmare.
+    /// </summary>
+    private float PowerMultiplierByStage
+    {
+        get
+        {
+            float powerMultiplier;
+
+            switch (MantmareStageByHealth)
+            {
+                case 1:
+                    powerMultiplier = 1;
+                    break;
+                case 2:
+                    powerMultiplier = 1.25f;
+                    break;
+                case 3:
+                    powerMultiplier = 1.5f;
+                    break;
+                default:
+                    powerMultiplier = 1;
+                    break;
+            }
+
+            return powerMultiplier;
+        }
+    }
+    
     /// <summary>
     /// Returns whether Mantmare is on screen or not.
     /// </summary>
@@ -84,13 +173,22 @@ public class Mantmare : GenericMob
     /// </summary>
     private float _timeOnScreen;
 
+    /// <summary>
+    /// Stores a random position on the screen, useful for Mantmare to wander.
+    /// </summary>
     private Vector3 _randomWanderPosition;
 
     #region Rig
 
+    /// <summary>
+    /// The component that is used to cast a collision which involves the left arm of Mantmare.
+    /// </summary>
     [SerializeField]
     private TriggerCaster _leftArmTriggerCaster;
 
+    /// <summary>
+    /// The component that is used to cast a collision which involves the head of Mantmare.
+    /// </summary>
     [SerializeField]
     private TriggerCaster _headTriggerCaster;
     
@@ -142,20 +240,20 @@ public class Mantmare : GenericMob
         {
             Color color;
 
-            int currentHealth = Health.CurrentHealth;
-            int maxHealth = Health.MaxHealth;
-
-            if (currentHealth > Mathf.RoundToInt(0.6f * maxHealth))
+            switch (MantmareStageByHealth)
             {
-                color = _normalLegsColor;
-            }
-            else if (currentHealth > Mathf.RoundToInt(0.4f * maxHealth))
-            {
-                color = _stage2LegsColor;
-            }
-            else
-            {
-                color = _stage3LegsColor;
+                case 1:
+                    color = _normalLegsColor;
+                    break;
+                case 2:
+                    color = _stage2LegsColor;
+                    break;
+                case 3:
+                    color = _stage3LegsColor;
+                    break;
+                default:
+                    color = _normalLegsColor;
+                    break;
             }
 
             return color;
@@ -168,20 +266,20 @@ public class Mantmare : GenericMob
         {
             Color color;
 
-            int currentHealth = Health.CurrentHealth;
-            int maxHealth = Health.MaxHealth;
-
-            if (currentHealth > Mathf.RoundToInt(0.6f * maxHealth))
+            switch (MantmareStageByHealth)
             {
-                color = _normalArmsColor;
-            }
-            else if (currentHealth > Mathf.RoundToInt(0.4f * maxHealth))
-            {
-                color = _stage2ArmsColor;
-            }
-            else
-            {
-                color = _stage3ArmsColor;
+                case 1:
+                    color = _normalArmsColor;
+                    break;
+                case 2:
+                    color = _stage2ArmsColor;
+                    break;
+                case 3:
+                    color = _stage3ArmsColor;
+                    break;
+                default:
+                    color = _normalArmsColor;
+                    break;
             }
 
             return color;
@@ -194,20 +292,20 @@ public class Mantmare : GenericMob
         {
             Color color;
 
-            int currentHealth = Health.CurrentHealth;
-            int maxHealth = Health.MaxHealth;
-
-            if (currentHealth > Mathf.RoundToInt(0.6f * maxHealth))
+            switch (MantmareStageByHealth)
             {
-                color = _normalBustColor;
-            }
-            else if (currentHealth > Mathf.RoundToInt(0.4f * maxHealth))
-            {
-                color = _stage2BustColor;
-            }
-            else
-            {
-                color = _stage3BustColor;
+                case 1:
+                    color = _normalBustColor;
+                    break;
+                case 2:
+                    color = _stage2BustColor;
+                    break;
+                case 3:
+                    color = _stage3BustColor;
+                    break;
+                default:
+                    color = _normalBustColor;
+                    break;
             }
 
             return color;
@@ -220,20 +318,20 @@ public class Mantmare : GenericMob
         {
             Color color;
 
-            int currentHealth = Health.CurrentHealth;
-            int maxHealth = Health.MaxHealth;
-
-            if (currentHealth > Mathf.RoundToInt(0.6f * maxHealth))
+            switch (MantmareStageByHealth)
             {
-                color = _normalHeadColor;
-            }
-            else if (currentHealth > Mathf.RoundToInt(0.4f * maxHealth))
-            {
-                color = _stage2HeadColor;
-            }
-            else
-            {
-                color = _stage3HeadColor;
+                case 1:
+                    color = _normalHeadColor;
+                    break;
+                case 2:
+                    color = _stage2HeadColor;
+                    break;
+                case 3:
+                    color = _stage3HeadColor;
+                    break;
+                default:
+                    color = _normalHeadColor;
+                    break;
             }
 
             return color;
@@ -255,13 +353,43 @@ public class Mantmare : GenericMob
             _timeOnScreen = 2;
         }
 
-        InvokeRepeating("UpdateRandomWanderPosition", 0, 1);
+        InvokeRepeating("UpdateRandomWanderPosition", 0, 3);
     }
 
+    #region Random points on screen
+
+    /// <summary>
+    /// A procedure used to update the random wander position.
+    /// </summary>
     private void UpdateRandomWanderPosition()
     {
         GetRandomPointOnScreen(out _randomWanderPosition);
     }
+
+    /// <summary>
+    /// A procedure used to calculate a random position on the screen.
+    /// </summary>
+    /// <param name="position">A Vector3 that will store the found position</param>
+    /// <returns>returns whether the position has been found or not</returns>
+    private bool GetRandomPointOnScreen(out Vector3 position)
+    {
+        if (Camera.main == null)
+        {
+            position = Vector3.zero;
+            return false;
+        }
+
+        float randomX = Random.Range
+            (Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).x, Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x);
+        float randomY = Random.Range
+            (Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).y, Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height)).y);
+
+        position = new Vector3(randomX, randomY);
+
+        return true;
+    }
+
+    #endregion
 
     private void FixedUpdate()
     {
@@ -301,7 +429,7 @@ public class Mantmare : GenericMob
             _timeOnScreen = 0;
         }
 
-        if (_isAttacking)
+        if (_isAttacking || _isDying)
         {
             return;
         }
@@ -335,6 +463,14 @@ public class Mantmare : GenericMob
         AnimController.SetFloat("VerticalSpeed", normalizedYSpeed);
     }
 
+    #region Movement
+
+    /// <summary>
+    /// A procedure used to change the position of Mantmare.
+    /// </summary>
+    /// <param name="positionToReach">The position to reach</param>
+    /// <param name="speed">The movement speed, if not specified Mantmare will move with its standard speed</param>
+    /// <param name="rotate">If this value is true, Mantmare will rotate towards the position to reach</param>
     private void ReachPosition(Vector3 positionToReach, float speed = 0, bool rotate = false)
     {
         if (speed <= 0)
@@ -363,6 +499,10 @@ public class Mantmare : GenericMob
         }
     }
 
+    /// <summary>
+    /// A procedure that makes Mantmare wander.
+    /// </summary>
+    /// <param name="playerTransform"></param>
     private void RandomWander(Transform playerTransform)
     {
         if (playerTransform == null)
@@ -383,11 +523,13 @@ public class Mantmare : GenericMob
         }
     }
 
+    #endregion
+
     #region Attack
 
     protected override IEnumerator Attack(PlayerController target)
     {
-        int decidedPattern = Random.Range(3, 4);
+        int decidedPattern = Random.Range(1, 4);
 
         switch (decidedPattern)
         {
@@ -444,11 +586,13 @@ public class Mantmare : GenericMob
 
         _leftArmTriggerCaster.TriggerFunction = collider => InflictDamage(collider, 70);
 
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(TimeMultiplierByStage);
 
         AnimController.SetTrigger("EndAttack1");
 
-        yield return new WaitForSeconds(1);
+        yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName("Attack1_end"));
+
+        yield return new WaitUntil(() => !AnimController.GetCurrentAnimatorStateInfo(0).IsName("Attack1_end"));
 
         _leftArmTriggerCaster.TriggerFunction = null;
     }
@@ -516,7 +660,7 @@ public class Mantmare : GenericMob
 
             AnimController.SetTrigger("StartAttack2");
 
-            yield return new WaitForSeconds(.5f);
+            yield return new WaitForSeconds(TimeMultiplierByStage / 2);
 
             AnimController.SetTrigger("StopChargingAttack2");
 
@@ -534,9 +678,9 @@ public class Mantmare : GenericMob
             _attachedRigidbody.velocity = Vector3.zero;
             AnimController.SetTrigger("EndAttack2");
 
+            yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName("Attack2_end"));
+            
             yield return new WaitUntil(() => !AnimController.GetCurrentAnimatorStateInfo(0).IsName("Attack2_end"));
-
-            yield return new WaitForSeconds(1);
 
             _headTriggerCaster.TriggerFunction = null;
         }
@@ -599,13 +743,18 @@ public class Mantmare : GenericMob
 
         AnimController.SetTrigger("StartAttack3");
 
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(2 * TimeMultiplierByStage);
 
         AnimController.SetTrigger("EndAttack3");
 
-        yield return new WaitForSeconds(1);
+        yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName("Attack3_end"));
+
+        yield return new WaitUntil(() => !AnimController.GetCurrentAnimatorStateInfo(0).IsName("Attack3_end"));
     }
     
+    /// <summary>
+    /// The procedure used to inflict damage to the player.
+    /// </summary>
     private void InflictDamage(Collider2D collision, float power)
     {
         if (collision.gameObject.layer != LayerMask.NameToLayer(PlayerController.PlayerLayerName))
@@ -637,27 +786,30 @@ public class Mantmare : GenericMob
 
     protected override IEnumerator Die()
     {
+        AnimController.SetTrigger("Die");
+
+        yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName("Die"));
+
+        AnimatorStateInfo info = AnimController.GetCurrentAnimatorStateInfo(0);
+
+        float animationDuration = info.length / info.speed;
+
+        yield return new WaitForSeconds(animationDuration * 1.5f);
+
+        Vector3 startScale = transform.localScale;
+        float lerpFactor = 0;
+
+        while (transform.localScale != Vector3.zero)
+        {
+            lerpFactor = Mathf.Clamp01(lerpFactor + (Time.fixedDeltaTime));
+            transform.localScale = Vector3.Lerp(startScale, Vector3.zero, lerpFactor);
+
+            yield return null;
+        }
+
         Destroy(gameObject);
 
         yield break;
-    }
-
-    private bool GetRandomPointOnScreen(out Vector3 position)
-    {
-        if (Camera.main == null)
-        {
-            position = Vector3.zero;
-            return false;
-        }
-
-        float randomX = Random.Range
-            (Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).x, Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x);
-        float randomY = Random.Range
-            (Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).y, Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height)).y);
-
-        position = new Vector3(randomX, randomY);
-
-        return true;
     }
 
     protected new void OnCollisionEnter2D(Collision2D collision)
@@ -692,11 +844,12 @@ public class Mantmare : GenericMob
         {
             return;
         }
-        /*
-        Vector2 conjunctionLine = (player.transform.position - transform.position).normalized;
+
+        Vector3 offsettedPosition = new Vector3(transform.position.x, player.transform.position.y);
+        Vector2 conjunctionLine = (player.transform.position - offsettedPosition).normalized;
 
         rigidbody.AddForce(conjunctionLine * _repulsiveForce);
         player.ChangeColorTemporarily(Color.red, .5f);
-        player.Health.Decrease(_contactDamage);*/
+        player.Health.Decrease(_contactDamage);
     }
 }

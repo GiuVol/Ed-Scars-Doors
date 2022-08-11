@@ -824,7 +824,8 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
             return;
         }
 
-        Vector2 conjunctionLine = (player.transform.position - transform.position).normalized;
+        Vector3 offsettedPosition = new Vector3(transform.position.x, player.transform.position.y);
+        Vector2 conjunctionLine = (player.transform.position - offsettedPosition).normalized;
 
         rigidbody.AddForce(conjunctionLine * _repulsiveForce);
         player.ChangeColorTemporarily(Color.red, .5f);
