@@ -279,7 +279,7 @@ public class Projectile : MonoBehaviour
     {
         if (LayersToIgnore.Contains(collision.gameObject.layer))
         {
-            Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>());
+            Physics2D.IgnoreCollision(collision.collider, collision.otherCollider);
             return;
         }
 

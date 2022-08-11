@@ -750,7 +750,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// </summary>
     /// <param name="color">The new color</param>
     /// <param name="duration">The duration of the change</param>
-    public void ChangeColorTemporarily(Color color, float duration)
+    public virtual void ChangeColorTemporarily(Color color, float duration)
     {
         if (_isChangingColor)
         {
@@ -765,7 +765,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// </summary>
     /// <param name="color">The new color</param>
     /// <param name="duration">The duration of the change</param>
-    private IEnumerator ChangeColorCoroutine(Color color, float duration)
+    protected virtual IEnumerator ChangeColorCoroutine(Color color, float duration)
     {
         if (_isChangingColor)
         {
@@ -797,7 +797,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
         {
             if (collision.gameObject.layer != LayerMask.NameToLayer(GameFormulas.TerrainLayerName))
             {
-                Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>());
+                Physics2D.IgnoreCollision(collision.collider, collision.otherCollider);
                 return;
             }
 
@@ -806,7 +806,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
 
         if (LayersToIgnore.Contains(collision.gameObject.layer))
         {
-            Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>());
+            Physics2D.IgnoreCollision(collision.collider, collision.otherCollider);
             return;
         }
 
