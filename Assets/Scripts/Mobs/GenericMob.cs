@@ -386,6 +386,11 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     protected bool _isAttacking;
 
     /// <summary>
+    /// Stores the coroutine that is handling the attack.
+    /// </summary>
+    protected Coroutine _attackCoroutine;
+
+    /// <summary>
     /// Stores whether the mob can attack or not.
     /// </summary>
     protected bool _canAttack;
@@ -700,13 +705,17 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
         _isAttacking = true;
         _canAttack = false;
 
-        yield return StartCoroutine(Attack(target));
+        _attackCoroutine = StartCoroutine(Attack(target));
+
+        yield return _attackCoroutine;
 
         _isAttacking = false;
 
         yield return new WaitForSeconds(_attackInterval);
 
         _canAttack = true;
+
+        _attackCoroutine = null;
     }
 
     /// <summary>

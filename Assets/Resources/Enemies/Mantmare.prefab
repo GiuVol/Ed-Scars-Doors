@@ -232,19 +232,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -7006494148666262701, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Center.x
-      value: 1.1661794
+      value: 1.1661575
       objectReference: {fileID: 0}
     - target: {fileID: -7006494148666262701, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Center.y
-      value: -0.12919998
+      value: -0.1292038
       objectReference: {fileID: 0}
     - target: {fileID: -7006494148666262701, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Extent.x
-      value: 1.5036708
+      value: 1.5036776
       objectReference: {fileID: 0}
     - target: {fileID: -7006494148666262701, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Extent.y
-      value: 2.1402464
+      value: 2.1402502
       objectReference: {fileID: 0}
     - target: {fileID: -7002714238678723067, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_LocalRotation.w
@@ -384,7 +384,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -5354876315265750725, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Center.x
-      value: 0.5976201
+      value: 0.597643
       objectReference: {fileID: 0}
     - target: {fileID: -5354876315265750725, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Center.y
@@ -392,7 +392,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -5354876315265750725, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Extent.x
-      value: 1.026386
+      value: 1.0263784
       objectReference: {fileID: 0}
     - target: {fileID: -5354876315265750725, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Extent.y
@@ -476,19 +476,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -2531000618232574968, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Center.x
-      value: -2.0932903
+      value: -2.093296
       objectReference: {fileID: 0}
     - target: {fileID: -2531000618232574968, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Center.y
-      value: 4.31676
+      value: 4.3167562
       objectReference: {fileID: 0}
     - target: {fileID: -2531000618232574968, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Extent.x
-      value: 8.044575
+      value: 8.044569
       objectReference: {fileID: 0}
     - target: {fileID: -2531000618232574968, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Extent.y
-      value: 8.485542
+      value: 8.485546
       objectReference: {fileID: 0}
     - target: {fileID: -2388334806396861289, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Center.x
@@ -496,7 +496,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -2388334806396861289, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Center.y
-      value: -0.15451384
+      value: -0.15452147
       objectReference: {fileID: 0}
     - target: {fileID: -2388334806396861289, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Extent.x
@@ -780,31 +780,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2166513064363077752, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Center.x
-      value: 0.93062544
+      value: 0.93063307
       objectReference: {fileID: 0}
     - target: {fileID: 2166513064363077752, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Center.y
-      value: 0.270648
+      value: 0.2706461
       objectReference: {fileID: 0}
     - target: {fileID: 2166513064363077752, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Extent.x
-      value: 2.1979032
+      value: 2.1978955
       objectReference: {fileID: 0}
     - target: {fileID: 2166513064363077752, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Extent.y
-      value: 9.644047
+      value: 9.644045
       objectReference: {fileID: 0}
     - target: {fileID: 2779521413005630745, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Center.x
-      value: -3.196803
+      value: -3.1967802
       objectReference: {fileID: 0}
     - target: {fileID: 2779521413005630745, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Center.y
-      value: 0.67181873
+      value: 0.6718149
       objectReference: {fileID: 0}
     - target: {fileID: 2779521413005630745, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Extent.x
-      value: 4.4302897
+      value: 4.430282
       objectReference: {fileID: 0}
     - target: {fileID: 2779521413005630745, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Extent.y
@@ -832,19 +832,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3552763831812167649, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Center.x
-      value: 0.055035233
+      value: 0.055035114
       objectReference: {fileID: 0}
     - target: {fileID: 3552763831812167649, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Center.y
-      value: -0.0063300133
+      value: -0.006334305
       objectReference: {fileID: 0}
     - target: {fileID: 3552763831812167649, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Extent.x
-      value: 1.6324617
+      value: 1.6324613
       objectReference: {fileID: 0}
     - target: {fileID: 3552763831812167649, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Extent.y
-      value: 5.495155
+      value: 5.495151
       objectReference: {fileID: 0}
     - target: {fileID: 3654695972333542323, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_LocalRotation.w
@@ -912,7 +912,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4099517708600324676, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Center.y
-      value: -0.5321131
+      value: -0.53210545
       objectReference: {fileID: 0}
     - target: {fileID: 4099517708600324676, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Extent.x
@@ -1004,15 +1004,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6122518411040818706, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Center.x
-      value: -0.09511423
+      value: -0.0951066
       objectReference: {fileID: 0}
     - target: {fileID: 6122518411040818706, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Center.y
-      value: 1.3260653
+      value: 1.3260577
       objectReference: {fileID: 0}
     - target: {fileID: 6122518411040818706, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Extent.x
-      value: 6.9067817
+      value: 6.9068046
       objectReference: {fileID: 0}
     - target: {fileID: 6122518411040818706, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
       propertyPath: m_Bounds.m_Extent.y
@@ -1103,7 +1103,7 @@ CapsuleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 1.25, y: 0}
@@ -1124,7 +1124,7 @@ CapsuleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 2.2, y: 0}
@@ -1145,7 +1145,7 @@ CapsuleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 1.25, y: 0}
@@ -1192,7 +1192,7 @@ CapsuleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0.67, y: 0}
@@ -1226,7 +1226,7 @@ CapsuleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 6, y: 0}
@@ -1257,7 +1257,7 @@ CapsuleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 1.5, y: 0}
@@ -1283,7 +1283,7 @@ CapsuleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0.5, y: 0}
@@ -1330,7 +1330,7 @@ CapsuleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 1.5, y: -1}
@@ -1364,7 +1364,7 @@ CapsuleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 1.25, y: 0}
@@ -1385,7 +1385,7 @@ CapsuleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 3, y: 0}
@@ -1406,7 +1406,7 @@ CapsuleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 1.3, y: 1}
@@ -1462,7 +1462,7 @@ CapsuleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 3, y: 0}
@@ -1483,7 +1483,7 @@ CapsuleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 6, y: 0}
@@ -1504,7 +1504,7 @@ CapsuleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 1.5, y: 0}

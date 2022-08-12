@@ -101,16 +101,16 @@ public class Mantmare : GenericMob
             switch (MantmareStageByHealth)
             {
                 case 1:
-                    attackInterval = Random.Range(4, 6);
+                    attackInterval = Random.Range(3f, 6f);
                     break;
                 case 2:
-                    attackInterval = Random.Range(2, 4);
+                    attackInterval = Random.Range(2f, 3f);
                     break;
                 case 3:
-                    attackInterval = Random.Range(1.5f, 3.5f);
+                    attackInterval = Random.Range(1f, 2f);
                     break;
                 default:
-                    attackInterval = Random.Range(4, 6);
+                    attackInterval = Random.Range(4f, 6f);
                     break;
             }
 
@@ -541,7 +541,7 @@ public class Mantmare : GenericMob
             return;
         }
 
-        ReachPosition(_randomWanderPosition, 10);
+        ReachPosition(_randomWanderPosition, _speed);
 
         Vector3 lookDirection = (playerTransform.position - transform.position).normalized;
 
@@ -820,6 +820,8 @@ public class Mantmare : GenericMob
 
     protected override IEnumerator Die()
     {
+        StopCoroutine(_attackCoroutine);
+
         AnimController.SetTrigger(DieParameterName);
 
         yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName(DieStateName));
