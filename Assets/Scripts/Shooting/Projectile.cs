@@ -286,6 +286,16 @@ public class Projectile : MonoBehaviour
         Hit(collision.gameObject);
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (LayersToIgnore.Contains(collision.gameObject.layer))
+        {
+            return;
+        }
+
+        Hit(collision.gameObject);
+    }
+
     /// <summary>
     /// This method is called when the projectile hits something hittable.
     /// </summary>
@@ -297,9 +307,41 @@ public class Projectile : MonoBehaviour
         float targetDefence = 1;
 
         IHealthable collidedHealthable = collided.GetComponent<IHealthable>();
+
+        if (collidedHealthable == null)
+        {
+            collidedHealthable = collided.GetComponentInChildren<IHealthable>();
+        }
+
+        if (collidedHealthable == null)
+        {
+            collidedHealthable = collided.GetComponentInParent<IHealthable>();
+        }
+        
         IStatsable collidedStatsable = collided.GetComponent<IStatsable>();
+
+        if (collidedStatsable == null)
+        {
+            collidedStatsable = collided.GetComponentInChildren<IStatsable>();
+        }
+
+        if (collidedStatsable == null)
+        {
+            collidedStatsable = collided.GetComponentInParent<IStatsable>();
+        }
+        
         IStatusable collidedStatusable = collided.GetComponent<IStatusable>();
 
+        if (collidedStatusable == null)
+        {
+            collidedStatusable = collided.GetComponentInChildren<IStatusable>();
+        }
+
+        if (collidedStatusable == null)
+        {
+            collidedStatusable = collided.GetComponentInParent<IStatusable>();
+        }
+        
         if (collidedHealthable != null)
         {
             if (collidedStatsable != null)

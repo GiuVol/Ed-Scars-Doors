@@ -4,6 +4,37 @@ using UnityEngine;
 
 public class Mantmare : GenericMob
 {
+    #region Animator Consts
+
+    private const string FlyCycleStateName = "FlyCycle";
+    private const string Attack1StartStateName = "Attack1_start";
+    private const string Attack1ChargeStateName = "Attack1_loop";
+    private const string Attack1EndStateName = "Attack1_end";
+    private const string Attack2StartStateName = "Attack2_start";
+    private const string Attack2ChargeStateName = "Attack2_charge";
+    private const string Attack2BoostStateName = "Attack2_boost";
+    private const string Attack2FlyStateName = "Attack2_fly";
+    private const string Attack2EndStateName = "Attack2_end";
+    private const string Attack3StartStateName = "Attack3_start";
+    private const string Attack3ChargeStateName = "Attack3_charge";
+    private const string Attack3EndStateName = "Attack3_end";
+    private const string WanderStateName = "Wander";
+    private const string DieStateName = "Die";
+
+    private const string HorizontalSpeedParameterName = "HorizontalSpeed";
+    private const string VerticalSpeedParameterName = "VerticalSpeed";
+    private const string StartAttack1ParameterName = "StartAttack1";
+    private const string EndAttack1ParameterName = "EndAttack1";
+    private const string StartAttack2ParameterName = "StartAttack2";
+    private const string StopChargingAttack2ParameterName = "StopChargingAttack2";
+    private const string EndAttack2ParameterName = "EndAttack2";
+    private const string StartAttack3ParameterName = "StartAttack3";
+    private const string EndAttack3ParameterName = "EndAttack3";
+    private const string WanderParameterName = "IsWandering";
+    private const string DieParameterName = "Die";
+
+    #endregion
+
     protected override UIBar HealthBarResource
     {
         get
@@ -443,11 +474,9 @@ public class Mantmare : GenericMob
             {
                 if (_canAttack)
                 {
-                    AnimController.SetBool("IsWandering", false);
                     StartCoroutine(HandleAttack(_player));
                 } else
                 {
-                    AnimController.SetBool("IsWandering", true);
                     RandomWander(_player.transform);
                 }
             }
@@ -459,8 +488,8 @@ public class Mantmare : GenericMob
         Vector3 localSpaceYVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
         float normalizedYSpeed = localSpaceYVelocity.y / (_speed / _attachedRigidbody.drag);
 
-        AnimController.SetFloat("HorizontalSpeed", normalizedXSpeed);
-        AnimController.SetFloat("VerticalSpeed", normalizedYSpeed);
+        AnimController.SetFloat(HorizontalSpeedParameterName, normalizedXSpeed);
+        AnimController.SetFloat(VerticalSpeedParameterName, normalizedYSpeed);
     }
 
     #region Movement
@@ -505,6 +534,8 @@ public class Mantmare : GenericMob
     /// <param name="playerTransform"></param>
     private void RandomWander(Transform playerTransform)
     {
+        AnimController.SetBool(WanderParameterName, true);
+
         if (playerTransform == null)
         {
             return;
@@ -529,6 +560,8 @@ public class Mantmare : GenericMob
 
     protected override IEnumerator Attack(PlayerController target)
     {
+        AnimController.SetBool(WanderParameterName, false);
+
         int decidedPattern = Random.Range(1, 4);
 
         switch (decidedPattern)
@@ -582,17 +615,17 @@ public class Mantmare : GenericMob
 
         transform.rotation = desiredRotation;
 
-        AnimController.SetTrigger("StartAttack1");
+        AnimController.SetTrigger(StartAttack1ParameterName);
 
         _leftArmTriggerCaster.TriggerFunction = collider => InflictDamage(collider, 70);
 
         yield return new WaitForSeconds(TimeMultiplierByStage);
 
-        AnimController.SetTrigger("EndAttack1");
+        AnimController.SetTrigger(EndAttack1ParameterName);
 
-        yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName("Attack1_end"));
+        yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName(Attack1EndStateName));
 
-        yield return new WaitUntil(() => !AnimController.GetCurrentAnimatorStateInfo(0).IsName("Attack1_end"));
+        yield return new WaitUntil(() => !AnimController.GetCurrentAnimatorStateInfo(0).IsName(Attack1EndStateName));
 
         _leftArmTriggerCaster.TriggerFunction = null;
     }
@@ -603,12 +636,12 @@ public class Mantmare : GenericMob
     private IEnumerator Pattern2(PlayerController target)
     {
         Vector3 leftScreenPosition = 
-            Camera.main.ScreenToWorldPoint(new Vector3(Mathf.RoundToInt((2f / 8f) * Screen.width), 
+            Camera.main.ScreenToWorldPoint(new Vector3(Mathf.RoundToInt((1f / 8f) * Screen.width), 
                                            0, 
                                            0));
 
         Vector3 rightScreenPosition =
-            Camera.main.ScreenToWorldPoint(new Vector3(Mathf.RoundToInt((6f / 8f) * Screen.width),
+            Camera.main.ScreenToWorldPoint(new Vector3(Mathf.RoundToInt((7f / 8f) * Screen.width),
                                            0,
                                            0));
 
@@ -658,13 +691,13 @@ public class Mantmare : GenericMob
 
             transform.rotation = desiredRotation;
 
-            AnimController.SetTrigger("StartAttack2");
+            AnimController.SetTrigger(StartAttack2ParameterName);
 
             yield return new WaitForSeconds(TimeMultiplierByStage / 2);
 
-            AnimController.SetTrigger("StopChargingAttack2");
+            AnimController.SetTrigger(StopChargingAttack2ParameterName);
 
-            yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName("Attack2_boost"));
+            yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName(Attack2BoostStateName));
 
             _headTriggerCaster.TriggerFunction = collider => InflictDamage(collider, 50);
             
@@ -676,11 +709,11 @@ public class Mantmare : GenericMob
             } while (distance > 2);
 
             _attachedRigidbody.velocity = Vector3.zero;
-            AnimController.SetTrigger("EndAttack2");
+            AnimController.SetTrigger(EndAttack2ParameterName);
 
-            yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName("Attack2_end"));
+            yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName(Attack2EndStateName));
             
-            yield return new WaitUntil(() => !AnimController.GetCurrentAnimatorStateInfo(0).IsName("Attack2_end"));
+            yield return new WaitUntil(() => !AnimController.GetCurrentAnimatorStateInfo(0).IsName(Attack2EndStateName));
 
             _headTriggerCaster.TriggerFunction = null;
         }
@@ -741,15 +774,15 @@ public class Mantmare : GenericMob
 
         transform.rotation = desiredRotation;
 
-        AnimController.SetTrigger("StartAttack3");
+        AnimController.SetTrigger(StartAttack3ParameterName);
 
         yield return new WaitForSeconds(2 * TimeMultiplierByStage);
 
-        AnimController.SetTrigger("EndAttack3");
+        AnimController.SetTrigger(EndAttack3ParameterName);
 
-        yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName("Attack3_end"));
+        yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName(Attack3EndStateName));
 
-        yield return new WaitUntil(() => !AnimController.GetCurrentAnimatorStateInfo(0).IsName("Attack3_end"));
+        yield return new WaitUntil(() => !AnimController.GetCurrentAnimatorStateInfo(0).IsName(Attack3EndStateName));
     }
     
     /// <summary>
@@ -778,7 +811,8 @@ public class Mantmare : GenericMob
         {
             HealthComponent healthComponent = player.Health;
             StatsComponent statsComponent = player.Stats;
-            healthComponent.Decrease(Mathf.RoundToInt(Stats.Attack.CurrentValue * power / (statsComponent.Defence.CurrentValue * 2)));
+            int damage = GameFormulas.Damage(power, Stats.Attack.CurrentValue, statsComponent.Defence.CurrentValue);
+            healthComponent.Decrease(damage);
         }
     }
 
@@ -786,9 +820,9 @@ public class Mantmare : GenericMob
 
     protected override IEnumerator Die()
     {
-        AnimController.SetTrigger("Die");
+        AnimController.SetTrigger(DieParameterName);
 
-        yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName("Die"));
+        yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName(DieStateName));
 
         AnimatorStateInfo info = AnimController.GetCurrentAnimatorStateInfo(0);
 
@@ -812,43 +846,29 @@ public class Mantmare : GenericMob
         yield break;
     }
 
-    protected new void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (_isDying)
-        {
-            if (collision.gameObject.layer != LayerMask.NameToLayer(GameFormulas.TerrainLayerName))
-            {
-                Physics2D.IgnoreCollision(collision.collider, collision.otherCollider);
-                return;
-            }
+        PlayerController player = collision.gameObject.GetComponent<PlayerController>();
 
-            return;
+        if (player == null)
+        {
+            player = collision.gameObject.GetComponentInChildren<PlayerController>();
         }
 
-        if (LayersToIgnore.Contains(collision.gameObject.layer))
+        if (player == null)
         {
-            Physics2D.IgnoreCollision(collision.collider, collision.otherCollider);
-            return;
+            player = collision.gameObject.GetComponentInParent<PlayerController>();
         }
-
-        Rigidbody2D rigidbody = collision.rigidbody;
-
-        if (rigidbody == null)
-        {
-            return;
-        }
-
-        PlayerController player = rigidbody.GetComponent<PlayerController>();
 
         if (player == null)
         {
             return;
         }
-
+        
         Vector3 offsettedPosition = new Vector3(transform.position.x, player.transform.position.y);
         Vector2 conjunctionLine = (player.transform.position - offsettedPosition).normalized;
 
-        rigidbody.AddForce(conjunctionLine * _repulsiveForce);
+        player.GetComponent<Rigidbody2D>().AddForce(conjunctionLine * _repulsiveForce);
         player.ChangeColorTemporarily(Color.red, .5f);
         player.Health.Decrease(_contactDamage);
     }
