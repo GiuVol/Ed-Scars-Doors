@@ -70,6 +70,11 @@ public class HealthComponent : MonoBehaviour
     public OnHealthDecrease OnHealthDecreaseProcedure { get; set; }
 
     /// <summary>
+    /// Stores whether the character can be damaged.
+    /// </summary>
+    public bool IsInvincible { get; set; }
+    
+    /// <summary>
     /// Stores whether the component is initialized or not.
     /// </summary>
     private bool _initialized;
@@ -125,7 +130,7 @@ public class HealthComponent : MonoBehaviour
     /// <param name="decrement">The integer value of the damage the character received</param>
     public void Decrease(int decrement, bool callOptionalProcedure = true)
     {
-        if (!_initialized)
+        if (!_initialized || IsInvincible)
         {
             return;
         }
