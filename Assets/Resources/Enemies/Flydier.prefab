@@ -70,6 +70,8 @@ MonoBehaviour:
   _canFloat: 1
   _repulsiveForce: 1000
   _contactDamage: 0
+  _width: 3.1
+  _height: 3.6
   _patrolPointsGroup: {fileID: 0}
   _circular: 0
   _remainsOnPattern: 0

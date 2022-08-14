@@ -69,6 +69,8 @@ MonoBehaviour:
   _canFloat: 1
   _repulsiveForce: 1000
   _contactDamage: 1
+  _width: 12
+  _height: 18
   _patrolPointsGroup: {fileID: 0}
   _circular: 0
   _leftArmTriggerCaster: {fileID: 168086537}

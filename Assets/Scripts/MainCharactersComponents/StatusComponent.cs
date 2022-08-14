@@ -82,6 +82,11 @@ public class StatusComponent : MonoBehaviour
     /// </summary>
     public bool IsImmune { get; set; }
 
+    /// <summary>
+    /// The coroutine that is handling the immunity.
+    /// </summary>
+    private Coroutine _temporaryImmunityCoroutine;
+    
     private bool _initialized;
 
     /// <summary>
@@ -219,5 +224,32 @@ public class StatusComponent : MonoBehaviour
         }
 
         CorrosionTimeLeft = Mathf.Min(MaxCorrosionTime, CorrosionTimeLeft + increment);
+    }
+
+    /// <summary>
+    /// Method that can make the character immune to statuses for a while.
+    /// </summary>
+    /// <param name="time">The time that the character will be immune</param>
+    public void SetImmunityTemporarily(float time)
+    {
+        if (_temporaryImmunityCoroutine == null)
+        {
+            _temporaryImmunityCoroutine = StartCoroutine(SetImmunityTemporarilyIEnumerator(time));
+        }
+    }
+
+    /// <summary>
+    /// IEnumerator that can make the character immune to statuses for a while.
+    /// </summary>
+    /// <param name="time">The time that the character will be immune</param>
+    private IEnumerator SetImmunityTemporarilyIEnumerator(float time)
+    {
+        IsImmune = true;
+
+        yield return new WaitForSeconds(time);
+
+        IsImmune = false;
+
+        _temporaryImmunityCoroutine = null;
     }
 }

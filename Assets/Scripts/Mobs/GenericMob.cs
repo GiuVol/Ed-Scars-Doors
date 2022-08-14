@@ -171,6 +171,18 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     [SerializeField]
     protected int _contactDamage;
 
+    /// <summary>
+    /// The width of the mob.
+    /// </summary>
+    [SerializeField]
+    protected float _width;
+
+    /// <summary>
+    /// The height of the mob.
+    /// </summary>
+    [SerializeField]
+    protected float _height;
+    
     #endregion
 
     #region Patrolling
@@ -837,7 +849,6 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
         Vector2 conjunctionLine = (player.transform.position - offsettedPosition).normalized;
 
         rigidbody.AddForce(conjunctionLine * _repulsiveForce);
-        player.ChangeColorTemporarily(Color.red, .5f);
         player.Health.Decrease(_contactDamage);
     }
 }

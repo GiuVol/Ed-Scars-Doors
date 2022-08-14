@@ -463,6 +463,9 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     /// </summary>
     private IEnumerator HandleJump()
     {
+        Health.SetInvincibilityTemporarily(1);
+        Status.SetImmunityTemporarily(1);
+
         yield return new WaitUntil(() => !MovementController.IsGrounded);
         
         yield return new WaitUntil(() => MovementController.IsGrounded);
@@ -482,6 +485,9 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             yield break;
         }
 
+        Health.SetInvincibilityTemporarily(1);
+        Status.SetImmunityTemporarily(1);
+        
         MovementController.GiveImpulse(transform.right, CurrentDashForce);
 
         CanDash = false;

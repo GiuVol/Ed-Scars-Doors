@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 /// <summary>
@@ -73,6 +74,11 @@ public class HealthComponent : MonoBehaviour
     /// Stores whether the character can be damaged.
     /// </summary>
     public bool IsInvincible { get; set; }
+
+    /// <summary>
+    /// The coroutine that is handling the invincibility.
+    /// </summary>
+    private Coroutine _temporaryInvincibilityCoroutine;
     
     /// <summary>
     /// Stores whether the component is initialized or not.
@@ -241,5 +247,32 @@ public class HealthComponent : MonoBehaviour
         int increment = Mathf.FloorToInt((float)MaxHealth * variation);
 
         MaxHealth += Math.Max(increment, 0);
+    }
+
+    /// <summary>
+    /// Method that can make the character invincible for a while.
+    /// </summary>
+    /// <param name="time">The time that the character will be invincible</param>
+    public void SetInvincibilityTemporarily(float time)
+    {
+        if (_temporaryInvincibilityCoroutine == null)
+        {
+            _temporaryInvincibilityCoroutine = StartCoroutine(SetInvincibilityTemporarilyIEnumerator(time));
+        }
+    }
+
+    /// <summary>
+    /// IEnumerator that can make the character invincible for a while.
+    /// </summary>
+    /// <param name="time">The time that the character will be invincible</param>
+    private IEnumerator SetInvincibilityTemporarilyIEnumerator(float time)
+    {
+        IsInvincible = true;
+
+        yield return new WaitForSeconds(time);
+
+        IsInvincible = false;
+
+        _temporaryInvincibilityCoroutine = null;
     }
 }

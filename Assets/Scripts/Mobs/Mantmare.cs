@@ -588,7 +588,9 @@ public class Mantmare : GenericMob
     /// </summary>
     private IEnumerator Pattern1(PlayerController target)
     {
-        Vector3 targetPosition = target.transform.position + target.transform.right * _attackRange - Vector3.up * 5;
+        Vector3 targetPosition = target.transform.position + 
+                                 target.transform.right * _attackRange - 
+                                 Vector3.up * _height / 2;
 
         float distance;
 
@@ -663,10 +665,10 @@ public class Mantmare : GenericMob
             }
 
             Vector3 patternStartPosition =
-                new Vector3(startScreenPosition.x, target.transform.position.y - 5);
+                new Vector3(startScreenPosition.x, target.transform.position.y - _height / 2.5f);
             
             Vector3 patternEndPosition =
-                new Vector3(endScreenPosition.x, target.transform.position.y - 5);
+                new Vector3(endScreenPosition.x, target.transform.position.y - _height / 2.5f);
 
             float distance;
 
@@ -726,13 +728,13 @@ public class Mantmare : GenericMob
     {
         Vector3 leftScreenPosition =
             Camera.main.ScreenToWorldPoint(new Vector3(Mathf.RoundToInt((2f / 8f) * Screen.width),
-                                           Mathf.RoundToInt((3f / 8f) * Screen.height),
-                                           0));
+                                           Mathf.RoundToInt((7f / 8f) * Screen.height),
+                                           0)) - (Vector3.up * _height);
 
         Vector3 rightScreenPosition =
             Camera.main.ScreenToWorldPoint(new Vector3(Mathf.RoundToInt((6f / 8f) * Screen.width),
-                                           Mathf.RoundToInt((3f / 8f) * Screen.height),
-                                           0));
+                                           Mathf.RoundToInt((7f / 8f) * Screen.height),
+                                           0)) - (Vector3.up * _height);
 
         Vector3 patternStartPosition;
         Vector3 oppositePosition;
@@ -871,7 +873,6 @@ public class Mantmare : GenericMob
         Vector2 conjunctionLine = (player.transform.position - offsettedPosition).normalized;
 
         player.GetComponent<Rigidbody2D>().AddForce(conjunctionLine * _repulsiveForce);
-        player.ChangeColorTemporarily(Color.red, .5f);
         player.Health.Decrease(_contactDamage);
     }
 }
