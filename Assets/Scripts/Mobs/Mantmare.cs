@@ -185,12 +185,12 @@ public class Mantmare : GenericMob
         {
             bool isOnScreen = false;
 
-            Vector3 offsettedPosition = transform.position + Vector3.up * 5;
+            Vector3 position = transform.position;
 
-            if (offsettedPosition.x > Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).x &&
-                offsettedPosition.x < Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x &&
-                offsettedPosition.y > Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).y &&
-                offsettedPosition.y < Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height)).y)
+            if (position.x >= Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).x + (_width / 2) &&
+                position.x <= Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x - (_width / 2) &&
+                position.y >= Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).y &&
+                position.y <= Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height)).y - (_height))
             {
                 isOnScreen = true;
             }
@@ -411,9 +411,11 @@ public class Mantmare : GenericMob
         }
 
         float randomX = Random.Range
-            (Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).x, Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x);
+            (Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).x + (_width / 2), 
+             Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x - (_width / 2));
         float randomY = Random.Range
-            (Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).y, Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height)).y);
+            (Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).y, 
+             Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height)).y - (_height));
 
         position = new Vector3(randomX, randomY);
 
