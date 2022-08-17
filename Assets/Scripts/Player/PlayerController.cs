@@ -212,6 +212,11 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     #region Graphics
 
     /// <summary>
+    /// The animator that handles the animations of the player.
+    /// </summary>
+    private Animator AttachedAnimator;
+
+    /// <summary>
     /// The components that render the sprite.
     /// </summary>
     private List<SpriteRenderer> Renderers { get; set; }
@@ -372,6 +377,8 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
         EquippedAbilities = new List<GenericAbility>(MaxNumberOfEquippableAbilities);
 
+        AttachedAnimator = GetComponentInChildren<Animator>();
+
         Renderers = new List<SpriteRenderer>();
 
         foreach (SpriteRenderer renderer in GetComponentsInChildren<SpriteRenderer>())
@@ -414,6 +421,14 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         MovementController.GravityScale = CurrentGravityScale;
 
         _timeToWaitToJump = Mathf.Max(_timeToWaitToJump - Time.fixedDeltaTime, 0);
+
+        if (AttachedAnimator != null && MovementController != null && MovementController.AttachedRigidbody != null)
+        {
+            Vector3 localSpaceVelocity = transform.InverseTransformDirection(MovementController.AttachedRigidbody.velocity);
+            float normalizedSpeed = localSpaceVelocity.x / (CurrentRunSpeed / MovementController.AttachedRigidbody.drag);
+
+            AttachedAnimator.SetFloat("Speed", normalizedSpeed);
+        }
     }
 
     /// <summary>
@@ -463,6 +478,8 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     /// </summary>
     private IEnumerator HandleJump()
     {
+        AttachedAnimator.SetTrigger("StartJumping");
+
         Health.SetInvincibilityTemporarily(1);
         Status.SetImmunityTemporarily(1);
 
@@ -470,6 +487,8 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         
         yield return new WaitUntil(() => MovementController.IsGrounded);
 
+        AttachedAnimator.SetTrigger("Land");
+        
         CurrentNumberOfJumpsInTheAir = 0;
         _timeToWaitToJump = CurrentJumpInterval;
         _jumpHandlingTask = null;
@@ -525,7 +544,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         }
 
         Projectile projectile = 
-            Instantiate(currentProjectileAsset, ProjectilesSpawnPoint.position, ProjectilesSpawnPoint.rotation);
+            Instantiate(currentProjectileAsset, ProjectilesSpawnPoint.position, transform.rotation);
 
         projectile.AttackerAttack = Stats.Attack.CurrentValue;
 

@@ -1878,7 +1878,7 @@ MonoBehaviour:
   _attackRange: 20
   _attackInterval: 5
   _mass: 100
-  _speed: 25
+  _speed: 50
   _canFloat: 0
   _repulsiveForce: 1000
   _contactDamage: 1
