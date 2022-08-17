@@ -1571,6 +1571,10 @@ PrefabInstance:
       propertyPath: StandardJumpForce
       value: 50
       objectReference: {fileID: 0}
+    - target: {fileID: 8742712693346394750, guid: ec33dc47eedda4d48bda44fc11445b82, type: 3}
+      propertyPath: StandardGravityScale
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 8742712693346394751, guid: ec33dc47eedda4d48bda44fc11445b82, type: 3}
       propertyPath: m_RootOrder
       value: 8

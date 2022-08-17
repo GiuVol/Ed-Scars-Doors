@@ -425,7 +425,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         if (AttachedAnimator != null && MovementController != null && MovementController.AttachedRigidbody != null)
         {
             Vector3 localSpaceVelocity = transform.InverseTransformDirection(MovementController.AttachedRigidbody.velocity);
-            float normalizedSpeed = localSpaceVelocity.x / (CurrentRunSpeed / MovementController.AttachedRigidbody.drag);
+            float normalizedSpeed = localSpaceVelocity.x / (CurrentRunSpeed);
 
             AttachedAnimator.SetFloat("Speed", normalizedSpeed);
         }
