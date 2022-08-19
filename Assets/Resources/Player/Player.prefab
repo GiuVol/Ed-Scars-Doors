@@ -3226,9 +3226,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StandardWalkSpeed: 12.5
   StandardRunSpeed: 25
-  StandardJumpForce: 30
-  StandardDashForce: 30
-  StandardGravityScale: 7
+  StandardJumpForce: 50
+  StandardDashForce: 50
+  StandardGravityScale: 10
   StandardJumpInterval: 0.01
   StandardDashInterval: 0.4
   StandardShootInterval: 0.05
