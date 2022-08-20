@@ -167,10 +167,67 @@ public class Projectile : MonoBehaviour
     }
 
     /// <summary>
-    /// Stores the <c>GameObject</c> of the character who shot the projectile.
+    /// The layer of the projectile.
     /// </summary>
-    public GameObject Shooter { get; set; }
+    public int Layer
+    {
+        get
+        {
+            return gameObject.layer;
+        }
 
+        set
+        {
+            if (value < 0)
+            {
+                return;
+            }
+
+            CustomUtilities.SetLayerRecursively(gameObject, value);
+        }
+    }
+
+    /// <summary>
+    /// Set that contains all the layers that the projectile should ignore.
+    /// </summary>
+    private HashSet<int> _layersToIgnore;
+    
+    /// <summary>
+    /// Property that provides access to the layers to ignore in a controlled manner.
+    /// </summary>
+    public HashSet<int> LayersToIgnore
+    {
+        get
+        {
+            if (_layersToIgnore == null)
+            {
+                _layersToIgnore = new HashSet<int>();
+            }
+
+            return _layersToIgnore;
+        }
+
+        set
+        {
+            if (_layersToIgnore == null)
+            {
+                _layersToIgnore = new HashSet<int>();
+            }
+
+            _layersToIgnore.Clear();
+
+            if (value == null)
+            {
+                return;
+            }
+
+            foreach (int layer in value)
+            {
+                _layersToIgnore.Add(layer);
+            }
+        }
+    }
+    
     void Start()
     {
         if (gameObject.GetComponent<Rigidbody2D>() == null)
@@ -220,11 +277,19 @@ public class Projectile : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Rigidbody2D attachedRigidbody = collision.gameObject.GetComponent<Rigidbody2D>();
-
-        if (attachedRigidbody != null && attachedRigidbody.gameObject == Shooter)
+        if (LayersToIgnore.Contains(collision.gameObject.layer))
         {
-            Destroy(gameObject);
+            Physics2D.IgnoreCollision(collision.collider, collision.otherCollider);
+            return;
+        }
+
+        Hit(collision.gameObject);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (LayersToIgnore.Contains(collision.gameObject.layer))
+        {
             return;
         }
 
@@ -242,9 +307,41 @@ public class Projectile : MonoBehaviour
         float targetDefence = 1;
 
         IHealthable collidedHealthable = collided.GetComponent<IHealthable>();
+
+        if (collidedHealthable == null)
+        {
+            collidedHealthable = collided.GetComponentInChildren<IHealthable>();
+        }
+
+        if (collidedHealthable == null)
+        {
+            collidedHealthable = collided.GetComponentInParent<IHealthable>();
+        }
+        
         IStatsable collidedStatsable = collided.GetComponent<IStatsable>();
+
+        if (collidedStatsable == null)
+        {
+            collidedStatsable = collided.GetComponentInChildren<IStatsable>();
+        }
+
+        if (collidedStatsable == null)
+        {
+            collidedStatsable = collided.GetComponentInParent<IStatsable>();
+        }
+        
         IStatusable collidedStatusable = collided.GetComponent<IStatusable>();
 
+        if (collidedStatusable == null)
+        {
+            collidedStatusable = collided.GetComponentInChildren<IStatusable>();
+        }
+
+        if (collidedStatusable == null)
+        {
+            collidedStatusable = collided.GetComponentInParent<IStatusable>();
+        }
+        
         if (collidedHealthable != null)
         {
             if (collidedStatsable != null)
@@ -254,7 +351,7 @@ public class Projectile : MonoBehaviour
 
             int damage = GameFormulas.Damage(basePower, attackerAttack, targetDefence);
 
-            collidedHealthable.Health.DecreaseHealth(damage);
+            collidedHealthable.Health.Decrease(damage);
         }
 
         foreach (AdditionalEffect effect in AdditionalEffects)

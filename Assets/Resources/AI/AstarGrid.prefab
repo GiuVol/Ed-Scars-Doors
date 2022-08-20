@@ -1,0 +1,106 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1554191577663992946
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1554191577663992944}
+  - component: {fileID: 8450870014546383578}
+  - component: {fileID: 8480139315098128086}
+  m_Layer: 0
+  m_Name: AstarGrid
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1554191577663992944
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1554191577663992946}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8450870014546383578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1554191577663992946}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78396926cbbfc4ac3b48fc5fc34a87d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  data:
+    dataString: UEsDBBQAAAgIAAAIIeysYtvsWQIAABUFAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQF1VMty2jAU/RVG66YDBCh01xpCukhgQjvZeCOka6xBljx6hNfw772SbezQ6QpxzrlX5z7kCxHKlsCcNksj+IvmQL73SDiTL72WfIYj3Wm1EWdoNO+CuzyIaNS8USc04oMQZnUBzgj2Q+1kEPcR9Epk2hQLvoNEW2cRzqi0gJTRLkQrhC49csSfh1kIOeFp+C2cznia9XtXPDJQDkwrbYSNrFJ5xSQtSuDBcise9hv5oF8JFZZTa4J1pqUUtvZC3KmMtSa0tB4rQQEXFGuLBoI+B7HLXcjcDV5lmQVXmzL0NBcGW1RlJT911beC2n3l7INKHw2MHyfRVJX15R/BwyDSmdHFc3PxIJbkcsH2b/TEqHWdznbh+WfnXh2o3NOthPcc1KteGu0VR9IZH0K9heG8/XurLcmB7Vu8snoH+vL/8wk1XGP5x0SKYhuor6MK2EgdGx6nDwZH8wsNx92wdQpEg4s/Fn7TXXeJauJJGOuQqqtUwd5WexOkZBF7FqrxLtFGQYRr0yUoKt1pjWnc/QzvuM61d8wTDc+lvrzmmldwFxLhVt/v31FrfbgNy+b68AI2X3knhYLWdCBesU+JVqpasW5PmrCNNxllnbCdF/zzapHHLedTNshgMuKjKR0/DGZAtxkfzSbj6Xg0ZCTunlBYJ5XrymjdHpyaapMr3LPmK9JbGlrGdeeGHpbiXOhOy4XK9IYZALWqMtyMg8FL8FnyBRfYoA04J1ScN7mkRGq2B57eEqWx0sXRGZq2WVJSig/tApKSJH42UhLg2y6vDXwIOITLm2RXcv0LUEsDBBQAAAgIAAAIIeymc65XbQAAAHgAAAAJACQAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0Bq1YqSy0qzszPU7JSMNEz0jM011FQSi9KLMgoBooYgjilmSkgdrSScVJKikWyYVqqmUmKiUWiqa6hZWpiUlqKiaWZqYWpiVGyUixQfUllQapfYm4qRE9AYklGWmZeSmZeup57UWaKO8hopdhaAFBLAQItABQAAAgIAAAIIeysYtvsWQIAABUFAAALACQAAAAAAAAAAAAAAAAAAABncmFwaDAuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLAQItABQAAAgIAAAIIeymc65XbQAAAHgAAAAJACQAAAAAAAAAAAAAAKYCAABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwUGAAAAAAIAAgC4AAAAXgMAAAAA
+    upgradeData: 
+    file_cachedStartup: {fileID: 0}
+    data_cachedStartup: 
+    cacheStartup: 0
+  showNavGraphs: 1
+  showUnwalkableNodes: 1
+  debugMode: 0
+  debugFloor: 0
+  debugRoof: 1
+  manualDebugFloorRoof: 0
+  showSearchTree: 0
+  unwalkableNodeDebugSize: 0.3
+  logPathResults: 1
+  maxNearestNodeDistance: 100
+  scanOnStartup: 1
+  fullGetNearestSearch: 0
+  prioritizeGraphs: 0
+  prioritizeGraphsLimit: 1
+  colorSettings:
+    _SolidColor: {r: 0.11764706, g: 0.4, b: 0.7882353, a: 0.9}
+    _UnwalkableNode: {r: 1, g: 0, b: 0, a: 0.5}
+    _BoundsHandles: {r: 0.29, g: 0.454, b: 0.741, a: 0.9}
+    _ConnectionLowLerp: {r: 0, g: 1, b: 0, a: 0.5}
+    _ConnectionHighLerp: {r: 1, g: 0, b: 0, a: 0.5}
+    _MeshEdgeColor: {r: 0, g: 0, b: 0, a: 0.5}
+    _AreaColors:
+    - {r: 0, g: 0, b: 0, a: 0}
+  tagNames: []
+  heuristic: 2
+  heuristicScale: 1
+  threadCount: 1
+  maxFrameTime: 1
+  batchGraphUpdates: 0
+  graphUpdateBatchingInterval: 0.2
+  euclideanEmbedding:
+    mode: 0
+    seed: 0
+    pivotPointRoot: {fileID: 0}
+    spreadOutCount: 1
+  showGraphs: 1
+--- !u!114 &8480139315098128086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1554191577663992946}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a634230476dc478b88eceac73b1c8a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  updateDistance: 10
+  target: {fileID: 0}
+  graphIndex: 0

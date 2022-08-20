@@ -77,6 +77,16 @@ public class StatusComponent : MonoBehaviour
 
     #endregion
 
+    /// <summary>
+    /// Stores whether the character can get a status.
+    /// </summary>
+    public bool IsImmune { get; set; }
+
+    /// <summary>
+    /// The coroutine that is handling the immunity.
+    /// </summary>
+    private Coroutine _temporaryImmunityCoroutine;
+    
     private bool _initialized;
 
     /// <summary>
@@ -159,6 +169,11 @@ public class StatusComponent : MonoBehaviour
     /// </summary>
     private IEnumerator InflictBlindness()
     {
+        if (IsImmune)
+        {
+            yield break;
+        }
+
         IsBlinded = true;
         CanBeBlinded = false;
 
@@ -184,7 +199,7 @@ public class StatusComponent : MonoBehaviour
     /// <param name="increment">The desired increment</param>
     public void IncreaseBlindnessLevel(float increment)
     {
-        if (CanBeBlinded == false)
+        if (CanBeBlinded == false || IsImmune)
         {
             return;
         }
@@ -203,11 +218,38 @@ public class StatusComponent : MonoBehaviour
     /// <param name="increment">The desired increment</param>
     public void IncreaseCorrosionTime(float increment)
     {
-        if (CorrosionTimeLeft > 0)
+        if (CorrosionTimeLeft > 0 || IsImmune)
         {
             return;
         }
 
         CorrosionTimeLeft = Mathf.Min(MaxCorrosionTime, CorrosionTimeLeft + increment);
+    }
+
+    /// <summary>
+    /// Method that can make the character immune to statuses for a while.
+    /// </summary>
+    /// <param name="time">The time that the character will be immune</param>
+    public void SetImmunityTemporarily(float time)
+    {
+        if (_temporaryImmunityCoroutine == null)
+        {
+            _temporaryImmunityCoroutine = StartCoroutine(SetImmunityTemporarilyIEnumerator(time));
+        }
+    }
+
+    /// <summary>
+    /// IEnumerator that can make the character immune to statuses for a while.
+    /// </summary>
+    /// <param name="time">The time that the character will be immune</param>
+    private IEnumerator SetImmunityTemporarilyIEnumerator(float time)
+    {
+        IsImmune = true;
+
+        yield return new WaitForSeconds(time);
+
+        IsImmune = false;
+
+        _temporaryImmunityCoroutine = null;
     }
 }

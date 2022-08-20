@@ -7,6 +7,9 @@ public class GameFormulas
 
     private const float SecondsToDoublePowerWithCharge = 5;
 
+    public const string TerrainLayerName = "Terrain";
+    public const string ObstacleLayerName = "Obstacle";
+
     public static int Damage(float power, float attackerAttack, float targetDefence)
     {
         power = Mathf.Max(power, 0);

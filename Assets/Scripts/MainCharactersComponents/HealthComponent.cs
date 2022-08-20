@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 /// <summary>
@@ -40,15 +41,45 @@ public class HealthComponent : MonoBehaviour
     }
 
     /// <summary>
-    /// A new delegate type, to store the die procedure.
+    /// A new delegate type.
     /// </summary>
     public delegate void Die();
+
+    /// <summary>
+    /// A new delegate type.
+    /// </summary>
+    public delegate void OnHealthIncrease();
+    
+    /// <summary>
+    /// A new delegate type.
+    /// </summary>
+    public delegate void OnHealthDecrease();
 
     /// <summary>
     /// It will store the procedure called when the health of the character reaches <c>DeathThreshold</c>.
     /// </summary>
     public Die DieProcedure { get; set; }
 
+    /// <summary>
+    /// It will store the procedure called when the health of the character is increased.
+    /// </summary>
+    public OnHealthIncrease OnHealthIncreaseProcedure { get; set; }
+    
+    /// <summary>
+    /// It will store the procedure called when the health of the character decreases.
+    /// </summary>
+    public OnHealthDecrease OnHealthDecreaseProcedure { get; set; }
+
+    /// <summary>
+    /// Stores whether the character can be damaged.
+    /// </summary>
+    public bool IsInvincible { get; set; }
+
+    /// <summary>
+    /// The coroutine that is handling the invincibility.
+    /// </summary>
+    private Coroutine _temporaryInvincibilityCoroutine;
+    
     /// <summary>
     /// Stores whether the component is initialized or not.
     /// </summary>
@@ -59,45 +90,69 @@ public class HealthComponent : MonoBehaviour
     /// </summary>
     /// <param name="maxHealth">The integer value to assign to <c>MaxHealth</c> and <c>CurrentHealth</c></param>
     /// <param name="dieProcedure">The desired procedure to call when the character dies</param>
-    public void Setup(int maxHealth, Die dieProcedure)
+    public void Setup(int maxHealth, Die dieProcedure, 
+                      OnHealthIncrease onHealthIncreaseProcedure = null,
+                      OnHealthDecrease onHealthDecreaseProcedure = null)
     {
         MaxHealth = Math.Max(maxHealth, 0);
         CurrentHealth = MaxHealth; // a character when created will have CurrentHealth equal to MaxHealth
         DieProcedure = dieProcedure;
+        OnHealthIncreaseProcedure = onHealthIncreaseProcedure;
+        OnHealthDecreaseProcedure = onHealthDecreaseProcedure;
 
         _initialized = true;
     }
 
     /// <summary>
-    /// Method <c>IncreaseHealth</c>
+    /// Method <c>Increase/c>
     /// Increases the health of the character.
     /// </summary>
     /// <param name="increment">The integer value of the healing the character received</param>
-    public void Increase(int increment)
+    public void Increase(int increment, bool callOptionalProcedure = true)
     {
         if (!_initialized)
         {
             return;
         }
 
-        increment = Math.Max(increment, 0); // if increment has a negative value it will assume a value of 0, otherwise it remains unchanged
-        CurrentHealth = Math.Min(CurrentHealth + increment, MaxHealth); // if the sum between the increase and the CurrentHealth is greater than the Maxhealth, then the CurrentHealth will be equal to the Maxhealth, otherwise it will be equal to the sum
+        int oldValue = CurrentHealth;
+
+        increment = Math.Max(increment, 0);
+        CurrentHealth = Math.Min(CurrentHealth + increment, MaxHealth);
+
+        if (CurrentHealth != oldValue && callOptionalProcedure)
+        {
+            if (OnHealthIncreaseProcedure != null)
+            {
+                OnHealthIncreaseProcedure();
+            }
+        }
     }
 
     /// <summary>
-    /// Method <c>DecreaseHealth</c>
+    /// Method <c>Decrease</c>
     /// Decreases the health of the character
     /// </summary>
     /// <param name="decrement">The integer value of the damage the character received</param>
-    public void DecreaseHealth(int decrement)
+    public void Decrease(int decrement, bool callOptionalProcedure = true)
     {
-        if (!_initialized)
+        if (!_initialized || IsInvincible)
         {
             return;
         }
+
+        int oldValue = CurrentHealth;
         
-        decrement = Math.Max(decrement, 0); // if decrement has a negative value it will assume a value of 0, otherwise it remains unchanged
-        CurrentHealth = Math.Max(CurrentHealth - decrement, DeathThreshold); // if the decrement greater than CurrentHealth, the CurrentHealth will be 0, otherwise it will be equal to the difference
+        decrement = Math.Max(decrement, 0);
+        CurrentHealth = Math.Max(CurrentHealth - decrement, DeathThreshold);
+
+        if (CurrentHealth != oldValue && callOptionalProcedure)
+        {
+            if (OnHealthDecreaseProcedure != null)
+            {
+                OnHealthDecreaseProcedure();
+            }
+        }
 
         if (CurrentHealth <= DeathThreshold)
         {
@@ -113,7 +168,7 @@ public class HealthComponent : MonoBehaviour
     /// the percentage of the increment
     /// pre: this value should be clamped between 0 and 1.
     /// </param>
-    public void IncreasePercentage(float variation)
+    public void IncreasePercentage(float variation, bool callOptionalProcedure = true)
     {
         if (!_initialized)
         {
@@ -123,7 +178,7 @@ public class HealthComponent : MonoBehaviour
         variation = Mathf.Clamp01(variation);
         int increment = Mathf.FloorToInt((float)MaxHealth * variation);
 
-        Increase(increment);
+        Increase(increment, callOptionalProcedure);
     }
 
     /// <summary>
@@ -134,7 +189,7 @@ public class HealthComponent : MonoBehaviour
     /// the percentage of the decrement
     /// pre: this value should be clamped between 0 and 1.
     /// </param>
-    public void DecreasePercentage(float variation)
+    public void DecreasePercentage(float variation, bool callOptionalProcedure = true)
     {
         if (!_initialized)
         {
@@ -144,7 +199,7 @@ public class HealthComponent : MonoBehaviour
         variation = Mathf.Clamp01(variation);
         int decrement = Mathf.FloorToInt((float)MaxHealth * variation);
 
-        DecreaseHealth(decrement);
+        Decrease(decrement, callOptionalProcedure);
     }
 
     /// <summary>
@@ -192,5 +247,32 @@ public class HealthComponent : MonoBehaviour
         int increment = Mathf.FloorToInt((float)MaxHealth * variation);
 
         MaxHealth += Math.Max(increment, 0);
+    }
+
+    /// <summary>
+    /// Method that can make the character invincible for a while.
+    /// </summary>
+    /// <param name="time">The time that the character will be invincible</param>
+    public void SetInvincibilityTemporarily(float time)
+    {
+        if (_temporaryInvincibilityCoroutine == null)
+        {
+            _temporaryInvincibilityCoroutine = StartCoroutine(SetInvincibilityTemporarilyIEnumerator(time));
+        }
+    }
+
+    /// <summary>
+    /// IEnumerator that can make the character invincible for a while.
+    /// </summary>
+    /// <param name="time">The time that the character will be invincible</param>
+    private IEnumerator SetInvincibilityTemporarilyIEnumerator(float time)
+    {
+        IsInvincible = true;
+
+        yield return new WaitForSeconds(time);
+
+        IsInvincible = false;
+
+        _temporaryInvincibilityCoroutine = null;
     }
 }

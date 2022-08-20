@@ -36,6 +36,11 @@ public class UIBar : DynamicUIComponent
     {
         set
         {
+            if (_infoTextComponent == null)
+            {
+                return;
+            }
+
             _infoTextComponent.gameObject.SetActive(value);
         }
     }
@@ -47,6 +52,11 @@ public class UIBar : DynamicUIComponent
     {
         set
         {
+            if (_valueTextComponent == null)
+            {
+                return;
+            }
+            
             _valueTextComponent.gameObject.SetActive(value);
         }
     }
@@ -90,7 +100,11 @@ public class UIBar : DynamicUIComponent
         MaxValue = maxValue;
         CurrentValue = MaxValue;
 
-        _infoTextComponent.text = info;
+        if (_infoTextComponent != null)
+        {
+            _infoTextComponent.text = info;
+        }
+
         UpdateValueTextComponent();
     }
 
@@ -132,6 +146,11 @@ public class UIBar : DynamicUIComponent
     /// </summary>
     private void UpdateValueTextComponent()
     {
+        if (_valueTextComponent == null)
+        {
+            return;
+        }
+
         _valueTextComponent.text = CurrentValue.ToString() + "/" + MaxValue.ToString();
     }
 }
