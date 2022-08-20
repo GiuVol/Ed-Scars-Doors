@@ -51,19 +51,7 @@ public class Crawler : GenericMob
             Patrol();
         } else
         {
-            if (_canAttack)
-            {
-                float distance = Vector2.Distance(_player.transform.position, transform.position);
-
-                if (distance <= _attackRange)
-                {
-                    StartCoroutine(HandleAttack(_player));
-                } else
-                {
-                    Vector3 moveDirection = (_player.transform.position - transform.position).normalized;
-                    _attachedRigidbody.AddForce(moveDirection * _mass * _speed);
-                }
-            }
+            HandlePlayer(_player);
         }
 
         Vector3 localSpaceVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
@@ -76,6 +64,8 @@ public class Crawler : GenericMob
 
         AnimController.SetFloat(SpeedParameterName, normalizedSpeed);
     }
+
+    #region Behaviour
 
     private void Patrol()
     {
@@ -122,6 +112,29 @@ public class Crawler : GenericMob
         #endregion
     }
     
+    private void HandlePlayer(PlayerController player)
+    {
+        if (player == null)
+        {
+            return;
+        }
+
+        if (_canAttack)
+        {
+            float distance = Vector2.Distance(player.transform.position, transform.position);
+
+            if (distance <= _attackRange)
+            {
+                StartCoroutine(HandleAttack(player));
+            }
+            else
+            {
+                Vector3 moveDirection = (player.transform.position - transform.position).normalized;
+                _attachedRigidbody.AddForce(moveDirection * _mass * _speed);
+            }
+        }
+    }
+
     protected override IEnumerator Attack(PlayerController target)
     {
         AnimController.SetTrigger(AttackParameterName);
@@ -195,4 +208,6 @@ public class Crawler : GenericMob
 
         Destroy(gameObject);
     }
+
+    #endregion
 }
