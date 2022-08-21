@@ -46,13 +46,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: Crawler
-  _maxHealthValue: 100
+  _maxHealthValue: 300
   _attackStandardValue: 100
   _attackMinValue: 75
   _attackMaxValue: 125
-  _defenceStandardValue: 200
-  _defenceMinValue: 100
-  _defenceMaxValue: 300
+  _defenceStandardValue: 300
+  _defenceMinValue: 250
+  _defenceMaxValue: 350
   _maxBlindnessLevel: 10
   _blindnessDuration: 8
   _blindnessCooldownTime: 2
@@ -61,8 +61,8 @@ MonoBehaviour:
   _maxCorrosionTime: 10
   _corrosionResistence: 0
   _playerCheckInterval: 0.1
-  _rangeToCheck: 15
-  _attackRange: 5
+  _rangeToCheck: 45
+  _attackRange: 10
   _attackInterval: 2
   _mass: 50
   _speed: 50
@@ -73,6 +73,7 @@ MonoBehaviour:
   _height: 9
   _patrolPointsGroup: {fileID: 0}
   _circular: 0
+  _headCaster: {fileID: 0}
 --- !u!1001 &3109291215849681898
 PrefabInstance:
   m_ObjectHideFlags: 0

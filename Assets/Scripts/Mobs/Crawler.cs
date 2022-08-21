@@ -130,6 +130,22 @@ public class Crawler : GenericMob
             else
             {
                 Vector3 moveDirection = (player.transform.position - transform.position).normalized;
+                moveDirection.y = 0;
+                Vector3 lookDirection = moveDirection;
+
+                #region Rotating
+
+                if (lookDirection.x > 0)
+                {
+                    transform.rotation = Quaternion.Euler(0, 0, 0);
+                }
+                else if (lookDirection.x < 0)
+                {
+                    transform.rotation = Quaternion.Euler(0, -180, 0);
+                }
+
+                #endregion
+
                 _attachedRigidbody.AddForce(moveDirection * _mass * _speed);
             }
         }
@@ -137,6 +153,22 @@ public class Crawler : GenericMob
 
     protected override IEnumerator Attack(PlayerController target)
     {
+        Vector3 lookDirection = (target.transform.position - transform.position).normalized;
+        lookDirection.y = 0;
+
+        #region Rotating
+
+        if (lookDirection.x > 0)
+        {
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+        else if (lookDirection.x < 0)
+        {
+            transform.rotation = Quaternion.Euler(0, -180, 0);
+        }
+
+        #endregion
+
         AnimController.SetTrigger(AttackParameterName);
 
         yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName(AttackStateName));
