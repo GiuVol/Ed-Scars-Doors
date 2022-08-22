@@ -5,10 +5,42 @@ using UnityEngine;
 public class ParallaxBackground : MonoBehaviour
 {
     [System.Serializable]
-    private class BackgroundLayer
+    public class BackgroundLayer
     {
+        [SerializeField]
+        private Sprite _layerSprite;
+
+        [SerializeField]
+        private Vector2 _positionOffset;
+        
+        [SerializeField]
+        private Vector2 _transformScale;
+
+        [SerializeField]
+        private Vector2 _rendererSizeMultiplier;
+
+        [SerializeField]
+        private bool _loopHorizontal;
+
+        [SerializeField]
+        private bool _loopVertical;
+
+        [SerializeField]
+        private Vector2 _parallaxMultiplier;
+
+        [SerializeField]
+        private int _sortingLayerIndex;
+        
         public GameObject GameObject { get; private set; }
 
+        public Vector2 PositionOffset
+        {
+            get
+            {
+                return _positionOffset;
+            }
+        }
+        
         public SpriteRenderer Renderer
         {
             get
@@ -29,19 +61,7 @@ public class ParallaxBackground : MonoBehaviour
             }
         }
 
-        [SerializeField]
-        private Sprite _layerSprite;
-
-        public Vector2 BaseSize { get; private set; }
-
-        [SerializeField]
-        private Vector2 _transformScale;
-        
-        [SerializeField]
-        private Vector2 _rendererSizeMultiplier;
-
-        [SerializeField]
-        private bool _loopHorizontal;
+        public Vector2 BaseRendererSize { get; private set; }
 
         public bool LoopHorizontal
         {
@@ -55,9 +75,6 @@ public class ParallaxBackground : MonoBehaviour
                 _loopHorizontal = value;
             }
         }
-
-        [SerializeField]
-        private bool _loopVertical;
 
         public bool LoopVertical
         {
@@ -104,9 +121,6 @@ public class ParallaxBackground : MonoBehaviour
             }
         }
 
-        [SerializeField]
-        private Vector2 _parallaxMultiplier;
-
         public Vector2 ParallaxMultiplier
         {
             get
@@ -119,9 +133,6 @@ public class ParallaxBackground : MonoBehaviour
                 _parallaxMultiplier = value;
             }
         }
-
-        [SerializeField]
-        private int _sortingLayerIndex;
 
         public int SortingLayerIndex
         {
@@ -140,11 +151,11 @@ public class ParallaxBackground : MonoBehaviour
         {
             GameObject = new GameObject(layerName);
             GameObject.transform.localScale = new Vector3(_transformScale.x, _transformScale.y, 1);
-            GameObject.transform.position = desiredPosition;
+            GameObject.transform.position = desiredPosition + (Vector3) PositionOffset;
             Renderer.sprite = LayerSprite;
             Renderer.sortingOrder = SortingLayerIndex;
             Renderer.drawMode = SpriteDrawMode.Tiled;
-            BaseSize = Renderer.size;
+            BaseRendererSize = Renderer.size;
 
             if (!LoopHorizontal)
             {
@@ -156,7 +167,7 @@ public class ParallaxBackground : MonoBehaviour
                 _rendererSizeMultiplier.y = 1;
             }
 
-            Renderer.size = new Vector2(BaseSize.x * _rendererSizeMultiplier.x, BaseSize.y * _rendererSizeMultiplier.y);
+            Renderer.size = new Vector2(BaseRendererSize.x * _rendererSizeMultiplier.x, BaseRendererSize.y * _rendererSizeMultiplier.y);
         }
     }
 
@@ -164,67 +175,29 @@ public class ParallaxBackground : MonoBehaviour
     private List<BackgroundLayer> _layers;
     [SerializeField]
     private int _zPosition;
-    
-    private Transform _cameraTransform;
-    private Vector3 _lastCameraPosition;
 
-    void Start()
+    public List<BackgroundLayer> Layers
     {
-        _cameraTransform = Camera.main.transform;
-        _lastCameraPosition = _cameraTransform.position;
+        get
+        {
+            if (_layers == null)
+            {
+                _layers = new List<BackgroundLayer>();
+            }
 
+            return _layers;
+        }
+    }
+    
+    public void Initialize(Vector3 startPosition)
+    {
         int counter = 0;
 
         foreach (BackgroundLayer layer in _layers)
         {
             counter++;
-            layer.Initialize("BackgroundLayer" + counter, 
-                             new Vector3(_cameraTransform.position.x, _cameraTransform.position.y, _zPosition));
+            layer.Initialize("BackgroundLayer" + counter,
+                             new Vector3(startPosition.x, startPosition.y, _zPosition));
         }
-    }
-
-    void LateUpdate()
-    {
-        Vector3 deltaPosition = _cameraTransform.position - _lastCameraPosition;
-
-        foreach (BackgroundLayer layer in _layers)
-        {
-            Vector3 offset = deltaPosition;
-            
-            layer.GameObject.transform.position += new Vector3(offset.x, 0) * layer.ParallaxMultiplier.x;
-            layer.GameObject.transform.position += new Vector3(0, offset.y) * layer.ParallaxMultiplier.y;
-
-            Vector2 layerSize = layer.BaseSize;
-
-            if (layer.LoopHorizontal)
-            {
-                layerSize.x = 3 * layer.BaseSize.x * Camera.main.orthographicSize;
-
-                if (Mathf.Abs(_cameraTransform.position.x - layer.GameObject.transform.position.x) >= layer.TextureUnitSizeX)
-                {
-                    float offsetPositionX = (_cameraTransform.position.x - layer.GameObject.transform.position.x) %
-                        layer.TextureUnitSizeX;
-                    layer.GameObject.transform.position =
-                        new Vector3(_cameraTransform.position.x + offsetPositionX, layer.GameObject.transform.position.y);
-                }
-            }
-
-            if (layer.LoopVertical)
-            {
-                layerSize.y = 3 * layer.BaseSize.y * Camera.main.orthographicSize;
-
-                if (Mathf.Abs(_cameraTransform.position.y - layer.GameObject.transform.position.y) >= layer.TextureUnitSizeY)
-                {
-                    float offsetPositionY = (_cameraTransform.position.y - layer.GameObject.transform.position.y) %
-                        layer.TextureUnitSizeY;
-                    layer.GameObject.transform.position =
-                        new Vector3(layer.GameObject.transform.position.x, _cameraTransform.position.y + offsetPositionY);
-                }
-            }
-
-            layer.GameObject.GetComponent<SpriteRenderer>().size = layerSize;
-        }
-        
-        _lastCameraPosition = _cameraTransform.position;
     }
 }
