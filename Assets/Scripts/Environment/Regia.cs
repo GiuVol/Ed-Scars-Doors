@@ -53,11 +53,15 @@ public class Regia : MonoBehaviour
         }
     }
 
+    #region Serialized
+
     [SerializeField]
     private ParallaxBackground _background;
 
     [SerializeField]
     private List<CameraPresetValue> _cameraValues;
+
+    #endregion
 
     private CameraController _cameraController;
     private Vector3 _lastCameraPosition;
@@ -65,6 +69,8 @@ public class Regia : MonoBehaviour
     private PlayerController _playerController;
 
     private bool _initialized;
+
+    #region Debug
 
     private void Update()
     {
@@ -82,9 +88,11 @@ public class Regia : MonoBehaviour
         }
     }
 
+    #endregion
+
     public void StartRegia(CameraController cameraController, PlayerController playerController)
     {
-        if (cameraController == null)
+        if (cameraController == null || playerController == null)
         {
             return;
         }
@@ -121,7 +129,7 @@ public class Regia : MonoBehaviour
 
         if (_cameraValues != null && _cameraValues.Count > 0)
         {
-            HandleCamera();
+            HandleCamera(_playerController.transform.position.x);
         }
     }
 
@@ -164,17 +172,17 @@ public class Regia : MonoBehaviour
         _lastCameraPosition = _cameraController.transform.position;
     }
 
-    private void HandleCamera()
+    private void HandleCamera(float playerXPosition)
     {
         if (_cameraValues == null || _cameraValues.Count <= 0)
         {
             return;
         }
 
-        float playerXPosition = _playerController.transform.position.x;
+        float cameraSize = _cameraController.OrthographicSize;
+        Vector2 cameraOffset = _cameraController.PositionOffset;
 
-        float cameraSize = 10;
-        Vector2 cameraOffset = Vector2.zero;
+        #region Calculating size and offset
 
         if (playerXPosition <= _cameraValues[0].XPosition)
         {
@@ -208,7 +216,9 @@ public class Regia : MonoBehaviour
             }
         }
 
-        _cameraController.CameraComponent.orthographicSize = cameraSize;
+        #endregion
+
+        _cameraController.OrthographicSize = cameraSize;
         _cameraController.PositionOffset = cameraOffset;
     }
 }
