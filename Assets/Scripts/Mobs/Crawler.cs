@@ -16,7 +16,7 @@ public class Crawler : GenericMob
     private const string AttackParameterName = "Attack";
     private const string DieParameterName = "Die";
 
-    private const float AttackDamagingPhasePercentage = .5f;
+    private const float AttackDamagingPhasePercentage = .2f;
     private const float DieWaitPercentage = .5f;
     private const float DieScaleLerpingSpeed = .5f;
 
@@ -185,6 +185,11 @@ public class Crawler : GenericMob
         }
         
         yield return new WaitUntil(() => !AnimController.GetCurrentAnimatorStateInfo(0).IsName(AttackStateName));
+
+        if (_headCaster != null)
+        {
+            _headCaster.TriggerFunction = null;
+        }
     }
 
     private void InflictDamage(Collider2D collision, float power)
