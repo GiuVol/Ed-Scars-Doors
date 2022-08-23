@@ -16,7 +16,7 @@ public class CameraController : MonoBehaviour
     /// <summary>
     /// The max orthographic size that the camera can have.
     /// </summary>
-    private const float MaxOrthographicSize = 15;
+    private const float MaxOrthographicSize = 30f;
 
     /// <summary>
     /// The time (in seconds) that the camera needs to reach the desired position.
