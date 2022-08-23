@@ -1,22 +1,38 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Regia : MonoBehaviour
 {
+    /// <summary>
+    /// The objects of this class specify the configuration that the camera controller must have 
+    /// when the player reaches a certain position on the x axis.
+    /// </summary>
     [System.Serializable]
     private class CameraPresetValue : IComparable
     {
+        /// <summary>
+        /// The x position at which this preset has the max weight.
+        /// </summary>
         [SerializeField]
         private float _xPosition;
 
+        /// <summary>
+        /// The ortographic size that the camera must have when the player reaches the specified x position.
+        /// </summary>
         [SerializeField]
         private float _cameraSize;
 
+        /// <summary>
+        /// The position, relative to the player, that the camera must have when the player 
+        /// reaches the specified x position.
+        /// </summary>
         [SerializeField]
         private Vector2 _cameraOffset;
 
+        /// <summary>
+        /// The x position at which this preset has the max weight.
+        /// </summary>
         public float XPosition
         {
             get
@@ -25,6 +41,9 @@ public class Regia : MonoBehaviour
             }
         }
 
+        /// <summary>
+        /// The ortographic size that the camera must have when the player reaches the specified x position.
+        /// </summary>
         public float CameraSize
         {
             get
@@ -33,6 +52,10 @@ public class Regia : MonoBehaviour
             }
         }
 
+        /// <summary>
+        /// The position, relative to the player, that the camera must have when the player 
+        /// reaches the specified x position.
+        /// </summary>
         public Vector2 CameraOffset
         {
             get
@@ -55,19 +78,38 @@ public class Regia : MonoBehaviour
 
     #region Serialized
 
+    /// <summary>
+    /// The current parallax background, that the regia must handle.
+    /// </summary>
     [SerializeField]
     private ParallaxBackground _background;
 
+    /// <summary>
+    /// The camera configuration presets of the stage.
+    /// </summary>
     [SerializeField]
     private List<CameraPresetValue> _cameraValues;
 
     #endregion
 
+    /// <summary>
+    /// The camera controller that is currently controlling the camera.
+    /// </summary>
     private CameraController _cameraController;
+
+    /// <summary>
+    /// The position that the camera had on the previous frame.
+    /// </summary>
     private Vector3 _lastCameraPosition;
 
+    /// <summary>
+    /// The current player controller.
+    /// </summary>
     private PlayerController _playerController;
 
+    /// <summary>
+    /// Specifies whether the regia component is initialized.
+    /// </summary>
     private bool _initialized;
 
     #region Debug
@@ -90,6 +132,11 @@ public class Regia : MonoBehaviour
 
     #endregion
 
+    /// <summary>
+    /// Method that initializes the regia component.
+    /// </summary>
+    /// <param name="cameraController">The camera controller that will be active on the stage</param>
+    /// <param name="playerController">the current player controller</param>
     public void StartRegia(CameraController cameraController, PlayerController playerController)
     {
         if (cameraController == null || playerController == null)
@@ -133,6 +180,9 @@ public class Regia : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Moves the background, relatively to the camera.
+    /// </summary>
     private void HandleBackground()
     {
         Vector3 deltaPosition = _cameraController.transform.position - _lastCameraPosition;
@@ -172,6 +222,12 @@ public class Regia : MonoBehaviour
         _lastCameraPosition = _cameraController.transform.position;
     }
 
+    /// <summary>
+    /// This procedure modifies the camera controller's configuration according to the camera presets values serialized.
+    /// </summary>
+    /// <param name="playerXPosition">
+    /// The current x position of the player.
+    /// </param>
     private void HandleCamera(float playerXPosition)
     {
         if (_cameraValues == null || _cameraValues.Count <= 0)
