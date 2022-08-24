@@ -329,7 +329,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8513c12b1835ac4b90e35b75fa7ba8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _background: {fileID: 2186027873072773231, guid: 3f2b4d709d7dcc843bcf56ae2575c863, type: 3}
+  _backgroundPrefab: {fileID: 2186027873072773231, guid: 3f2b4d709d7dcc843bcf56ae2575c863, type: 3}
   _cameraValues:
   - _xPosition: 0
     _cameraSize: 10
