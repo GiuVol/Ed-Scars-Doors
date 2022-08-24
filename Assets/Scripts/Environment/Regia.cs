@@ -112,6 +112,22 @@ public class Regia : MonoBehaviour
     private ParallaxBackground Background { get; set; }
 
     /// <summary>
+    /// Returns the camera configuration presets of the stage in a controlled manner.
+    /// </summary>
+    private List<CameraPresetValue> CameraValues
+    {
+        get
+        {
+            if (_cameraValues == null)
+            {
+                _cameraValues = new List<CameraPresetValue>();
+            }
+
+            return _cameraValues;
+        }
+    }
+
+    /// <summary>
     /// Specifies whether the regia component is initialized.
     /// </summary>
     private bool _initialized;
@@ -167,9 +183,9 @@ public class Regia : MonoBehaviour
             Background.Initialize(_cameraController.transform.position, _cameraController.CameraComponent);
         }
 
-        if (_cameraValues != null && _cameraValues.Count > 0)
+        if (CameraValues.Count > 0)
         {
-            _cameraValues.Sort();
+            CameraValues.Sort();
         }
 
         _initialized = true;
@@ -182,7 +198,7 @@ public class Regia : MonoBehaviour
             return;
         }
 
-        if (_cameraValues != null && _cameraValues.Count > 0)
+        if (CameraValues.Count > 0)
         {
             HandleCamera(_playerController.transform.position.x);
         }
@@ -196,7 +212,7 @@ public class Regia : MonoBehaviour
     /// </param>
     private void HandleCamera(float playerXPosition)
     {
-        if (_cameraValues == null || _cameraValues.Count <= 0)
+        if (CameraValues.Count <= 0)
         {
             return;
         }
