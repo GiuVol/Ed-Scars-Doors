@@ -1,9 +1,10 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ParallaxBackground : MonoBehaviour
 {
+    #region Inner Classes
+
     /// <summary>
     /// The objects of this class represent the layers that compose the background.
     /// </summary>
@@ -237,6 +238,10 @@ public class ParallaxBackground : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region Serialized
+
     /// <summary>
     /// Stores all the layers that compose this background.
     /// </summary>
@@ -249,8 +254,10 @@ public class ParallaxBackground : MonoBehaviour
     [SerializeField]
     private int _zPosition;
 
+    #endregion
+
     /// <summary>
-    /// Returns all the layers that compose this background.
+    /// Returns all the layers that compose this background in a controlled manner.
     /// </summary>
     public List<BackgroundLayer> Layers
     {
@@ -264,20 +271,85 @@ public class ParallaxBackground : MonoBehaviour
             return _layers;
         }
     }
+
+    /// <summary>
+    /// The camera that is currently rendering the scene.
+    /// </summary>
+    private Camera _camera;
+
+    /// <summary>
+    /// The position that the camera had on the previous frame.
+    /// </summary>
+    private Vector3 _lastCameraPosition;
     
     /// <summary>
     /// Initializes all the layers of this background.
     /// </summary>
     /// <param name="startPosition">The start position of the layers of this background</param>
-    public void Initialize(Vector3 startPosition)
+    public void Initialize(Vector3 startPosition, Camera camera)
     {
         int counter = 0;
 
-        foreach (BackgroundLayer layer in _layers)
+        foreach (BackgroundLayer layer in Layers)
         {
             counter++;
             layer.Initialize("BackgroundLayer" + counter,
                              new Vector3(startPosition.x, startPosition.y, _zPosition));
         }
+
+        _camera = camera;
+        _lastCameraPosition = _camera.transform.position;
+    }
+
+    private void LateUpdate()
+    {
+        Move();
+    }
+
+    /// <summary>
+    /// Moves the background, relatively to the camera.
+    /// </summary>
+    public void Move()
+    {
+        if (Layers.Count <= 0 || _camera == null)
+        {
+            return;
+        }
+
+        Vector3 deltaPosition = _camera.transform.position - _lastCameraPosition;
+
+        foreach (BackgroundLayer layer in Layers)
+        {
+            Vector3 offset = deltaPosition;
+
+            layer.GameObject.transform.position += new Vector3(offset.x, 0) * layer.ParallaxMultiplier.x;
+            layer.GameObject.transform.position += new Vector3(0, offset.y) * layer.ParallaxMultiplier.y;
+
+            if (layer.LoopHorizontal)
+            {
+                if (Mathf.Abs(_camera.transform.position.x - (layer.GameObject.transform.position.x + layer.PositionOffset.x))
+                    >= layer.TextureUnitSizeX)
+                {
+                    float offsetPositionX = (_camera.transform.position.x - layer.GameObject.transform.position.x) %
+                        layer.TextureUnitSizeX;
+                    layer.GameObject.transform.position =
+                        new Vector3(_camera.transform.position.x + offsetPositionX, layer.GameObject.transform.position.y);
+                }
+            }
+
+            if (layer.LoopVertical)
+            {
+                if (Mathf.Abs(_camera.transform.position.y - (layer.GameObject.transform.position.y + layer.PositionOffset.y))
+                    >= layer.TextureUnitSizeY)
+                {
+                    float offsetPositionY = (_camera.transform.position.y - layer.GameObject.transform.position.y) %
+                        layer.TextureUnitSizeY;
+                    layer.GameObject.transform.position =
+                        new Vector3(layer.GameObject.transform.position.x, _camera.transform.position.y + offsetPositionY);
+                }
+            }
+        }
+
+        _lastCameraPosition = _camera.transform.position;
     }
 }

@@ -82,7 +82,7 @@ public class Regia : MonoBehaviour
     /// The current parallax background, that the regia must handle.
     /// </summary>
     [SerializeField]
-    private ParallaxBackground _background;
+    private ParallaxBackground _backgroundPrefab;
 
     /// <summary>
     /// The camera configuration presets of the stage.
@@ -98,14 +98,14 @@ public class Regia : MonoBehaviour
     private CameraController _cameraController;
 
     /// <summary>
-    /// The position that the camera had on the previous frame.
-    /// </summary>
-    private Vector3 _lastCameraPosition;
-
-    /// <summary>
     /// The current player controller.
     /// </summary>
     private PlayerController _playerController;
+
+    /// <summary>
+    /// The current instance of the background prefab.
+    /// </summary>
+    private ParallaxBackground Background { get; set; }
 
     /// <summary>
     /// Specifies whether the regia component is initialized.
@@ -122,9 +122,16 @@ public class Regia : MonoBehaviour
         }
 
         CameraController cc = GameObject.FindObjectOfType<CameraController>();
+        Camera camera = null;
+
+        if (cc != null)
+        {
+            camera = cc.CameraComponent;
+        }
+
         PlayerController pc = GameObject.FindObjectOfType<PlayerController>();
 
-        if (cc != null && pc != null)
+        if (cc != null && camera != null && pc != null)
         {
             StartRegia(cc, pc);
         }
@@ -145,13 +152,15 @@ public class Regia : MonoBehaviour
         }
 
         _cameraController = cameraController;
-        _lastCameraPosition = _cameraController.transform.position;
-
         _playerController = playerController;
 
-        if (_background != null)
+        if (_backgroundPrefab != null)
         {
-            _background.Initialize(_cameraController.transform.position);
+            Background = Instantiate(_backgroundPrefab, transform.position, Quaternion.identity);
+            Background.name = "ParallaxBackground";
+            Background.transform.parent = transform;
+            Background.transform.localPosition = Vector3.zero;
+            Background.Initialize(_cameraController.transform.position, _cameraController.CameraComponent);
         }
 
         if (_cameraValues != null && _cameraValues.Count > 0)
@@ -169,57 +178,10 @@ public class Regia : MonoBehaviour
             return;
         }
 
-        if (_background != null)
-        {
-            HandleBackground();
-        }
-
         if (_cameraValues != null && _cameraValues.Count > 0)
         {
             HandleCamera(_playerController.transform.position.x);
         }
-    }
-
-    /// <summary>
-    /// Moves the background, relatively to the camera.
-    /// </summary>
-    private void HandleBackground()
-    {
-        Vector3 deltaPosition = _cameraController.transform.position - _lastCameraPosition;
-
-        foreach (ParallaxBackground.BackgroundLayer layer in _background.Layers)
-        {
-            Vector3 offset = deltaPosition;
-
-            layer.GameObject.transform.position += new Vector3(offset.x, 0) * layer.ParallaxMultiplier.x;
-            layer.GameObject.transform.position += new Vector3(0, offset.y) * layer.ParallaxMultiplier.y;
-
-            if (layer.LoopHorizontal)
-            {
-                if (Mathf.Abs(_cameraController.transform.position.x - (layer.GameObject.transform.position.x + layer.PositionOffset.x)) 
-                    >= layer.TextureUnitSizeX)
-                {
-                    float offsetPositionX = (_cameraController.transform.position.x - layer.GameObject.transform.position.x) %
-                        layer.TextureUnitSizeX;
-                    layer.GameObject.transform.position =
-                        new Vector3(_cameraController.transform.position.x + offsetPositionX, layer.GameObject.transform.position.y);
-                }
-            }
-
-            if (layer.LoopVertical)
-            {
-                if (Mathf.Abs(_cameraController.transform.position.y - (layer.GameObject.transform.position.y + layer.PositionOffset.y)) 
-                    >= layer.TextureUnitSizeY)
-                {
-                    float offsetPositionY = (_cameraController.transform.position.y - layer.GameObject.transform.position.y) %
-                        layer.TextureUnitSizeY;
-                    layer.GameObject.transform.position =
-                        new Vector3(layer.GameObject.transform.position.x, _cameraController.transform.position.y + offsetPositionY);
-                }
-            }
-        }
-
-        _lastCameraPosition = _cameraController.transform.position;
     }
 
     /// <summary>
