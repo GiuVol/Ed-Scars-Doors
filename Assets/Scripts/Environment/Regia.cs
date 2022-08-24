@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Regia : MonoBehaviour
 {
+    #region Inner Classes
+
     /// <summary>
     /// The objects of this class specify the configuration that the camera controller must have 
     /// when the player reaches a certain position on the x axis.
@@ -75,6 +77,8 @@ public class Regia : MonoBehaviour
             return _xPosition.CompareTo(otherCPV._xPosition);
         }
     }
+
+    #endregion
 
     #region Serialized
 
