@@ -242,6 +242,13 @@ public class Regia : MonoBehaviour
                     float relativePosition = playerXPosition - current.XPosition;
                     float interval = Mathf.Abs(next.XPosition - current.XPosition);
 
+                    if (interval == 0)
+                    {
+                        cameraSize = next.CameraSize;
+                        cameraOffset = next.CameraOffset;
+                        break;
+                    }
+
                     float lerpFactor = relativePosition / interval;
 
                     cameraSize = 
