@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class Crawler : GenericMob
 {
+    private const float MaxSpeed = 7;
+    
     /// <summary>
     /// Consts useful for the Animator's handling.
     /// </summary>
@@ -55,7 +57,7 @@ public class Crawler : GenericMob
         }
 
         Vector2 localSpaceVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
-        float normalizedSpeed = localSpaceVelocity.x / (_speed / _attachedRigidbody.drag);
+        float normalizedSpeed = localSpaceVelocity.x / MaxSpeed;
 
         if (normalizedSpeed < .2f)
         {

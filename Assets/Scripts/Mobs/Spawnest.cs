@@ -5,11 +5,13 @@ using UnityEngine;
 
 public class Spawnest : GenericMob
 {
+    private const float MaxSpeed = 7;
+    
     /// <summary>
     /// Consts useful for the Animator's handling.
     /// </summary>
     #region Animator's consts
-    
+
     private const string WalkCycleStateName = "WalkCycle";
     private const string DieStateName = "Die";
 
@@ -192,7 +194,7 @@ public class Spawnest : GenericMob
         }
 
         Vector2 localSpaceVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
-        float normalizedSpeed = localSpaceVelocity.x / (_speed / _attachedRigidbody.drag);
+        float normalizedSpeed = localSpaceVelocity.x / MaxSpeed;
 
         AnimController.SetFloat(SpeedParameterName, normalizedSpeed);
     }
