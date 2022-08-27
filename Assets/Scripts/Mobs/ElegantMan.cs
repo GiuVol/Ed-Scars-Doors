@@ -4,6 +4,21 @@ using UnityEngine;
 
 public class ElegantMan : GenericMob
 {
+    /// <summary>
+    /// Consts useful for the Animator's handling.
+    /// </summary>
+    #region Animator's consts
+
+    private const string LocomotionCycleName = "LocomotionCycle";
+    private const string AttackStateName = "Attack";
+
+    private const string SpeedParameterName = "Speed";
+    private const string AttackParameterName = "Attack";
+
+    private const float AttackDamagingPhasePercentage = .2f;
+
+    #endregion
+    
     protected override UIBar HealthBarResource => null;
 
     private new void Start()
@@ -11,6 +26,8 @@ public class ElegantMan : GenericMob
         base.Start();
         Health.IsInvincible = true;
         Status.IsImmune = true;
+
+        AnimController = GetComponentInChildren<Animator>();
     }
 
     private void FixedUpdate()
@@ -19,7 +36,8 @@ public class ElegantMan : GenericMob
         {
             Vector2 moveDirection = (_player.transform.position - transform.position).normalized;
             moveDirection.y = 0;
-            _attachedRigidbody.AddForce(moveDirection * _mass * _speed);
+            float forceFactor = _speed;
+            _attachedRigidbody.AddForce(moveDirection * forceFactor);
 
             #region Rotating
 
@@ -34,6 +52,16 @@ public class ElegantMan : GenericMob
 
             #endregion
         }
+
+        Vector2 localSpaceVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
+        float normalizedSpeed = localSpaceVelocity.x / (_speed / _attachedRigidbody.drag);
+
+        if (normalizedSpeed < .2f)
+        {
+            normalizedSpeed = 0;
+        }
+
+        AnimController.SetFloat(SpeedParameterName, normalizedSpeed);
     }
 
     protected override IEnumerator Attack(PlayerController target)
@@ -43,6 +71,6 @@ public class ElegantMan : GenericMob
     
     protected override IEnumerator Die()
     {
-        throw new System.NotImplementedException();
+        yield break;
     }
 }

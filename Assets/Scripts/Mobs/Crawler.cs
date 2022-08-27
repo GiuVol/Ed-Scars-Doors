@@ -89,7 +89,7 @@ public class Crawler : GenericMob
 
         if (distance > 1.5f)
         {
-            _attachedRigidbody.AddForce(moveDirection * _mass * _speed);
+            _attachedRigidbody.AddForce(moveDirection * _speed * _attachedRigidbody.drag);
         }
         else
         {
