@@ -35,7 +35,7 @@ public class Flydier : GenericMob
     /// <summary>
     /// Stores the path to the prefab of the flydier.
     /// </summary>
-    public const string PrefabPath = "Enemies/Flydier";
+    public const string PrefabPath = "Mobs/Flydier";
 
     protected override Vector3 HealthBarPositionOffset
     {
