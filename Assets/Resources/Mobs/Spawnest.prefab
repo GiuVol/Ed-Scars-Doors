@@ -1891,7 +1891,7 @@ MonoBehaviour:
   _eggGrowingSpeed: 0.25
   _flydiersSpawnPoint: {fileID: 613590646061659161}
   _flydiersRemainOnPattern: 0
-  _shouldEscape: 1
+  _shouldEscape: 0
   _dangerDistance: 10
 --- !u!70 &6372165237859632024
 CapsuleCollider2D:
