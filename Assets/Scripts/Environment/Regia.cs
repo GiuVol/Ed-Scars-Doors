@@ -33,6 +33,18 @@ public class Regia : MonoBehaviour
         private Vector2 _cameraOffset;
 
         /// <summary>
+        /// Stores the eventual transform that will be used to lock the camera to a position.
+        /// </summary>
+        [SerializeField]
+        private Transform _lockTransform;
+
+        /// <summary>
+        /// Stores whether in correspondence of this camera preset the camera's boundries should be locked.
+        /// </summary>
+        [SerializeField]
+        private bool _lockBoundries;
+
+        /// <summary>
         /// The x position at which this preset has the max weight.
         /// </summary>
         public float XPosition
@@ -63,6 +75,28 @@ public class Regia : MonoBehaviour
             get
             {
                 return _cameraOffset;
+            }
+        }
+
+        /// <summary>
+        /// Returns the eventual transform that will be used to lock the camera to a position.
+        /// </summary>
+        public Transform LockTransform
+        {
+            get
+            {
+                return _lockTransform;
+            }
+        }
+
+        /// <summary>
+        /// Returns whether in correspondence of this camera preset the camera's boundries should be locked.
+        /// </summary>
+        public bool LockBoundries
+        {
+            get
+            {
+                return _lockBoundries;
             }
         }
 

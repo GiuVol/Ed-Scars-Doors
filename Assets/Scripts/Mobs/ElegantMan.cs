@@ -17,7 +17,7 @@ public class ElegantMan : GenericMob
     {
         if (_player != null)
         {
-            Vector3 moveDirection = (_player.transform.position - transform.position).normalized;
+            Vector2 moveDirection = (_player.transform.position - transform.position).normalized;
             moveDirection.y = 0;
             _attachedRigidbody.AddForce(moveDirection * _mass * _speed);
 

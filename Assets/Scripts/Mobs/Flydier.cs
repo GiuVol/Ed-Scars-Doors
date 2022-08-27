@@ -147,7 +147,7 @@ public class Flydier : GenericMob
             }
         }
 
-        Vector3 localSpaceVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
+        Vector2 localSpaceVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
         float normalizedSpeed = localSpaceVelocity.x / (_speed / _attachedRigidbody.drag);
 
         AnimController.SetFloat(SpeedParameterName, normalizedSpeed);
@@ -192,9 +192,9 @@ public class Flydier : GenericMob
             return;
         }
 
-        Vector3 moveDirection = (CurrentPatrolPoint.position - transform.position).normalized;
+        Vector2 moveDirection = (CurrentPatrolPoint.position - transform.position).normalized;
 
-        Vector3 lookDirection;
+        Vector2 lookDirection;
 
         if (lookTarget == null)
         {
@@ -205,7 +205,7 @@ public class Flydier : GenericMob
             lookDirection = (lookTarget.position - transform.position).normalized;
         }
 
-        float distance = Vector3.Distance(transform.position, CurrentPatrolPoint.position);
+        float distance = Vector2.Distance(transform.position, CurrentPatrolPoint.position);
 
         #region Moving
 
@@ -242,13 +242,13 @@ public class Flydier : GenericMob
 
         #region Assigning the desired position to the target
 
-        Vector3 leftPosition = player.transform.position + Vector3.left * (_attackRange + _xPositionOffset);
-        Vector3 rightPosition = player.transform.position + Vector3.right * (_attackRange + _xPositionOffset);
+        Vector2 leftPosition = player.transform.position + Vector3.left * (_attackRange + _xPositionOffset);
+        Vector2 rightPosition = player.transform.position + Vector3.right * (_attackRange + _xPositionOffset);
 
-        float leftDistance = Vector3.Distance(transform.position, leftPosition);
-        float rightDistance = Vector3.Distance(transform.position, rightPosition);
+        float leftDistance = Vector2.Distance(transform.position, leftPosition);
+        float rightDistance = Vector2.Distance(transform.position, rightPosition);
 
-        Vector3 targetPosition = (leftDistance < rightDistance) ? leftPosition : rightPosition;
+        Vector2 targetPosition = (leftDistance < rightDistance) ? leftPosition : rightPosition;
 
         _target.position = _mobAI.GetNearestReachablePosition(targetPosition);
 
@@ -283,7 +283,7 @@ public class Flydier : GenericMob
             lookTarget = positionTarget;
         }
 
-        Vector3 lookDirection = (lookTarget.position - transform.position).normalized;
+        Vector2 lookDirection = (lookTarget.position - transform.position).normalized;
 
         if (lookDirection.x > 0)
         {
@@ -306,9 +306,9 @@ public class Flydier : GenericMob
 
         Transform playerTransform = target.transform;
 
-        Vector3 lookDirection = (playerTransform.position - transform.position).normalized;
+        Vector2 lookDirection = (playerTransform.position - transform.position).normalized;
         lookDirection.y = 0;
-        Vector3 shootDirection = lookDirection;
+        Vector2 shootDirection = lookDirection;
 
         #region Rotating according to lookDirection
 
@@ -335,7 +335,7 @@ public class Flydier : GenericMob
 
         #region Calculating the spawn position of the projectile
 
-        Vector3 spawnPosition;
+        Vector2 spawnPosition;
 
         if (_projectileSpawnPoint == null)
         {
