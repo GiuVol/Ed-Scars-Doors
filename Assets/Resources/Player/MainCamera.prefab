@@ -98,4 +98,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _smoothTime: 0.1
-  _standardPositionOffset: {x: 2, y: 4, z: 0}
+  _standardPositionOffset: {x: 5, y: 5, z: -5}
+  _canFlipX: 0
+  _edgeRadius: 0.25

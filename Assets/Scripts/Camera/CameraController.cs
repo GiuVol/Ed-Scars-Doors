@@ -19,6 +19,11 @@ public class CameraController : MonoBehaviour
     private const float MaxOrthographicSize = 30f;
 
     /// <summary>
+    /// The z position that the camera must have.
+    /// </summary>
+    private const float DesiredZ = -30;
+
+    /// <summary>
     /// The time (in seconds) that the camera needs to reach the desired position.
     /// </summary>
     [SerializeField]
@@ -36,6 +41,12 @@ public class CameraController : MonoBehaviour
     /// </summary>
     [SerializeField]
     private bool _canFlipX;
+
+    /// <summary>
+    /// Stores the radius of the edge collider that locks the boundries of the camera.
+    /// </summary>
+    [SerializeField]
+    private float _edgeRadius;
 
     /// <summary>
     /// The <c>Camera</c> attached to the controller.
@@ -144,7 +155,7 @@ public class CameraController : MonoBehaviour
     private void Start()
     {
         PositionOffset = _standardPositionOffset;
-        //OrthographicSize = StandardOrthographicSize;
+        OrthographicSize = StandardOrthographicSize;
 
         _edgeCollider = new GameObject("EdgeCollider").AddComponent<EdgeCollider2D>();
         _edgeCollider.transform.position = transform.position;
@@ -159,6 +170,9 @@ public class CameraController : MonoBehaviour
         {
             Target = GameObject.FindWithTag("Player").transform;
         }
+
+        LockToPosition(Target.transform.position, 2);
+        LockBoundries = true;
 
         #endregion
     }
@@ -190,11 +204,13 @@ public class CameraController : MonoBehaviour
             Vector2[] tempArray = new Vector2[] { point1, point2, point3, point4, point1};
 
             _edgeCollider.points = tempArray;
+            _edgeCollider.edgeRadius = _edgeRadius;
         } else
         {
             if (_edgeCollider.enabled)
             {
                 _edgeCollider.enabled = false;
+                _edgeCollider.edgeRadius = 0;
             }
         }
     }
@@ -209,8 +225,8 @@ public class CameraController : MonoBehaviour
         float actualPositionOffsetX = flipX ? -PositionOffset.x : PositionOffset.x;
         Vector3 actualPositionOffset = new Vector3(actualPositionOffsetX, PositionOffset.y, PositionOffset.z);
 
-        _desiredPosition = new Vector3(Target.position.x, Target.position.y) + actualPositionOffset;
-        _desiredPosition.z = -5;
+        _desiredPosition = Target.position + actualPositionOffset;
+        _desiredPosition.z = DesiredZ;
 
         transform.position = Vector3.SmoothDamp(transform.position, _desiredPosition, ref _currentVelocity, _smoothTime);
     }
