@@ -228,7 +228,7 @@ public class MovementController2D : MonoBehaviour
             return;
         }
 
-        Vector3 forceToApply = direction.normalized * force;
+        Vector2 forceToApply = direction.normalized * force;
         AttachedRigidbody.AddForce(forceToApply * AttachedRigidbody.mass, ForceMode2D.Impulse);
     }
 }
