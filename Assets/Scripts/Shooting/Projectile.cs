@@ -270,7 +270,7 @@ public class Projectile : MonoBehaviour
 
         StartPosition = transform.position;
 
-        yield return new WaitUntil(() => Vector3.Distance(StartPosition, transform.position) >= DistanceToLast);
+        yield return new WaitUntil(() => Vector2.Distance(StartPosition, transform.position) >= DistanceToLast);
 
         Destroy(gameObject);
     }
