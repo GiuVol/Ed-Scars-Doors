@@ -32,11 +32,19 @@ public class ElegantMan : GenericMob
 
     private void FixedUpdate()
     {
+        if (_isAttacking)
+        {
+            return;
+        }
+
         if (_player != null)
         {
             Vector2 moveDirection = (_player.transform.position - transform.position).normalized;
             moveDirection.y = 0;
-            float forceFactor = _speed;
+            PhysicsMaterial2D zFriction = new PhysicsMaterial2D();
+            zFriction.friction = 0;
+            _attachedRigidbody.sharedMaterial = zFriction;
+            float forceFactor = _speed * _attachedRigidbody.drag;
             _attachedRigidbody.AddForce(moveDirection * forceFactor);
 
             #region Rotating
@@ -51,6 +59,11 @@ public class ElegantMan : GenericMob
             }
 
             #endregion
+        } else
+        {
+            PhysicsMaterial2D mFriction = new PhysicsMaterial2D();
+            mFriction.friction = 1;
+            _attachedRigidbody.sharedMaterial = mFriction;
         }
 
         Vector2 localSpaceVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
