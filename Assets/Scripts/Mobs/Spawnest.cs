@@ -5,11 +5,13 @@ using UnityEngine;
 
 public class Spawnest : GenericMob
 {
+    private const float MaxSpeed = 7;
+    
     /// <summary>
     /// Consts useful for the Animator's handling.
     /// </summary>
     #region Animator's consts
-    
+
     private const string WalkCycleStateName = "WalkCycle";
     private const string DieStateName = "Die";
 
@@ -154,7 +156,7 @@ public class Spawnest : GenericMob
 
         if (_player != null)
         {
-            float distanceFromPlayer = Vector3.Distance(transform.position, _player.transform.position);
+            float distanceFromPlayer = Vector2.Distance(transform.position, _player.transform.position);
 
             #region Escaping
 
@@ -165,7 +167,7 @@ public class Spawnest : GenericMob
 
             if (CanEscape && _timeSafe < timeThatMustBeSafe && IsGrounded)
             {
-                Vector3 escapeDirection = (transform.position - _player.transform.position).normalized;
+                Vector2 escapeDirection = (transform.position - _player.transform.position).normalized;
                 escapeDirection.y = 0;
                 _attachedRigidbody.AddForce(escapeDirection * _mass * _speed);
 
@@ -191,8 +193,8 @@ public class Spawnest : GenericMob
             }
         }
 
-        Vector3 localSpaceVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
-        float normalizedSpeed = localSpaceVelocity.x / (_speed / _attachedRigidbody.drag);
+        Vector2 localSpaceVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
+        float normalizedSpeed = localSpaceVelocity.x / MaxSpeed;
 
         AnimController.SetFloat(SpeedParameterName, normalizedSpeed);
     }

@@ -484,10 +484,10 @@ public class Mantmare : GenericMob
             }
         }
 
-        Vector3 localSpaceXVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
+        Vector2 localSpaceXVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
         float normalizedXSpeed = localSpaceXVelocity.x / (_speed / _attachedRigidbody.drag);
 
-        Vector3 localSpaceYVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
+        Vector2 localSpaceYVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
         float normalizedYSpeed = localSpaceYVelocity.y / (_speed / _attachedRigidbody.drag);
 
         AnimController.SetFloat(HorizontalSpeedParameterName, normalizedXSpeed);
@@ -509,7 +509,7 @@ public class Mantmare : GenericMob
             speed = _speed;
         }
 
-        Vector3 direction = (positionToReach - transform.position).normalized;
+        Vector2 direction = (positionToReach - transform.position).normalized;
 
         _attachedRigidbody.AddForce(direction * _mass * speed);
 
@@ -590,7 +590,7 @@ public class Mantmare : GenericMob
     /// </summary>
     private IEnumerator Pattern1(PlayerController target)
     {
-        Vector3 targetPosition = target.transform.position + 
+        Vector2 targetPosition = target.transform.position + 
                                  target.transform.right * _attackRange - 
                                  Vector3.up * _height / 2;
 
@@ -598,14 +598,14 @@ public class Mantmare : GenericMob
 
         do
         {
-            distance = Vector3.Distance(transform.position, targetPosition);
+            distance = Vector2.Distance(transform.position, targetPosition);
             ReachPosition(targetPosition, _speed, true);
             yield return null;
         } while (distance > 2);
 
         _attachedRigidbody.velocity = Vector3.zero;
 
-        Vector3 lookDirection = (target.transform.position - transform.position).normalized;
+        Vector2 lookDirection = (target.transform.position - transform.position).normalized;
         Quaternion desiredRotation = transform.rotation;
 
         if (lookDirection.x > 0)
@@ -728,12 +728,12 @@ public class Mantmare : GenericMob
     /// </summary>
     private IEnumerator Pattern3(PlayerController target)
     {
-        Vector3 leftScreenPosition =
+        Vector2 leftScreenPosition =
             Camera.main.ScreenToWorldPoint(new Vector3(Mathf.RoundToInt((2f / 8f) * Screen.width),
                                            Mathf.RoundToInt((7f / 8f) * Screen.height),
                                            0)) - (Vector3.up * _height);
 
-        Vector3 rightScreenPosition =
+        Vector2 rightScreenPosition =
             Camera.main.ScreenToWorldPoint(new Vector3(Mathf.RoundToInt((6f / 8f) * Screen.width),
                                            Mathf.RoundToInt((7f / 8f) * Screen.height),
                                            0)) - (Vector3.up * _height);
@@ -741,8 +741,8 @@ public class Mantmare : GenericMob
         Vector3 patternStartPosition;
         Vector3 oppositePosition;
 
-        if (Vector3.Distance(transform.position, leftScreenPosition) >
-            Vector3.Distance(transform.position, rightScreenPosition))
+        if (Vector2.Distance(transform.position, leftScreenPosition) >
+            Vector2.Distance(transform.position, rightScreenPosition))
         {
             patternStartPosition = rightScreenPosition;
             oppositePosition = leftScreenPosition;
@@ -764,7 +764,7 @@ public class Mantmare : GenericMob
 
         _attachedRigidbody.velocity = Vector3.zero;
 
-        Vector3 lookDirection = (oppositePosition - transform.position).normalized;
+        Vector2 lookDirection = (oppositePosition - transform.position).normalized;
         Quaternion desiredRotation = transform.rotation;
 
         if (lookDirection.x > 0)

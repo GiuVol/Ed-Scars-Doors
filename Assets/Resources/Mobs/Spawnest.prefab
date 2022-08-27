@@ -1838,7 +1838,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7569444491664252043}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -94.6, y: 25.01, z: 0.05925195}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1891,7 +1891,7 @@ MonoBehaviour:
   _eggGrowingSpeed: 0.25
   _flydiersSpawnPoint: {fileID: 613590646061659161}
   _flydiersRemainOnPattern: 0
-  _shouldEscape: 1
+  _shouldEscape: 0
   _dangerDistance: 10
 --- !u!70 &6372165237859632024
 CapsuleCollider2D:

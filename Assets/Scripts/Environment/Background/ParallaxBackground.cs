@@ -316,14 +316,12 @@ public class ParallaxBackground : MonoBehaviour
             return;
         }
 
-        Vector3 deltaPosition = _camera.transform.position - _lastCameraPosition;
+        Vector2 deltaPosition = _camera.transform.position - _lastCameraPosition;
 
         foreach (BackgroundLayer layer in Layers)
         {
-            Vector3 offset = deltaPosition;
-
-            layer.GameObject.transform.position += new Vector3(offset.x, 0) * layer.ParallaxMultiplier.x;
-            layer.GameObject.transform.position += new Vector3(0, offset.y) * layer.ParallaxMultiplier.y;
+            layer.GameObject.transform.position += new Vector3(deltaPosition.x, 0) * layer.ParallaxMultiplier.x;
+            layer.GameObject.transform.position += new Vector3(0, deltaPosition.y) * layer.ParallaxMultiplier.y;
 
             if (layer.LoopHorizontal)
             {
@@ -333,7 +331,9 @@ public class ParallaxBackground : MonoBehaviour
                     float offsetPositionX = (_camera.transform.position.x - layer.GameObject.transform.position.x) %
                         layer.TextureUnitSizeX;
                     layer.GameObject.transform.position =
-                        new Vector3(_camera.transform.position.x + offsetPositionX, layer.GameObject.transform.position.y);
+                        new Vector3(_camera.transform.position.x + offsetPositionX, 
+                                    layer.GameObject.transform.position.y,
+                                    _zPosition);
                 }
             }
 
@@ -345,7 +345,9 @@ public class ParallaxBackground : MonoBehaviour
                     float offsetPositionY = (_camera.transform.position.y - layer.GameObject.transform.position.y) %
                         layer.TextureUnitSizeY;
                     layer.GameObject.transform.position =
-                        new Vector3(layer.GameObject.transform.position.x, _camera.transform.position.y + offsetPositionY);
+                        new Vector3(layer.GameObject.transform.position.x, 
+                                    _camera.transform.position.y + offsetPositionY,
+                                    _zPosition);
                 }
             }
         }

@@ -356,7 +356,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
         ppGroupsList.RemoveAll(ppGroup => ppGroup.IsBusy);
 
         IEnumerable<PatrolPointsGroup> orderedPPGroups = ppGroupsList
-            .OrderBy(ppGroup => Vector3.Distance(ppGroup.transform.position, transform.position));
+            .OrderBy(ppGroup => Vector2.Distance(ppGroup.transform.position, transform.position));
 
         bool foundResults = ppGroupsList.Count > 0;
 

@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class Crawler : GenericMob
 {
+    private const float MaxSpeed = 7;
+    
     /// <summary>
     /// Consts useful for the Animator's handling.
     /// </summary>
@@ -54,8 +56,8 @@ public class Crawler : GenericMob
             HandlePlayer(_player);
         }
 
-        Vector3 localSpaceVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
-        float normalizedSpeed = localSpaceVelocity.x / (_speed / _attachedRigidbody.drag);
+        Vector2 localSpaceVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
+        float normalizedSpeed = localSpaceVelocity.x / MaxSpeed;
 
         if (normalizedSpeed < .2f)
         {
@@ -79,11 +81,11 @@ public class Crawler : GenericMob
             return;
         }
 
-        Vector3 moveDirection = (CurrentPatrolPoint.position - transform.position).normalized;
+        Vector2 moveDirection = (CurrentPatrolPoint.position - transform.position).normalized;
         moveDirection.y = 0;
-        Vector3 lookDirection = moveDirection;
+        Vector2 lookDirection = moveDirection;
 
-        float distance = Vector3.Distance(transform.position, CurrentPatrolPoint.position);
+        float distance = Vector2.Distance(transform.position, CurrentPatrolPoint.position);
 
         #region Moving
 
@@ -129,9 +131,9 @@ public class Crawler : GenericMob
             }
             else
             {
-                Vector3 moveDirection = (player.transform.position - transform.position).normalized;
+                Vector2 moveDirection = (player.transform.position - transform.position).normalized;
                 moveDirection.y = 0;
-                Vector3 lookDirection = moveDirection;
+                Vector2 lookDirection = moveDirection;
 
                 #region Rotating
 
@@ -153,7 +155,7 @@ public class Crawler : GenericMob
 
     protected override IEnumerator Attack(PlayerController target)
     {
-        Vector3 lookDirection = (target.transform.position - transform.position).normalized;
+        Vector2 lookDirection = (target.transform.position - transform.position).normalized;
         lookDirection.y = 0;
 
         #region Rotating

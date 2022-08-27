@@ -424,7 +424,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
         if (AttachedAnimator != null && MovementController != null && MovementController.AttachedRigidbody != null)
         {
-            Vector3 localSpaceVelocity = transform.InverseTransformDirection(MovementController.AttachedRigidbody.velocity);
+            Vector2 localSpaceVelocity = transform.InverseTransformDirection(MovementController.AttachedRigidbody.velocity);
             float normalizedSpeed = localSpaceVelocity.x / (CurrentRunSpeed);
 
             AttachedAnimator.SetFloat("Speed", normalizedSpeed);
@@ -464,7 +464,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             _jumpHandlingTask = StartCoroutine(HandleJump());
         }
 
-        Vector3 jumpDirection = Vector3.up;
+        Vector2 jumpDirection = Vector2.up;
         MovementController.GiveImpulse(jumpDirection, CurrentJumpForce);
 
         if (!isGrounded)
