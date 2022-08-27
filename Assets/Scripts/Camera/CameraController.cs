@@ -171,9 +171,6 @@ public class CameraController : MonoBehaviour
             Target = GameObject.FindWithTag("Player").transform;
         }
 
-        LockToPosition(Target.transform.position, 2);
-        LockBoundries = true;
-
         #endregion
     }
 
