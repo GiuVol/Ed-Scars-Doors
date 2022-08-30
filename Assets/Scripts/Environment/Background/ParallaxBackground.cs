@@ -220,6 +220,12 @@ public class ParallaxBackground : MonoBehaviour
             GameObject = new GameObject(layerName);
             GameObject.transform.localScale = new Vector3(_transformScale.x, _transformScale.y, 1);
             GameObject.transform.position = desiredPosition + (Vector3) PositionOffset;
+
+            if (LayerSprite == null)
+            {
+                return;
+            }
+
             Renderer.sprite = LayerSprite;
             Renderer.sortingOrder = SortingLayerIndex;
             Renderer.drawMode = SpriteDrawMode.Tiled;
@@ -323,31 +329,34 @@ public class ParallaxBackground : MonoBehaviour
             layer.GameObject.transform.position += new Vector3(deltaPosition.x, 0) * layer.ParallaxMultiplier.x;
             layer.GameObject.transform.position += new Vector3(0, deltaPosition.y) * layer.ParallaxMultiplier.y;
 
-            if (layer.LoopHorizontal)
+            if (layer.LayerSprite != null)
             {
-                if (Mathf.Abs(_camera.transform.position.x - (layer.GameObject.transform.position.x + layer.PositionOffset.x))
-                    >= layer.TextureUnitSizeX)
+                if (layer.LoopHorizontal)
                 {
-                    float offsetPositionX = (_camera.transform.position.x - layer.GameObject.transform.position.x) %
-                        layer.TextureUnitSizeX;
-                    layer.GameObject.transform.position =
-                        new Vector3(_camera.transform.position.x + offsetPositionX, 
-                                    layer.GameObject.transform.position.y,
-                                    _zPosition);
+                    if (Mathf.Abs(_camera.transform.position.x - (layer.GameObject.transform.position.x + layer.PositionOffset.x))
+                        >= layer.TextureUnitSizeX)
+                    {
+                        float offsetPositionX = (_camera.transform.position.x - layer.GameObject.transform.position.x) %
+                            layer.TextureUnitSizeX;
+                        layer.GameObject.transform.position =
+                            new Vector3(_camera.transform.position.x + offsetPositionX,
+                                        layer.GameObject.transform.position.y,
+                                        _zPosition);
+                    }
                 }
-            }
 
-            if (layer.LoopVertical)
-            {
-                if (Mathf.Abs(_camera.transform.position.y - (layer.GameObject.transform.position.y + layer.PositionOffset.y))
-                    >= layer.TextureUnitSizeY)
+                if (layer.LoopVertical)
                 {
-                    float offsetPositionY = (_camera.transform.position.y - layer.GameObject.transform.position.y) %
-                        layer.TextureUnitSizeY;
-                    layer.GameObject.transform.position =
-                        new Vector3(layer.GameObject.transform.position.x, 
-                                    _camera.transform.position.y + offsetPositionY,
-                                    _zPosition);
+                    if (Mathf.Abs(_camera.transform.position.y - (layer.GameObject.transform.position.y + layer.PositionOffset.y))
+                        >= layer.TextureUnitSizeY)
+                    {
+                        float offsetPositionY = (_camera.transform.position.y - layer.GameObject.transform.position.y) %
+                            layer.TextureUnitSizeY;
+                        layer.GameObject.transform.position =
+                            new Vector3(layer.GameObject.transform.position.x,
+                                        _camera.transform.position.y + offsetPositionY,
+                                        _zPosition);
+                    }
                 }
             }
         }
