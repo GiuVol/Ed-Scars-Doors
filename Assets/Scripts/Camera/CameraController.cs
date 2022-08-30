@@ -252,9 +252,13 @@ public class CameraController : MonoBehaviour
 
         do
         {
-            transform.position = Vector3.Lerp(startPosition, position, lerpFactor);
+            _desiredPosition = Vector3.Lerp(startPosition, position, lerpFactor);
+            _desiredPosition.z = DesiredZ;
+            transform.position = _desiredPosition;
             lerpFactor = Mathf.Clamp01(lerpFactor + Time.fixedDeltaTime * speed);
-            yield return null;
+
+            yield return new WaitForFixedUpdate();
+
         } while (lerpFactor < 1);
     }
 
