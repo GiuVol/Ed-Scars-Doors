@@ -432,7 +432,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 965401661}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 299.8, y: 46.8, z: 0}
+  m_LocalPosition: {x: 55.4, y: 46.8, z: 0}
   m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -813,8 +813,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _expires: 1
   _maxNumberOfContacts: 1
+  _numberOfContacts: 0
   _cameraLockTarget: {fileID: 965401662}
   _desiredSize: 25
+  _speedToReachSize: 2
 --- !u!61 &1833359416
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -849,7 +851,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1833359414}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 250, y: 26.8, z: -1.2474526}
+  m_LocalPosition: {x: 5.600006, y: 26.8, z: -1.2474526}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

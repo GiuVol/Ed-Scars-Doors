@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider2D))]
@@ -15,11 +16,13 @@ public abstract class EventTrigger : MonoBehaviour
 
     private int _numberOfContacts;
 
+    private Coroutine _currentEvent;
+
     private bool Expired
     {
         get
         {
-            return _expires && _numberOfContacts > _maxNumberOfContacts;
+            return _expires && _numberOfContacts >= _maxNumberOfContacts;
         }
     }
 
@@ -30,22 +33,32 @@ public abstract class EventTrigger : MonoBehaviour
             return;
         }
 
+        if (_currentEvent == null)
+        {
+            _currentEvent = StartCoroutine(HandleEvent());
+        }
+    }
+
+    private IEnumerator HandleEvent()
+    {
         if (Expired)
         {
             Destroy(gameObject);
-            return;
+            yield break;
         }
 
         _numberOfContacts++;
 
-        Action();
+        yield return StartCoroutine(Action());
 
         if (Expired)
         {
             Destroy(gameObject);
-            return;
+            yield break;
         }
+
+        _currentEvent = null;
     }
 
-    protected abstract void Action();
+    protected abstract IEnumerator Action();
 }
