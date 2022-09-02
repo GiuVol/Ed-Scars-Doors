@@ -393,7 +393,7 @@ public class Flydier : GenericMob
             lerpFactor = Mathf.Clamp01(lerpFactor + (Time.fixedDeltaTime * DieScaleLerpingSpeed));
             transform.localScale = Vector3.Lerp(startScale, Vector3.zero, lerpFactor);
 
-            yield return null;
+            yield return new WaitForFixedUpdate();
         }
 
         if (_spawner != null)
