@@ -480,6 +480,27 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     {
         AttachedAnimator.SetTrigger("StartJumping");
 
+        #region Animation handling
+
+        /*
+
+        if (MovementController.IsGrounded)
+        {
+            yield return new WaitUntil(() => AttachedAnimator.GetCurrentAnimatorStateInfo(0).IsName("Jump"));
+
+            AnimatorStateInfo animatorInfo = AttachedAnimator.GetCurrentAnimatorStateInfo(0);
+            float animationDuration = animatorInfo.length / animatorInfo.speed;
+
+            yield return new WaitForSeconds(animationDuration * .2f);
+
+            Vector2 jumpDirection = Vector2.up;
+            MovementController.GiveImpulse(jumpDirection, CurrentJumpForce);
+        }
+
+        */
+
+        #endregion
+
         Health.SetInvincibilityTemporarily(1);
         Status.SetImmunityTemporarily(1);
 
