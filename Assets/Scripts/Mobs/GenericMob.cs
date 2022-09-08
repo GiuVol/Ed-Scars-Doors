@@ -7,6 +7,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
 {
     public const string MobLayerName = "Mob";
     public const string MobProjectileLayerName = "MobProjectile";
+    protected const float MinPlayerHiddenTime = 2;
 
     /// <summary>
     /// The <c>HealthComponent</c> that stores values and methods related to the health of the mob.
@@ -481,12 +482,20 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// </summary>
     protected PlayerController _player;
 
+
     /// <summary>
     /// Updates the mob's perception of the player.
     /// </summary>
     protected void UpdatePlayer()
     {
         _player = _mobAI.FindPlayerInRadius(transform.position, _rangeToCheck);
+        if (_player != null)
+        {
+            if (_player.GetIsHidden() && _player.GetHiddenTime() >= MinPlayerHiddenTime)
+            {
+                _player = null;
+            }
+        }
     }
 
     #endregion

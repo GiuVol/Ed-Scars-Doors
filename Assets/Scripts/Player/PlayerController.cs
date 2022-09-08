@@ -2,12 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusable
 {
     public const int MaxNumberOfEquippableAbilities = 4;
 
     public const string PlayerLayerName = "Player";
     public const string PlayerProjectileLayerName = "PlayerProjectile";
+
+    /// <summary>
+    /// Rturn True if the player is hidden else false
+    /// </summary>
+    public bool IsHidden
+    { get; private set; }
+
+    public bool CanHide
+    { get; private set; }
+
+    public float HiddenTime
+    { get; private set; }
 
     #region Movement Parameters
 
@@ -132,6 +145,8 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     /// </summary>
     public HealthComponent Health { get; private set; }
 
+    private int ExHealth;
+
     /// <summary>
     /// The <c>StatsComponent</c> that stores values and methods related to the stats of the player.
     /// </summary>
@@ -225,6 +240,10 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     /// Specifies if the player currently has a different color.
     /// </summary>
     private bool _isChangingColor;
+
+    public bool IsFading = false;
+
+    public bool IsBecomingVisible = false;
 
     #endregion
 
@@ -367,6 +386,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         Health.Setup(100, Die, 
                      delegate { ChangeColorTemporarily(Color.green, .25f); }, 
                      delegate { ChangeColorTemporarily(Color.red, .25f); });
+        ExHealth = Health.CurrentHealth;
         Stats.Setup(100, 50, 500, 100, 50, 500);
         Status.Setup(100, 5, 5, 0, 1, 20, 0);
 
@@ -405,7 +425,117 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             {
                 StartCoroutine(Shoot());
             }
+
+            if (InputHandler.Hide("Down") && CanHide && !IsHidden)
+            {
+                Hide();
+            }
         }
+        else if (IsHidden)
+        {
+            if(InputHandler.Hide("Down"))
+            {
+                GetOutOfHiding();
+            }
+        }
+
+        if (IsHidden)
+        {
+            HiddenTime += Time.deltaTime;
+        }
+        else
+        {
+            HiddenTime = 0;
+        }
+
+        CheckDamageHidden();
+    }
+
+    private void CheckDamageHidden()
+    {
+        if (ExHealth != Health.CurrentHealth)
+        {
+            if (IsHidden)
+            {
+                if (!IsBecomingVisible && !IsFading)
+                {
+                    GetOutOfHiding();
+                    ExHealth = Health.CurrentHealth;
+                }
+            }
+            else
+            {
+                ExHealth = Health.CurrentHealth;
+            }
+        }
+    }
+
+    private void Hide()
+    {
+        if (CanHide && !IsHidden && !IsFading && !IsBecomingVisible)
+        {
+            IsHidden = true;
+            HasControl = false;
+            StartCoroutine(BecomeInvisible());
+        }
+    }
+
+    private void GetOutOfHiding()
+    {
+        if(IsHidden && !IsFading && !IsBecomingVisible)
+        {
+            StartCoroutine(BecomeVisible());
+        }
+    }
+
+    private IEnumerator BecomeInvisible()
+    {
+        float currentTime = 0;
+        float timeItTakesToFade = 1;
+        float fadeValue = Renderers[0].color.a;
+        float fadeConst = Renderers[0].color.a;
+        if (IsFading || IsBecomingVisible)
+        {
+            yield break;
+        }
+        IsFading = true;
+        while (fadeValue > 0)
+        {
+            fadeValue = fadeConst - (currentTime / timeItTakesToFade);
+            foreach (SpriteRenderer renderer in Renderers)
+            {
+                renderer.color = new Color(renderer.color.r, renderer.color.g, renderer.color.b, fadeValue);
+            }
+            yield return new WaitForFixedUpdate();
+            currentTime += Time.deltaTime;
+        }
+        IsFading = false;
+    }
+
+    private IEnumerator BecomeVisible()
+    {
+        float currentTime = 0;
+        float timeItTakesToVisible = 1;
+        float fadeValue = Renderers[0].color.a;
+        float fadeConst = Renderers[0].color.a;
+        if (IsFading || IsBecomingVisible)
+        {
+            yield break;
+        }
+        IsBecomingVisible = true;
+        while (fadeValue < 1)
+        {
+            fadeValue = fadeConst + (currentTime / timeItTakesToVisible);
+            foreach (SpriteRenderer renderer in Renderers)
+            {
+                renderer.color = new Color(renderer.color.r, renderer.color.g, renderer.color.b, fadeValue);
+            }
+            yield return new WaitForFixedUpdate();
+            currentTime += Time.deltaTime;
+        }
+        IsBecomingVisible = false;
+        IsHidden = false;
+        HasControl = true;
     }
 
     void FixedUpdate()
@@ -447,6 +577,16 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         CurrentNumberOfJumpsAllowedInAir = StandardNumberOfJumpsAllowedInAir;
     }
     
+    public bool GetIsHidden()
+    {
+        return IsHidden;
+    }
+
+    public float GetHiddenTime()
+    {
+        return HiddenTime;
+    }
+
     /// <summary>
     /// Allows the player to jump, if it is possible.
     /// </summary>
@@ -685,5 +825,18 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         }
 
         _isChangingColor = false;
+    }
+
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.gameObject.layer == LayerMask.NameToLayer(GameFormulas.HidingPlaceLayerName))
+        {
+            CanHide = true;
+            //far uscire il tasto per nascondersi
+        }
+        else
+        {
+            CanHide = false;
+        }
     }
 }
