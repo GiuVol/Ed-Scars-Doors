@@ -7,6 +7,12 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 {
     public const int MaxNumberOfEquippableAbilities = 4;
 
+    private const float MaxHiddenTime = 10;
+    private const float MinHidingRefreshTime = 2;
+    private const float MaxHidingRefreshTime = 5;
+
+    private const string SpeedParameterName = "Speed";
+
     public const string PlayerLayerName = "Player";
     public const string PlayerProjectileLayerName = "PlayerProjectile";
 
@@ -227,15 +233,31 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     public bool IsHidden { get; private set; }
 
     /// <summary>
-    /// Stores whether the player can hide or not.
+    /// Stores whether the player is near an hiding place.
     /// </summary>
-    public bool CanHide { get; private set; }
+    private bool _isNearHidingPlace;
 
     /// <summary>
     /// Stores how long the player has been hidden.
     /// </summary>
-    public float HiddenTime { get; private set; }
+    private float _hiddenTime;
 
+    /// <summary>
+    /// Stores the time that the player needs to wait before he can hide again.
+    /// </summary>
+    private float _timeToWaitToHide;
+
+    /// <summary>
+    /// Returns whether the player can hide or not.
+    /// </summary>
+    private bool CanHide
+    {
+        get
+        {
+            return _isNearHidingPlace && _timeToWaitToHide <= 0 && !IsHidden;
+        }
+    }
+    
     #endregion
 
     /// <summary>
@@ -392,6 +414,41 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
     #endregion
 
+    #region Mobs
+
+    /// <summary>
+    /// Stores all the mobs that are hooking the player in a given moment.
+    /// </summary>
+    private HashSet<GenericMob> _mobsThatHookedThePlayer;
+
+    /// <summary>
+    /// Stores all the mobs that are hooking the player in a given moment.
+    /// </summary>
+    public HashSet<GenericMob> MobsThatHookedThePlayer
+    {
+        get
+        {
+            if (_mobsThatHookedThePlayer == null)
+            {
+                _mobsThatHookedThePlayer = new HashSet<GenericMob>();
+            }
+
+            return _mobsThatHookedThePlayer;
+        }
+    }
+
+    /// <summary>
+    /// Stores the time that the player has passed without being hooked.
+    /// </summary>
+    private float _timePassedBeingUnnoticed;
+
+    /// <summary>
+    /// Stores the time that has passed since the player has been hooked.
+    /// </summary>
+    private float _timePassedBeingCaught;
+    
+    #endregion
+
     void Start()
     {
         if (gameObject.GetComponent<MovementController2D>() == null)
@@ -470,7 +527,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
                 StartCoroutine(Shoot());
             }
 
-            if (InputHandler.Hide("Down") && CanHide && !IsHidden)
+            if (InputHandler.Hide("Down") && CanHide)
             {
                 Hide();
             }
@@ -485,11 +542,16 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
         if (IsHidden)
         {
-            HiddenTime += Time.deltaTime;
+            _hiddenTime = Mathf.Clamp(_hiddenTime + Time.deltaTime, 0, MaxHiddenTime + 1);
         }
         else
         {
-            HiddenTime = 0;
+            _hiddenTime = 0;
+        }
+
+        if (_hiddenTime >= MaxHiddenTime)
+        {
+            GetOutOfHiding();
         }
     }
 
@@ -506,13 +568,24 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         MovementController.GravityScale = CurrentGravityScale;
 
         _timeToWaitToJump = Mathf.Max(_timeToWaitToJump - Time.fixedDeltaTime, 0);
+        _timeToWaitToHide = Mathf.Max(_timeToWaitToHide - Time.fixedDeltaTime, 0);
+        
+        if (MobsThatHookedThePlayer.Count <= 0)
+        {
+            _timePassedBeingUnnoticed = Mathf.Clamp(_timePassedBeingUnnoticed + Time.fixedDeltaTime, 0, float.MaxValue - 100);
+            _timePassedBeingCaught = 0;
+        } else
+        {
+            _timePassedBeingCaught = Mathf.Clamp(_timePassedBeingCaught + Time.fixedDeltaTime, 0, float.MaxValue - 100);
+            _timePassedBeingUnnoticed = 0;
+        }
 
         if (AttachedAnimator != null && MovementController != null && MovementController.AttachedRigidbody != null)
         {
             Vector2 localSpaceVelocity = transform.InverseTransformDirection(MovementController.AttachedRigidbody.velocity);
             float normalizedSpeed = localSpaceVelocity.x / (CurrentRunSpeed);
 
-            AttachedAnimator.SetFloat("Speed", normalizedSpeed);
+            AttachedAnimator.SetFloat(SpeedParameterName, normalizedSpeed);
         }
     }
 
@@ -672,7 +745,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
     private void Hide()
     {
-        if (CanHide && !IsHidden && !IsChangingAlpha)
+        if (CanHide && !IsChangingAlpha)
         {
             _alphaChangingCoroutine = StartCoroutine(HideCoroutine());
         }
@@ -688,7 +761,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
     private IEnumerator HideCoroutine()
     {
-        if (!CanHide || IsHidden || IsChangingAlpha)
+        if (!CanHide || IsChangingAlpha)
         {
             _alphaChangingCoroutine = null;
             yield break;
@@ -751,6 +824,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         }
 
         IsHidden = false;
+        _timeToWaitToHide = Mathf.Max((_hiddenTime / MaxHiddenTime) * MaxHidingRefreshTime, MinHidingRefreshTime);
         HasControl = true;
         MovementController.AttachedRigidbody.velocity = Vector2.zero;
         MovementController.AttachedRigidbody.isKinematic = false;
@@ -889,7 +963,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
             if (hidingPlace != null)
             {
-                CanHide = true;
+                _isNearHidingPlace = true;
                 hidingPlace.EnableMessage(true);
             }
         }
@@ -903,7 +977,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
             if (hidingPlace != null)
             {
-                CanHide = false;
+                _isNearHidingPlace = false;
                 hidingPlace.EnableMessage(false);
             }
         }

@@ -7,7 +7,6 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
 {
     public const string MobLayerName = "Mob";
     public const string MobProjectileLayerName = "MobProjectile";
-    protected const float MinPlayerHiddenTime = 2;
 
     /// <summary>
     /// The <c>HealthComponent</c> that stores values and methods related to the health of the mob.
@@ -482,7 +481,6 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// </summary>
     protected PlayerController _player;
 
-
     /// <summary>
     /// Updates the mob's perception of the player.
     /// </summary>
@@ -492,9 +490,28 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
 
         if (_player != null)
         {
-            if (_player.IsHidden && _player.HiddenTime >= MinPlayerHiddenTime)
+            if (_player.IsHidden)
             {
                 _player = null;
+            }
+        }
+
+        if (_player != null)
+        {
+            if (!_player.MobsThatHookedThePlayer.Contains(this))
+            {
+                _player.MobsThatHookedThePlayer.Add(this);
+            }
+        } else
+        {
+            PlayerController actualPlayer = FindObjectOfType<PlayerController>();
+
+            if (actualPlayer != null)
+            {
+                if (actualPlayer.MobsThatHookedThePlayer.Contains(this))
+                {
+                    actualPlayer.MobsThatHookedThePlayer.Remove(this);
+                }
             }
         }
     }
@@ -760,6 +777,27 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     protected IEnumerator HandleDeath()
     {
         _isDying = true;
+
+
+        if (_player != null)
+        {
+            if (!_player.MobsThatHookedThePlayer.Contains(this))
+            {
+                _player.MobsThatHookedThePlayer.Add(this);
+            }
+        }
+        else
+        {
+            PlayerController actualPlayer = FindObjectOfType<PlayerController>();
+
+            if (actualPlayer != null)
+            {
+                if (actualPlayer.MobsThatHookedThePlayer.Contains(this))
+                {
+                    actualPlayer.MobsThatHookedThePlayer.Remove(this);
+                }
+            }
+        }
 
         if (HealthBar != null)
         {
