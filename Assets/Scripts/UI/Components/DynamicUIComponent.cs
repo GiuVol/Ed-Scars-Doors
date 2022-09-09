@@ -22,7 +22,7 @@ public class DynamicUIComponent : MonoBehaviour
     /// </summary>
     /// <param name="targetToFollow">The transform that the component should follow</param>
     /// <param name="positionOffset">The position offset</param>
-    protected void InitializeDynamic(Transform targetToFollow, Vector3 positionOffset)
+    public void InitializeDynamic(Transform targetToFollow, Vector3 positionOffset)
     {
         IsDynamic = true;
         TargetToFollow = targetToFollow;
@@ -32,7 +32,7 @@ public class DynamicUIComponent : MonoBehaviour
     /// <summary>
     /// Initializes a static UI component.
     /// </summary>
-    protected void InitializeStatic()
+    public void InitializeStatic()
     {
         IsDynamic = false;
         TargetToFollow = null;

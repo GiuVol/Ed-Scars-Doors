@@ -489,9 +489,10 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     protected void UpdatePlayer()
     {
         _player = _mobAI.FindPlayerInRadius(transform.position, _rangeToCheck);
+
         if (_player != null)
         {
-            if (_player.GetIsHidden() && _player.GetHiddenTime() >= MinPlayerHiddenTime)
+            if (_player.IsHidden && _player.HiddenTime >= MinPlayerHiddenTime)
             {
                 _player = null;
             }
