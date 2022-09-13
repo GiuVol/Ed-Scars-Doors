@@ -7,10 +7,10 @@ public class UIManager : MonoBehaviour
 {
     private static Vector2 ReferenceResolution = new Vector2(1024, 768);
 
-    public const string MainMenuResourcesPath = "UI/MainMenu";
-    public const string GameMenuResourcesPath = "UI/GameMenu";
-    public const string HUDResourcesPath = "UI/HUD";
-    public const string SceneLoadingInfoResourcesPath = "UI/SceneLoadingInfo";
+    private const string MainMenuResourcesPath = "UI/MainMenu";
+    private const string GameMenuResourcesPath = "UI/GameMenu";
+    private const string HUDResourcesPath = "UI/HUD";
+    private const string SceneLoadingInfoResourcesPath = "UI/SceneLoadingInfo";
 
     /// <summary>
     /// The only admissible instance of this singleton class.
