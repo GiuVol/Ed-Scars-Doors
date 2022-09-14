@@ -778,24 +778,13 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     {
         _isDying = true;
 
+        PlayerController actualPlayer = FindObjectOfType<PlayerController>();
 
-        if (_player != null)
+        if (actualPlayer != null)
         {
-            if (!_player.MobsThatHookedThePlayer.Contains(this))
+            if (actualPlayer.MobsThatHookedThePlayer.Contains(this))
             {
-                _player.MobsThatHookedThePlayer.Add(this);
-            }
-        }
-        else
-        {
-            PlayerController actualPlayer = FindObjectOfType<PlayerController>();
-
-            if (actualPlayer != null)
-            {
-                if (actualPlayer.MobsThatHookedThePlayer.Contains(this))
-                {
-                    actualPlayer.MobsThatHookedThePlayer.Remove(this);
-                }
+                actualPlayer.MobsThatHookedThePlayer.Remove(this);
             }
         }
 

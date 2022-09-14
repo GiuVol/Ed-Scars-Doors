@@ -51,7 +51,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _barBackground: {fileID: 8948265024530255553}
-  _bar: {fileID: 8558850467001473496}
+  _slider: {fileID: 8558850467001473496}
   _infoTextComponent: {fileID: 0}
   _valueTextComponent: {fileID: 0}
 --- !u!1 &3947868163932286770

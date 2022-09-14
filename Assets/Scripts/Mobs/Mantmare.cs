@@ -33,6 +33,8 @@ public class Mantmare : GenericMob
     private const string WanderParameterName = "IsWandering";
     private const string DieParameterName = "Die";
 
+    private const float DieScaleLerpingSpeed = 1.5f;
+
     #endregion
 
     protected override UIBar HealthBarResource
@@ -428,7 +430,7 @@ public class Mantmare : GenericMob
     {
         if (HealthBar != null)
         {
-            HealthBar.UpdateCurrentValue(Health.CurrentHealth);
+            HealthBar.UpdateValue(Health.CurrentHealth);
         }
 
         if (!_isChangingColor)
@@ -841,7 +843,7 @@ public class Mantmare : GenericMob
 
         while (transform.localScale != Vector3.zero)
         {
-            lerpFactor = Mathf.Clamp01(lerpFactor + (Time.fixedDeltaTime));
+            lerpFactor = Mathf.Clamp01(lerpFactor + (Time.fixedDeltaTime * DieScaleLerpingSpeed));
             transform.localScale = Vector3.Lerp(startScale, Vector3.zero, lerpFactor);
 
             yield return new WaitForFixedUpdate();

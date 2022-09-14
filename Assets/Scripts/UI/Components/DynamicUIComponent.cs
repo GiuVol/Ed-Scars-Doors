@@ -39,7 +39,7 @@ public class DynamicUIComponent : MonoBehaviour
         PositionOffset = Vector3.zero;
     }
     
-    void Update()
+    protected void Update()
     {
         if (IsDynamic)
         {

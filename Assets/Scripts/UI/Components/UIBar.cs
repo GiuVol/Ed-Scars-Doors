@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class UIBar : DynamicUIComponent
 {
+    #region Serialized
+
     /// <summary>
     /// The background of the bar.
     /// </summary>
@@ -15,7 +17,7 @@ public class UIBar : DynamicUIComponent
     /// The slider of the bar.
     /// </summary>
     [SerializeField]
-    private Image _bar;
+    private Image _slider;
 
     /// <summary>
     /// The text component that displays infos about the bar.
@@ -28,6 +30,43 @@ public class UIBar : DynamicUIComponent
     /// </summary>
     [SerializeField]
     private TextMeshProUGUI _valueTextComponent;
+
+    #endregion
+
+    /// <summary>
+    /// The max value that the slider can represent.
+    /// </summary>
+    private float MaxValue { get; set; }
+
+    /// <summary>
+    /// The max length that the slider can have.
+    /// </summary>
+    private float MaxLength { get; set; }
+    
+    /// <summary>
+    /// The current value that the slider represents.
+    /// </summary>
+    public float CurrentValue { get; private set; }
+
+    /// <summary>
+    /// The current length of the slider.
+    /// </summary>
+    private float CurrentLength { get; set; }
+    
+    /// <summary>
+    /// The target value that the slider should represent.
+    /// </summary>
+    private float ActualValue { get; set; }
+
+    /// <summary>
+    /// The target length that the slider should reach.
+    /// </summary>
+    private float ActualLength { get; set; }
+    
+    /// <summary>
+    /// Returns whether the bar has reached its stable value or not.
+    /// </summary>
+    public bool IsStable { get; private set; }
 
     /// <summary>
     /// This property allows to show or hide <c>_infoTextComponent</c>
@@ -56,25 +95,17 @@ public class UIBar : DynamicUIComponent
             {
                 return;
             }
-            
+
             _valueTextComponent.gameObject.SetActive(value);
         }
     }
 
     /// <summary>
-    /// The max length that the slider can have.
+    /// Support variable used to calculate the current value smoothly.
     /// </summary>
-    private float MaxLength { get; set; }
-
-    /// <summary>
-    /// The max value that the slider can represent.
-    /// </summary>
-    private int MaxValue { get; set; }
-
-    /// <summary>
-    /// The current value that the slider represents.
-    /// </summary>
-    private int CurrentValue { get; set; }
+    private float _currentRefVelocity;
+    
+    #region Setup
 
     public void InitializeDynamic(Transform targetToFollow, Vector3 positionOffset, 
                                   int maxValue, string info = "")
@@ -96,9 +127,12 @@ public class UIBar : DynamicUIComponent
     /// <param name="info">the info text displayed near the bar</param>
     private void SetupBar(int maxValue, string info)
     {
-        MaxLength = _bar.rectTransform.rect.width;
         MaxValue = maxValue;
+        MaxLength = _slider.rectTransform.rect.width;
         CurrentValue = MaxValue;
+        CurrentLength = MaxLength;
+        ActualValue = CurrentValue;
+        ActualLength = CurrentLength;
 
         if (_infoTextComponent != null)
         {
@@ -108,37 +142,62 @@ public class UIBar : DynamicUIComponent
         UpdateValueTextComponent();
     }
 
-    /// <summary>
-    /// Updates the value of the bar.
-    /// </summary>
-    /// <param name="newValue">The new value to assign</param>
-    public void UpdateCurrentValue(int newValue)
+    #endregion
+
+    protected new void Update()
     {
-        CurrentValue = Mathf.Clamp(newValue, 0, MaxValue);
+        base.Update();
 
-        float currentLength = MaxLength * ((float) CurrentValue / (float) MaxValue);
-        float height = _bar.rectTransform.rect.height;
+        //Lerping value.
+        if (Mathf.Abs(ActualValue - CurrentValue) >= .1f || Mathf.Abs(ActualLength - CurrentLength) >= .1f)
+        {
+            CurrentValue = Mathf.SmoothDamp(CurrentValue, ActualValue, ref _currentRefVelocity, .05f);
+            CurrentLength = MaxLength * (CurrentValue / MaxValue);
+            IsStable = false;
+        } else
+        {
+            CurrentValue = ActualValue;
+            CurrentLength = ActualLength;
+            IsStable = true;
+        }
 
-        _bar.rectTransform.sizeDelta = new Vector2(currentLength, height);
+        _slider.rectTransform.sizeDelta = new Vector2(CurrentLength, _slider.rectTransform.sizeDelta.y);
 
         UpdateValueTextComponent();
     }
 
     /// <summary>
+    /// Updates the value of the bar.
+    /// </summary>
+    /// <param name="newValue">The new value to assign</param>
+    public void UpdateValue(float newValue)
+    {
+        ActualValue = Mathf.Clamp(newValue, 0, MaxValue);
+        ActualLength = MaxLength * (ActualValue / MaxValue);
+    }
+
+    /// <summary>
+    /// Updates the value of the bar.
+    /// </summary>
+    /// <param name="newValue">The new value to assign</param>
+    public void UpdateValueInstantly(float newValue)
+    {
+        ActualValue = Mathf.Clamp(newValue, 0, MaxValue);
+        ActualLength = MaxLength * (ActualValue / MaxValue);
+        CurrentValue = ActualValue;
+        CurrentLength = ActualLength;
+        _slider.rectTransform.sizeDelta = new Vector2(CurrentLength, _slider.rectTransform.sizeDelta.y);
+    }
+    
+    /// <summary>
     /// Updates the max value of the bar.
     /// </summary>
     /// <param name="newMaxValue">The new max value</param>
-    public void UpdateMaxValue(int newMaxValue)
+    public void UpdateMaxValue(float newMaxValue)
     {
         MaxValue = Mathf.Max(newMaxValue, 1);
         CurrentValue = Mathf.Clamp(CurrentValue, 0, MaxValue);
-
-        float currentLength = MaxLength * ((float) CurrentValue / (float) MaxValue);
-        float height = _bar.rectTransform.rect.height;
-
-        _bar.rectTransform.sizeDelta = new Vector2(currentLength, height);
-
-        UpdateValueTextComponent();
+        ActualValue = CurrentValue;
     }
     
     /// <summary>
@@ -151,6 +210,6 @@ public class UIBar : DynamicUIComponent
             return;
         }
 
-        _valueTextComponent.text = CurrentValue.ToString() + "/" + MaxValue.ToString();
+        _valueTextComponent.text = Mathf.RoundToInt(CurrentValue).ToString() + "/" + Mathf.RoundToInt(MaxValue).ToString();
     }
 }

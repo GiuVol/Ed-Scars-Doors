@@ -151,6 +151,11 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     /// </summary>
     public StatusComponent Status { get; private set; }
 
+    /// <summary>
+    /// If true, all events related to the trigger are overriden.
+    /// </summary>
+    private bool _overrideTriggerEvents;
+
     #region Jumping
 
     /// <summary>
@@ -228,17 +233,28 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     #region Hiding
 
     /// <summary>
+    /// The hiding place that is currently near to the player.
+    /// </summary>
+    public HidingPlace CurrentHidingPlace { get; private set; }
+
+    /// <summary>
+    /// Returns whether the player is near an hiding place.
+    /// </summary>
+    private bool IsNearHidingPlace
+    {
+        get
+        {
+            return CurrentHidingPlace != null;
+        }
+    }
+
+    /// <summary>
     /// Stores whether the player is hidden or not.
     /// </summary>
     public bool IsHidden { get; private set; }
-
+    
     /// <summary>
-    /// Stores whether the player is near an hiding place.
-    /// </summary>
-    private bool _isNearHidingPlace;
-
-    /// <summary>
-    /// Stores how long the player has been hidden.
+    /// Stores for how long the player has been hidden.
     /// </summary>
     private float _hiddenTime;
 
@@ -250,11 +266,11 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     /// <summary>
     /// Returns whether the player can hide or not.
     /// </summary>
-    private bool CanHide
+    public bool CanHide
     {
         get
         {
-            return _isNearHidingPlace && _timeToWaitToHide <= 0 && !IsHidden;
+            return IsNearHidingPlace && _timeToWaitToHide <= 0 && !IsHidden;
         }
     }
     
@@ -437,6 +453,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         }
     }
 
+    [SerializeField]
     /// <summary>
     /// Stores the time that the player has passed without being hooked.
     /// </summary>
@@ -525,18 +542,6 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             if (InputHandler.Shoot("Down") && CanShoot)
             {
                 StartCoroutine(Shoot());
-            }
-
-            if (InputHandler.Hide("Down") && CanHide)
-            {
-                Hide();
-            }
-        }
-        else if (IsHidden)
-        {
-            if(InputHandler.Hide("Down"))
-            {
-                GetOutOfHiding();
             }
         }
 
@@ -733,6 +738,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
         projectile.LayersToIgnore.Add(LayerMask.NameToLayer(PlayerLayerName));
         projectile.LayersToIgnore.Add(LayerMask.NameToLayer(PlayerProjectileLayerName));
+        projectile.LayersToIgnore.Add(LayerMask.NameToLayer(GameFormulas.HidingPlaceLayerName));
 
         CanShoot = false;
 
@@ -743,7 +749,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
     #region Hiding Methods
 
-    private void Hide()
+    public void Hide()
     {
         if (CanHide && !IsChangingAlpha)
         {
@@ -751,7 +757,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         }
     }
 
-    private void GetOutOfHiding()
+    public void GetOutOfHiding()
     {
         if (IsHidden && !IsChangingAlpha)
         {
@@ -770,11 +776,13 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         float currentTime = 0;
         float timeItTakesToFade = .1f;
         float fadeConst = Renderers[0].color.a;
-        
+
         IsHidden = true;
         HasControl = false;
         MovementController.AttachedRigidbody.velocity = Vector2.zero;
         MovementController.AttachedRigidbody.isKinematic = true;
+
+        _overrideTriggerEvents = true;
 
         foreach (Collider2D collider in GetComponentsInChildren<Collider2D>())
         {
@@ -834,6 +842,8 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             collider.enabled = true;
         }
 
+        _overrideTriggerEvents = false;
+
         _alphaChangingCoroutine = null;
     }
 
@@ -874,8 +884,6 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         newAbility.Enable(this);
     }
 
-    #endregion
-
     /// <summary>
     /// This method disables the ability given in input, only if it is already equipped.
     /// </summary>
@@ -901,6 +909,8 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         return EquippedAbilities.Contains(ability);
     }
 
+    #endregion
+    
     #region Graphics Methods
 
     /// <summary>
@@ -957,28 +967,42 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
     private void OnTriggerEnter2D(Collider2D col)
     {
+        if (_overrideTriggerEvents)
+        {
+            return;
+        }
+        
         if (col.gameObject.layer == LayerMask.NameToLayer(GameFormulas.HidingPlaceLayerName))
         {
             HidingPlace hidingPlace = col.GetComponent<HidingPlace>();
 
             if (hidingPlace != null)
             {
-                _isNearHidingPlace = true;
-                hidingPlace.EnableMessage(true);
+                CurrentHidingPlace = hidingPlace;
+                hidingPlace.EnableHideMessage(true);
             }
         }
     }
 
     private void OnTriggerExit2D(Collider2D col)
     {
+        if (_overrideTriggerEvents)
+        {
+            return;
+        }
+
         if (col.gameObject.layer == LayerMask.NameToLayer(GameFormulas.HidingPlaceLayerName))
         {
+            CurrentHidingPlace = null;
+
             HidingPlace hidingPlace = col.GetComponent<HidingPlace>();
 
             if (hidingPlace != null)
             {
-                _isNearHidingPlace = false;
-                hidingPlace.EnableMessage(false);
+                hidingPlace.ResetHideButtonHoldingBar();
+                hidingPlace.ResetGetOutButtonHoldingBar();
+                hidingPlace.EnableHideMessage(false);
+                hidingPlace.EnableGetOutMessage(false);
             }
         }
     }
