@@ -28,7 +28,7 @@ public class Flydier : GenericMob
 
     private const float AttackProjectileSpawnPercentage = .25f;
     private const float DieWaitPercentage = .5f;
-    private const float DieScaleLerpingSpeed = .5f;
+    private const float DieScaleLerpingSpeed = 1.5f;
 
     #endregion
 
@@ -119,7 +119,7 @@ public class Flydier : GenericMob
     {
         if (HealthBar != null)
         {
-            HealthBar.UpdateCurrentValue(Health.CurrentHealth);
+            HealthBar.UpdateValue(Health.CurrentHealth);
         }
 
         if (_isAttacking || _isDying)

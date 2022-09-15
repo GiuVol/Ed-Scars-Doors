@@ -487,6 +487,33 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     protected void UpdatePlayer()
     {
         _player = _mobAI.FindPlayerInRadius(transform.position, _rangeToCheck);
+
+        if (_player != null)
+        {
+            if (_player.IsHidden)
+            {
+                _player = null;
+            }
+        }
+
+        if (_player != null)
+        {
+            if (!_player.MobsThatHookedThePlayer.Contains(this))
+            {
+                _player.MobsThatHookedThePlayer.Add(this);
+            }
+        } else
+        {
+            PlayerController actualPlayer = FindObjectOfType<PlayerController>();
+
+            if (actualPlayer != null)
+            {
+                if (actualPlayer.MobsThatHookedThePlayer.Contains(this))
+                {
+                    actualPlayer.MobsThatHookedThePlayer.Remove(this);
+                }
+            }
+        }
     }
 
     #endregion
@@ -750,6 +777,16 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     protected IEnumerator HandleDeath()
     {
         _isDying = true;
+
+        PlayerController actualPlayer = FindObjectOfType<PlayerController>();
+
+        if (actualPlayer != null)
+        {
+            if (actualPlayer.MobsThatHookedThePlayer.Contains(this))
+            {
+                actualPlayer.MobsThatHookedThePlayer.Remove(this);
+            }
+        }
 
         if (HealthBar != null)
         {

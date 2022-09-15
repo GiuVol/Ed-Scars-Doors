@@ -71,10 +71,9 @@ public class MovementController2D : MonoBehaviour
             Vector3 positionOffset = Vector3.up * .1f;
             Vector3 offsettedPosition = transform.position + positionOffset;
 
-            float range = 1.15f;
+            float range = 2;
 
-            RaycastHit2D hit =
-                Physics2D.Raycast(offsettedPosition, Vector3.down, range, toCast);
+            RaycastHit2D hit = Physics2D.Raycast(offsettedPosition, Vector3.down, range, toCast);
 
             return hit;
         }

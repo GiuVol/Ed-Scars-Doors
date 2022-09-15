@@ -56,6 +56,20 @@ public class InputHandler
     }
 
     /// <summary>
+    /// Returns whether an event occurs on the Hide key.
+    /// </summary>
+    /// <param name="pressType">
+    /// This value specifies the type of the event you want to intercept.
+    /// </param>
+    /// <returns>
+    /// This method returns a boolean that is true if the desired event occurs on the specified key, false otherwise.
+    /// </returns>
+    public static bool Hide(string pressType = "")
+    {
+        return ButtonPressed("Hide", pressType);
+    }
+
+    /// <summary>
     /// Returns whether an event occurs on a certain key.
     /// </summary>
     /// <param name="pressType">

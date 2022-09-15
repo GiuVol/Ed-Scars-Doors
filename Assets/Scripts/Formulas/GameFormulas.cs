@@ -9,6 +9,7 @@ public class GameFormulas
 
     public const string TerrainLayerName = "Terrain";
     public const string ObstacleLayerName = "Obstacle";
+    public const string HidingPlaceLayerName = "HidingPlace";
 
     public static int Damage(float power, float attackerAttack, float targetDefence)
     {

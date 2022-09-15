@@ -2,12 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusable
 {
     public const int MaxNumberOfEquippableAbilities = 4;
 
+    private const float MaxHiddenTime = 10;
+    private const float MinHidingRefreshTime = 2;
+    private const float MaxHidingRefreshTime = 5;
+
+    private const string SpeedParameterName = "Speed";
+
     public const string PlayerLayerName = "Player";
     public const string PlayerProjectileLayerName = "PlayerProjectile";
+
+    private static Color PlayerStandardColor = Color.white;
 
     #region Movement Parameters
 
@@ -143,6 +152,13 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     public StatusComponent Status { get; private set; }
 
     /// <summary>
+    /// If true, all events related to the trigger are overriden.
+    /// </summary>
+    private bool _overrideTriggerEvents;
+
+    #region Jumping
+
+    /// <summary>
     /// Stores the number of jumps executed in the air.
     /// </summary>
     public int CurrentNumberOfJumpsInTheAir { get; set; }
@@ -169,10 +185,18 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         }
     }
 
+    #endregion
+
+    #region Dashing
+
     /// <summary>
     /// Represents whether the player can dash or not.
     /// </summary>
     private bool CanDash { get; set; }
+
+    #endregion
+
+    #region Shooting
 
     /// <summary>
     /// Represents whether the player can shoot or not.
@@ -204,6 +228,54 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         }
     }
 
+    #endregion
+
+    #region Hiding
+
+    /// <summary>
+    /// The hiding place that is currently near to the player.
+    /// </summary>
+    public HidingPlace CurrentHidingPlace { get; private set; }
+
+    /// <summary>
+    /// Returns whether the player is near an hiding place.
+    /// </summary>
+    private bool IsNearHidingPlace
+    {
+        get
+        {
+            return CurrentHidingPlace != null;
+        }
+    }
+
+    /// <summary>
+    /// Stores whether the player is hidden or not.
+    /// </summary>
+    public bool IsHidden { get; private set; }
+    
+    /// <summary>
+    /// Stores for how long the player has been hidden.
+    /// </summary>
+    private float _hiddenTime;
+
+    /// <summary>
+    /// Stores the time that the player needs to wait before he can hide again.
+    /// </summary>
+    private float _timeToWaitToHide;
+
+    /// <summary>
+    /// Returns whether the player can hide or not.
+    /// </summary>
+    public bool CanHide
+    {
+        get
+        {
+            return IsNearHidingPlace && _timeToWaitToHide <= 0 && !IsHidden;
+        }
+    }
+    
+    #endregion
+
     /// <summary>
     /// Structure that stores the abilities currently equipped by the player.
     /// </summary>
@@ -222,9 +294,35 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     private List<SpriteRenderer> Renderers { get; set; }
 
     /// <summary>
+    /// The current color of the sprite.
+    /// </summary>
+    private Color _currentColor;
+
+    /// <summary>
     /// Specifies if the player currently has a different color.
     /// </summary>
     private bool _isChangingColor;
+
+    /// <summary>
+    /// The current alpha of the sprite.
+    /// </summary>
+    private float _currentAlphaValue;
+
+    /// <summary>
+    /// Stores the coroutine that is currently changing player's alpha.
+    /// </summary>
+    private Coroutine _alphaChangingCoroutine;
+
+    /// <summary>
+    /// Returns whether the player's alpha is currently changing.
+    /// </summary>
+    private bool IsChangingAlpha
+    {
+        get
+        {
+            return _alphaChangingCoroutine != null;
+        }
+    }
 
     #endregion
 
@@ -332,6 +430,42 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
     #endregion
 
+    #region Mobs
+
+    /// <summary>
+    /// Stores all the mobs that are hooking the player in a given moment.
+    /// </summary>
+    private HashSet<GenericMob> _mobsThatHookedThePlayer;
+
+    /// <summary>
+    /// Stores all the mobs that are hooking the player in a given moment.
+    /// </summary>
+    public HashSet<GenericMob> MobsThatHookedThePlayer
+    {
+        get
+        {
+            if (_mobsThatHookedThePlayer == null)
+            {
+                _mobsThatHookedThePlayer = new HashSet<GenericMob>();
+            }
+
+            return _mobsThatHookedThePlayer;
+        }
+    }
+
+    [SerializeField]
+    /// <summary>
+    /// Stores the time that the player has passed without being hooked.
+    /// </summary>
+    private float _timePassedBeingUnnoticed;
+
+    /// <summary>
+    /// Stores the time that has passed since the player has been hooked.
+    /// </summary>
+    private float _timePassedBeingCaught;
+    
+    #endregion
+
     void Start()
     {
         if (gameObject.GetComponent<MovementController2D>() == null)
@@ -381,9 +515,13 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
         Renderers = new List<SpriteRenderer>();
 
+        _currentColor = PlayerStandardColor;
+        _currentAlphaValue = 1;
+
         foreach (SpriteRenderer renderer in GetComponentsInChildren<SpriteRenderer>())
         {
             Renderers.Add(renderer);
+            renderer.color = new Color(_currentColor.r, _currentColor.g, _currentColor.b, _currentAlphaValue);
         }
     }
 
@@ -406,6 +544,20 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
                 StartCoroutine(Shoot());
             }
         }
+
+        if (IsHidden)
+        {
+            _hiddenTime = Mathf.Clamp(_hiddenTime + Time.deltaTime, 0, MaxHiddenTime + 1);
+        }
+        else
+        {
+            _hiddenTime = 0;
+        }
+
+        if (_hiddenTime >= MaxHiddenTime)
+        {
+            GetOutOfHiding();
+        }
     }
 
     void FixedUpdate()
@@ -421,13 +573,24 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         MovementController.GravityScale = CurrentGravityScale;
 
         _timeToWaitToJump = Mathf.Max(_timeToWaitToJump - Time.fixedDeltaTime, 0);
+        _timeToWaitToHide = Mathf.Max(_timeToWaitToHide - Time.fixedDeltaTime, 0);
+        
+        if (MobsThatHookedThePlayer.Count <= 0)
+        {
+            _timePassedBeingUnnoticed = Mathf.Clamp(_timePassedBeingUnnoticed + Time.fixedDeltaTime, 0, float.MaxValue - 100);
+            _timePassedBeingCaught = 0;
+        } else
+        {
+            _timePassedBeingCaught = Mathf.Clamp(_timePassedBeingCaught + Time.fixedDeltaTime, 0, float.MaxValue - 100);
+            _timePassedBeingUnnoticed = 0;
+        }
 
         if (AttachedAnimator != null && MovementController != null && MovementController.AttachedRigidbody != null)
         {
             Vector2 localSpaceVelocity = transform.InverseTransformDirection(MovementController.AttachedRigidbody.velocity);
             float normalizedSpeed = localSpaceVelocity.x / (CurrentRunSpeed);
 
-            AttachedAnimator.SetFloat("Speed", normalizedSpeed);
+            AttachedAnimator.SetFloat(SpeedParameterName, normalizedSpeed);
         }
     }
 
@@ -575,6 +738,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
         projectile.LayersToIgnore.Add(LayerMask.NameToLayer(PlayerLayerName));
         projectile.LayersToIgnore.Add(LayerMask.NameToLayer(PlayerProjectileLayerName));
+        projectile.LayersToIgnore.Add(LayerMask.NameToLayer(GameFormulas.HidingPlaceLayerName));
 
         CanShoot = false;
 
@@ -583,6 +747,108 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         CanShoot = true;
     }
 
+    #region Hiding Methods
+
+    public void Hide()
+    {
+        if (CanHide && !IsChangingAlpha)
+        {
+            _alphaChangingCoroutine = StartCoroutine(HideCoroutine());
+        }
+    }
+
+    public void GetOutOfHiding()
+    {
+        if (IsHidden && !IsChangingAlpha)
+        {
+            _alphaChangingCoroutine = StartCoroutine(GetOutOfHidingCoroutine());
+        }
+    }
+
+    private IEnumerator HideCoroutine()
+    {
+        if (!CanHide || IsChangingAlpha)
+        {
+            _alphaChangingCoroutine = null;
+            yield break;
+        }
+
+        float currentTime = 0;
+        float timeItTakesToFade = .1f;
+        float fadeConst = Renderers[0].color.a;
+
+        IsHidden = true;
+        HasControl = false;
+        MovementController.AttachedRigidbody.velocity = Vector2.zero;
+        MovementController.AttachedRigidbody.isKinematic = true;
+
+        _overrideTriggerEvents = true;
+
+        foreach (Collider2D collider in GetComponentsInChildren<Collider2D>())
+        {
+            collider.enabled = false;
+        }
+
+        while (_currentAlphaValue > 0)
+        {
+            _currentAlphaValue = fadeConst - (currentTime / timeItTakesToFade);
+
+            foreach (SpriteRenderer renderer in Renderers)
+            {
+                renderer.color = new Color(renderer.color.r, renderer.color.g, renderer.color.b, _currentAlphaValue);
+            }
+
+            yield return new WaitForFixedUpdate();
+
+            currentTime += Time.fixedDeltaTime;
+        }
+
+        _alphaChangingCoroutine = null;
+    }
+
+    private IEnumerator GetOutOfHidingCoroutine()
+    {
+        if (!IsHidden || IsChangingAlpha)
+        {
+            _alphaChangingCoroutine = null;
+            yield break;
+        }
+
+        float currentTime = 0;
+        float timeItTakesToVisible = .1f;
+        float fadeConst = Renderers[0].color.a;
+
+        while (_currentAlphaValue < 1)
+        {
+            _currentAlphaValue = fadeConst + (currentTime / timeItTakesToVisible);
+
+            foreach (SpriteRenderer renderer in Renderers)
+            {
+                renderer.color = new Color(renderer.color.r, renderer.color.g, renderer.color.b, _currentAlphaValue);
+            }
+
+            yield return new WaitForFixedUpdate();
+            currentTime += Time.deltaTime;
+        }
+
+        IsHidden = false;
+        _timeToWaitToHide = Mathf.Max((_hiddenTime / MaxHiddenTime) * MaxHidingRefreshTime, MinHidingRefreshTime);
+        HasControl = true;
+        MovementController.AttachedRigidbody.velocity = Vector2.zero;
+        MovementController.AttachedRigidbody.isKinematic = false;
+
+        foreach (Collider2D collider in GetComponentsInChildren<Collider2D>())
+        {
+            collider.enabled = true;
+        }
+
+        _overrideTriggerEvents = false;
+
+        _alphaChangingCoroutine = null;
+    }
+
+    #endregion
+    
     /// <summary>
     /// This procedure is called when the health of the player reaches 0.
     /// </summary>
@@ -590,6 +856,8 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     {
         //Destroy(gameObject);
     }
+
+    #region Abilities Methods
 
     /// <summary>
     /// This method enables the ability given in input on the player, if it is possible to equip it.
@@ -641,6 +909,10 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         return EquippedAbilities.Contains(ability);
     }
 
+    #endregion
+    
+    #region Graphics Methods
+
     /// <summary>
     /// Allows to change the color of the player for a while.
     /// </summary>
@@ -670,20 +942,57 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
         _isChangingColor = true;
 
-        Color oldColor = Color.white;
+        Color oldColor = _currentColor;
+
+        _currentColor = new Color(color.r, color.g, color.b, _currentAlphaValue);
 
         foreach (SpriteRenderer renderer in Renderers)
         {
-            renderer.color = color;
+            renderer.color = _currentColor;
         }
 
         yield return new WaitForSeconds(duration);
 
+        _currentColor = new Color(oldColor.r, oldColor.g, oldColor.b, _currentAlphaValue);
+        
         foreach (SpriteRenderer renderer in Renderers)
         {
-            renderer.color = oldColor;
+            renderer.color = _currentColor;
         }
 
         _isChangingColor = false;
+    }
+
+    #endregion
+
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        if (_overrideTriggerEvents)
+        {
+            return;
+        }
+        
+        if (col.gameObject.layer == LayerMask.NameToLayer(GameFormulas.HidingPlaceLayerName))
+        {
+            HidingPlace hidingPlace = col.GetComponent<HidingPlace>();
+
+            if (hidingPlace != null)
+            {
+                CurrentHidingPlace = hidingPlace;
+            }
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D col)
+    {
+        if (_overrideTriggerEvents)
+        {
+            return;
+        }
+
+        if (col.gameObject.layer == LayerMask.NameToLayer(GameFormulas.HidingPlaceLayerName))
+        {
+            CurrentHidingPlace = null;
+        }
     }
 }

@@ -19,7 +19,7 @@ public class Spawnest : GenericMob
     private const string DieParameterName = "Die";
 
     private const float DieWaitPercentage = .25f;
-    private const float DieScaleLerpingSpeed = .5f;
+    private const float DieScaleLerpingSpeed = 1.5f;
 
     #endregion
 
@@ -143,7 +143,7 @@ public class Spawnest : GenericMob
     {
         if (HealthBar != null)
         {
-            HealthBar.UpdateCurrentValue(Health.CurrentHealth);
+            HealthBar.UpdateValue(Health.CurrentHealth);
         }
 
         if (_isDying)
