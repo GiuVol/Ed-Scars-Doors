@@ -121,12 +121,26 @@ public class HidingPlace : MonoBehaviour
     {
         if (_player == null)
         {
+            timer = 0;
+            HideButtonHoldingProgress = 0;
+            GetOutButtonHoldingProgress = 0;
             _player = FindObjectOfType<PlayerController>();
+            return;
         }
 
-        if (_player == null)
+        if (!InputHandler.Hide() || _player.CurrentHidingPlace != this)
         {
-            return;
+            timer = Mathf.Max(timer - Time.deltaTime, 0);
+        }
+        
+        if (_player.CanHide)
+        {
+            HideButtonHoldingProgress = timer / _timeNeededToHide;
+        }
+
+        if (_player.IsHidden)
+        {
+            GetOutButtonHoldingProgress = timer / _timeNeededToGetOut;
         }
         
         if (_player.CurrentHidingPlace == this)
@@ -150,9 +164,6 @@ public class HidingPlace : MonoBehaviour
         {
             if (_player == null || _player.CurrentHidingPlace != this)
             {
-                timer = 0;
-                ResetHideButtonHoldingBar();
-                ResetGetOutButtonHoldingBar();
                 _hideButtonPressingCoroutine = null;
                 yield break;
             }
@@ -160,16 +171,6 @@ public class HidingPlace : MonoBehaviour
             if (InputHandler.Hide())
             {
                 timer += Time.deltaTime;
-
-                if (_player.CanHide)
-                {
-                    HideButtonHoldingProgress = timer / _timeNeededToHide;
-                }
-
-                if (_player.IsHidden)
-                {
-                    GetOutButtonHoldingProgress = timer / _timeNeededToGetOut;
-                }
 
                 float timeToWait = 0;
 
@@ -191,18 +192,12 @@ public class HidingPlace : MonoBehaviour
             }
             else
             {
-                timer = 0;
-                ResetHideButtonHoldingBar();
-                ResetGetOutButtonHoldingBar();
                 _hideButtonPressingCoroutine = null;
                 yield break;
             }
 
             yield return null;
         }
-
-        ResetHideButtonHoldingBar();
-        ResetGetOutButtonHoldingBar();
 
         timer = 0;
 
@@ -221,7 +216,7 @@ public class HidingPlace : MonoBehaviour
         _hideButtonPressingCoroutine = null;
     }
     
-    public void EnableHideMessage(bool enabled)
+    private void EnableHideMessage(bool enabled)
     {
         if(_uiHideMessage == null)
         {
@@ -231,7 +226,7 @@ public class HidingPlace : MonoBehaviour
         _uiHideMessage.gameObject.SetActive(enabled);
     }
 
-    public void EnableGetOutMessage(bool enabled)
+    private void EnableGetOutMessage(bool enabled)
     {
         if (_uiGetOutMessage == null)
         {
@@ -241,18 +236,23 @@ public class HidingPlace : MonoBehaviour
         _uiGetOutMessage.gameObject.SetActive(enabled);
     }
     
-    public void ResetHideButtonHoldingBar()
+    private void OnTriggerEnter2D(Collider2D col)
     {
-        if (_hideButtonHoldingBar != null)
+        if (col.gameObject.layer == LayerMask.NameToLayer(PlayerController.PlayerLayerName))
         {
-            _hideButtonHoldingBar.UpdateValueInstantly(0);
+            EnableHideMessage(true);
         }
     }
-
-    public void ResetGetOutButtonHoldingBar()
+    
+    private void OnTriggerExit2D(Collider2D col)
     {
-        if (_getOutButtonHoldingBar != null)
+        if (col.gameObject.layer == LayerMask.NameToLayer(PlayerController.PlayerLayerName))
         {
+            timer = 0;
+
+            EnableHideMessage(false);
+            EnableGetOutMessage(false);
+            _hideButtonHoldingBar.UpdateValueInstantly(0);
             _getOutButtonHoldingBar.UpdateValueInstantly(0);
         }
     }

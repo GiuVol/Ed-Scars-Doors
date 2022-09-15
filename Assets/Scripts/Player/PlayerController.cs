@@ -979,7 +979,6 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             if (hidingPlace != null)
             {
                 CurrentHidingPlace = hidingPlace;
-                hidingPlace.EnableHideMessage(true);
             }
         }
     }
@@ -994,16 +993,6 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         if (col.gameObject.layer == LayerMask.NameToLayer(GameFormulas.HidingPlaceLayerName))
         {
             CurrentHidingPlace = null;
-
-            HidingPlace hidingPlace = col.GetComponent<HidingPlace>();
-
-            if (hidingPlace != null)
-            {
-                hidingPlace.ResetHideButtonHoldingBar();
-                hidingPlace.ResetGetOutButtonHoldingBar();
-                hidingPlace.EnableHideMessage(false);
-                hidingPlace.EnableGetOutMessage(false);
-            }
         }
     }
 }
