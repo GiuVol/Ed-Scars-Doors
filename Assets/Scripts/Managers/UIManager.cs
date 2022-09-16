@@ -106,7 +106,7 @@ public class UIManager : MonoBehaviour
     {
         if (_instance != null)
         {
-            Destroy(gameObject);
+            Destroy(this);
             return;
         }
 
@@ -114,7 +114,7 @@ public class UIManager : MonoBehaviour
             .GetComponent<Canvas>();
         CurrentCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
         CanvasScaler canvasScaler = CurrentCanvas.GetComponent<CanvasScaler>();
-        canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ConstantPixelSize;
         canvasScaler.referenceResolution = ReferenceResolution;
 
         CurrentEventSystem = new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule))

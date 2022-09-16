@@ -223,6 +223,13 @@ public class MobAI : MonoBehaviour
     /// <returns>A reachable position, according the desired one</returns>
     public Vector3 GetNearestReachablePosition(Vector3 desiredPosition)
     {
+        AstarPath astar = FindObjectOfType<AstarPath>();
+
+        if (astar == null)
+        {
+            return transform.position;
+        }
+
         NNConstraint constraint = NNConstraint.None;
         constraint.constrainWalkability = true;
         constraint.walkable = true;

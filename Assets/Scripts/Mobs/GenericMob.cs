@@ -723,8 +723,13 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     {
         if (HealthBarResource != null)
         {
-            HealthBar = Instantiate(HealthBarResource, GameObject.FindObjectOfType<Canvas>().transform);
-            HealthBar.InitializeDynamic(transform, HealthBarPositionOffset, Health.MaxHealth);
+            Canvas canvas = FindObjectOfType<Canvas>();
+
+            if (canvas != null)
+            {
+                HealthBar = Instantiate(HealthBarResource, canvas.transform);
+                HealthBar.InitializeDynamic(transform, HealthBarPositionOffset, Health.MaxHealth);
+            }
         }
     }
 

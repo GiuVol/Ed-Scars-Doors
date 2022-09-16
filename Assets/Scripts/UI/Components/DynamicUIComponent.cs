@@ -58,6 +58,13 @@ public class DynamicUIComponent : MonoBehaviour
     /// </summary>
     private void UpdateDynamicPosition()
     {
+        Camera camera = Camera.main;
+
+        if (camera == null)
+        {
+            return;
+        }
+
         if (TargetToFollow == null)
         {
             return;
@@ -67,7 +74,7 @@ public class DynamicUIComponent : MonoBehaviour
 
         transform.position = Camera.main.WorldToScreenPoint(desiredPosition);
 
-        float distance = Vector3.Distance(Camera.main.transform.position,
+        float distance = Vector3.Distance(camera.transform.position,
                                           TargetToFollow.position);
 
         float desiredScale = (100 / distance);
