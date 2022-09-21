@@ -179,11 +179,21 @@ public class Crawler : GenericMob
 
         float animationDuration = info.length / info.speed;
 
+        foreach (Collider2D collider in _headCaster.GetComponents<Collider2D>())
+        {
+            collider.enabled = false;
+        }
+
         yield return new WaitForSeconds(animationDuration * AttackDamagingPhasePercentage);
 
         if (_headCaster != null)
         {
             _headCaster.TriggerFunction = collider => { InflictDamage(collider, 20); };
+        }
+
+        foreach (Collider2D collider in _headCaster.GetComponents<Collider2D>())
+        {
+            collider.enabled = true;
         }
         
         yield return new WaitUntil(() => !AnimController.GetCurrentAnimatorStateInfo(0).IsName(AttackStateName));
