@@ -993,6 +993,30 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
                 CurrentHidingPlace = hidingPlace;
             }
         }
+
+        if (col.gameObject.layer == LayerMask.NameToLayer(GameFormulas.ItemLayerName))
+        {
+            PhysicalItem physicalItem = col.gameObject.GetComponentInParent<PhysicalItem>();
+
+            if (physicalItem != null)
+            {
+                Item itemData = physicalItem.ItemData;
+
+                if (itemData != null)
+                {
+                    if (itemData is UsableItem)
+                    {
+                        Inventory.AddItem((UsableItem) itemData, 1);
+                    }
+                    else if (itemData is CollectableItem)
+                    {
+                        Collection.AddItem((CollectableItem) itemData, 1);
+                    }
+                }
+
+                Destroy(physicalItem.gameObject);
+            }
+        }
     }
 
     private void OnTriggerExit2D(Collider2D col)

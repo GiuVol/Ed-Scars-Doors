@@ -585,6 +585,30 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
 
     #endregion
 
+    #region Dropped Items
+
+    [SerializeField]
+    [Range(0, 1)]
+    private float _dropProbability;
+
+    [SerializeField]
+    private List<PhysicalItem> _droppedItems;
+
+    public List<PhysicalItem> DroppedItems
+    {
+        get
+        {
+            if (_droppedItems == null)
+            {
+                _droppedItems = new List<PhysicalItem>();
+            }
+
+            return _droppedItems;
+        }
+    }
+
+    #endregion
+
     protected void Start()
     {
         Setup();
@@ -773,6 +797,11 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// </summary>
     protected void DieProcedure()
     {
+        if (_isDying)
+        {
+            return;
+        }
+
         StartCoroutine(HandleDeath());
     }
 
@@ -781,6 +810,11 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// </summary>
     protected IEnumerator HandleDeath()
     {
+        if (_isDying)
+        {
+            yield break;
+        }
+        
         _isDying = true;
 
         PlayerController actualPlayer = FindObjectOfType<PlayerController>();
@@ -800,6 +834,8 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
 
         yield return StartCoroutine(Die());
 
+        DropItem();
+
         _isDying = false;
     }
 
@@ -807,6 +843,28 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// It's used to destroy the mob and perform other additional actions when he dies.
     /// </summary>
     protected abstract IEnumerator Die();
+
+    /// <summary>
+    /// Method that drops items with a certain probability.
+    /// </summary>
+    private void DropItem()
+    {
+        bool canDrop = true;
+
+        if (_dropProbability < 1)
+        {
+            float randomValue = Random.Range(0f, 1f);
+            canDrop = randomValue < _dropProbability;
+        }
+
+        if (canDrop)
+        {
+            if (DroppedItems.Count > 0)
+            {
+                Instantiate(DroppedItems[Random.Range(0, DroppedItems.Count - 1)], transform.position, Quaternion.identity);
+            }
+        }
+    }
     
     /// <summary>
     /// Allows to change the color of the player for a while.
