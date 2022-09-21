@@ -457,6 +457,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2850020685746921573, guid: 3ec2a2e570c18654fbe0941523ca255e, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3037841361828300154, guid: 3ec2a2e570c18654fbe0941523ca255e, type: 3}
       propertyPath: m_Name
       value: Crawler
