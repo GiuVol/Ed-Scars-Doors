@@ -250,6 +250,19 @@ public class UIManager : MonoBehaviour
 
         CurrentHUD = Instantiate(Resources.Load<HUD>(HUDResourcesPath), CurrentCanvas.transform);
 
+        if (GameManager.Instance != null)
+        {
+            PlayerController player = GameManager.Instance.Player;
+
+            if (CurrentHUD != null && player != null)
+            {
+                Debug.Log(player.Health);
+                CurrentHUD.PlayerHealthBar.InitializeStatic(player.Health.MaxHealth);
+                CurrentHUD.PlayerCorrosionBar.InitializeStatic(player.Status.MaxCorrosionTime);
+                CurrentHUD.PlayerBlindnessBar.InitializeStatic(player.Status.MaxBlindnesslevel);
+            }
+        }
+
         _wantsHudLoaded = true;
     }
 
@@ -315,5 +328,20 @@ public class UIManager : MonoBehaviour
         GameMenu = null;
         CurrentHUD = null;
         SceneLoadingInfo = null;
+    }
+
+    private void Update()
+    {
+        if (GameManager.Instance != null)
+        {
+            PlayerController player = GameManager.Instance.Player;
+
+            if (HUDIsLoaded && player != null)
+            {
+                CurrentHUD.PlayerHealthBar.UpdateValue(player.Health.CurrentHealth);
+                CurrentHUD.PlayerCorrosionBar.UpdateValue(player.Status.CorrosionTimeLeft);
+                CurrentHUD.PlayerBlindnessBar.UpdateValue(player.Status.CurrentBlindnesslevel);
+            }
+        }
     }
 }
