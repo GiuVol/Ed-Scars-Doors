@@ -306,10 +306,10 @@ public class UIManager : MonoBehaviour
             return;
         }
 
-        foreach (Transform canvasChild in CurrentCanvas.transform)
-        {
-            Destroy(canvasChild.gameObject);
-        }
+        Destroy(MainMenu);
+        Destroy(GameMenu);
+        Destroy(CurrentHUD);
+        Destroy(SceneLoadingInfo);
 
         MainMenu = null;
         GameMenu = null;
