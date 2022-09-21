@@ -188,6 +188,7 @@ public class GameManager : MonoBehaviour
         cameraController.Target = playerController.transform;
 
         Player = playerController;
+        Player.Setup();
         MainCamera = cameraController.CameraComponent;
 
         GameObject astarManagerPrefab = Resources.Load<GameObject>("AI/AstarGrid");

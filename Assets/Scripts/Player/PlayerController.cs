@@ -466,7 +466,17 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     
     #endregion
 
-    void Start()
+    public bool IsInitialized { get; private set; }
+
+    private void Start()
+    {
+        if (!IsInitialized)
+        {
+            Setup();
+        }
+    }
+
+    public void Setup()
     {
         if (gameObject.GetComponent<MovementController2D>() == null)
         {
@@ -523,6 +533,8 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             Renderers.Add(renderer);
             renderer.color = new Color(_currentColor.r, _currentColor.g, _currentColor.b, _currentAlphaValue);
         }
+
+        IsInitialized = true;
     }
 
     void Update()

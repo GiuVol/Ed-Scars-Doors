@@ -367,6 +367,7 @@ public class Flydier : GenericMob
         projectile.LayersToIgnore.Add(LayerMask.NameToLayer(MobLayerName));
         projectile.LayersToIgnore.Add(LayerMask.NameToLayer(MobProjectileLayerName));
         projectile.LayersToIgnore.Add(LayerMask.NameToLayer(GameFormulas.ObstacleLayerName));
+        projectile.LayersToIgnore.Add(LayerMask.NameToLayer(GameFormulas.HidingPlaceLayerName));
 
         yield return new WaitUntil(() => !AnimController.GetCurrentAnimatorStateInfo(0).IsName(AttackStateName));
 

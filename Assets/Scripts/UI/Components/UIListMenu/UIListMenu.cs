@@ -543,6 +543,14 @@ public abstract class UIListMenu : MonoBehaviour
             }
 
             _imageArea.sprite = value;
+
+            if (_imageArea.sprite == null)
+            {
+                _imageArea.color = new Color(1, 1, 1, 0);
+            } else
+            {
+                _imageArea.color = Color.white;
+            }
         }
     }
 
@@ -673,6 +681,11 @@ public abstract class UIListMenu : MonoBehaviour
 
     public void Start()
     {
+        if (_imageArea != null)
+        {
+            _imageArea.color = new Color(1, 1, 1, 0);
+        }
+
         UpdateElements();
     }
     

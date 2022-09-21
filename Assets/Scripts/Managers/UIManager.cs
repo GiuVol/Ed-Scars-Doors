@@ -250,6 +250,29 @@ public class UIManager : MonoBehaviour
 
         CurrentHUD = Instantiate(Resources.Load<HUD>(HUDResourcesPath), CurrentCanvas.transform);
 
+        if (GameManager.Instance != null)
+        {
+            PlayerController player = GameManager.Instance.Player;
+
+            if (CurrentHUD != null && player != null)
+            {
+                if (CurrentHUD.PlayerHealthBar != null)
+                {
+                    CurrentHUD.PlayerHealthBar.InitializeStatic(player.Health.MaxHealth, "HP");
+                }
+
+                if (CurrentHUD.PlayerCorrosionBar != null)
+                {
+                    CurrentHUD.PlayerCorrosionBar.InitializeStatic(player.Status.MaxCorrosionTime, "CR");
+                }
+
+                if (CurrentHUD.PlayerBlindnessBar != null)
+                {
+                    CurrentHUD.PlayerBlindnessBar.InitializeStatic(player.Status.MaxBlindnesslevel, "BL");
+                }
+            }
+        }
+
         _wantsHudLoaded = true;
     }
 
@@ -306,14 +329,69 @@ public class UIManager : MonoBehaviour
             return;
         }
 
-        foreach (Transform canvasChild in CurrentCanvas.transform)
-        {
-            Destroy(canvasChild.gameObject);
-        }
+        Destroy(MainMenu);
+        Destroy(GameMenu);
+        Destroy(CurrentHUD);
+        Destroy(SceneLoadingInfo);
 
         MainMenu = null;
         GameMenu = null;
         CurrentHUD = null;
         SceneLoadingInfo = null;
+    }
+
+    private void Update()
+    {
+        if (GameManager.Instance != null)
+        {
+            PlayerController player = GameManager.Instance.Player;
+
+            if (HUDIsLoaded && player != null)
+            {
+                if (CurrentHUD.PlayerHealthBar != null)
+                {
+                    CurrentHUD.PlayerHealthBar.UpdateValue(player.Health.CurrentHealth);
+                }
+
+                if (CurrentHUD.PlayerCorrosionBar != null)
+                {
+                    if (player.Status.CorrosionTimeLeft <= 0)
+                    {
+                        if (CurrentHUD.PlayerCorrosionBar.gameObject.activeSelf)
+                        {
+                            CurrentHUD.PlayerCorrosionBar.gameObject.SetActive(false);
+                        }
+                    } else
+                    {
+                        if (!CurrentHUD.PlayerCorrosionBar.gameObject.activeSelf)
+                        {
+                            CurrentHUD.PlayerCorrosionBar.gameObject.SetActive(true);
+                        }
+                    }
+
+                    CurrentHUD.PlayerCorrosionBar.UpdateValue(player.Status.CorrosionTimeLeft);
+                }
+
+                if (CurrentHUD.PlayerBlindnessBar != null)
+                {
+                    if (player.Status.CurrentBlindnesslevel <= 0)
+                    {
+                        if (CurrentHUD.PlayerBlindnessBar.gameObject.activeSelf)
+                        {
+                            CurrentHUD.PlayerBlindnessBar.gameObject.SetActive(false);
+                        }
+                    }
+                    else
+                    {
+                        if (!CurrentHUD.PlayerBlindnessBar.gameObject.activeSelf)
+                        {
+                            CurrentHUD.PlayerBlindnessBar.gameObject.SetActive(true);
+                        }
+                    }
+                    
+                    CurrentHUD.PlayerBlindnessBar.UpdateValue(player.Status.CurrentBlindnesslevel);
+                }
+            }
+        }
     }
 }

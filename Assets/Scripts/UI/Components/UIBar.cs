@@ -108,13 +108,13 @@ public class UIBar : DynamicUIComponent
     #region Setup
 
     public void InitializeDynamic(Transform targetToFollow, Vector3 positionOffset, 
-                                  int maxValue, string info = "")
+                                  float maxValue, string info = "")
     {
         base.InitializeDynamic(targetToFollow, positionOffset);
         SetupBar(maxValue, info);
     }
 
-    public void InitializeStatic(int maxValue, string info = "")
+    public void InitializeStatic(float maxValue, string info = "")
     {
         base.InitializeStatic();
         SetupBar(maxValue, info);
@@ -125,7 +125,7 @@ public class UIBar : DynamicUIComponent
     /// </summary>
     /// <param name="maxValue">the max value that the bar can represent</param>
     /// <param name="info">the info text displayed near the bar</param>
-    private void SetupBar(int maxValue, string info)
+    private void SetupBar(float maxValue, string info)
     {
         MaxValue = maxValue;
         MaxLength = _slider.rectTransform.rect.width;
