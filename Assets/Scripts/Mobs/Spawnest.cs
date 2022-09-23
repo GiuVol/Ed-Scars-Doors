@@ -28,13 +28,11 @@ public class Spawnest : GenericMob
     /// </summary>
     private const float EggMaxScale = 1.75f;
 
-    protected override Vector3 HealthBarPositionOffset
-    {
-        get
-        {
-            return new Vector3(0, 10, 0);
-        }
-    }
+    protected override Vector3 HealthBarPositionOffset => new Vector3(0, _height, 0);
+
+    protected override Vector3 BlindnessBarPositionOffset => new Vector3(0, _height + 1, 0);
+
+    protected override Vector3 CorrosionBarPositionOffset => new Vector3(0, _height + 2, 0);
     
     /// <summary>
     /// Stores how many flydiers spawned by this nest can be alive at the same time;
@@ -141,12 +139,14 @@ public class Spawnest : GenericMob
 
     private void FixedUpdate()
     {
-        if (HealthBar != null)
-        {
-            HealthBar.UpdateValue(Health.CurrentHealth);
-        }
+        UpdateBars();
 
-        if (_isDying)
+        Vector2 localSpaceVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
+        float normalizedSpeed = localSpaceVelocity.x / (_speed / _attachedRigidbody.drag);
+
+        AnimController.SetFloat(SpeedParameterName, normalizedSpeed);
+
+        if (_isDying || Status.IsBlinded)
         {
             return;
         }
@@ -192,11 +192,6 @@ public class Spawnest : GenericMob
                 StartCoroutine(HandleAttack(_player));
             }
         }
-
-        Vector2 localSpaceVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
-        float normalizedSpeed = localSpaceVelocity.x / MaxSpeed;
-
-        AnimController.SetFloat(SpeedParameterName, normalizedSpeed);
     }
 
     #region Behaviour

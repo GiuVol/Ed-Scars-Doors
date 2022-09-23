@@ -371,14 +371,16 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
                 _obtainedAbilities = new List<GenericAbility>();
 
                 GenericAbility ability1 = Resources.Load<GenericAbility>("Abilities/DarkShooter");
-                GenericAbility ability2 = Resources.Load<GenericAbility>("Abilities/DoubleJumper");
-                GenericAbility ability3 = Resources.Load<GenericAbility>("Abilities/x2Attack");
-                GenericAbility ability4 = Resources.Load<GenericAbility>("Abilities/x2Defence");
+                GenericAbility ability2 = Resources.Load<GenericAbility>("Abilities/SwarmShooter");
+                GenericAbility ability3 = Resources.Load<GenericAbility>("Abilities/DoubleJumper");
+                GenericAbility ability4 = Resources.Load<GenericAbility>("Abilities/x2Attack");
+                GenericAbility ability5 = Resources.Load<GenericAbility>("Abilities/x2Defence");
 
                 _obtainedAbilities.Add(ability1);
                 _obtainedAbilities.Add(ability2);
                 _obtainedAbilities.Add(ability3);
                 _obtainedAbilities.Add(ability4);
+                _obtainedAbilities.Add(ability5);
             }
 
             return _obtainedAbilities;
@@ -512,7 +514,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
                      delegate { ChangeColorTemporarily(Color.green, .25f); }, 
                      delegate { ChangeColorTemporarily(Color.red, .25f); });
         Stats.Setup(100, 50, 500, 100, 50, 500);
-        Status.Setup(100, 5, 5, 0, 1, 20, 0);
+        Status.Setup(100, 0, 1, 20, .1f, 10, null, delegate { StartCorrosion(); });
 
         CanDash = true;
         CanShoot = true;
@@ -539,7 +541,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
     void Update()
     {
-        if (HasControl)
+        if (HasControl && !Status.IsBlinded)
         {
             if (InputHandler.Jump("Down"))
             {
@@ -574,7 +576,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
     void FixedUpdate()
     {
-        if (HasControl)
+        if (HasControl && !Status.IsBlinded)
         {
             float horizontalInput = InputHandler.HorizontalInput;
             float movementSpeed = Input.GetKey(KeyCode.B) ? CurrentRunSpeed : CurrentWalkSpeed;
@@ -860,7 +862,45 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     }
 
     #endregion
-    
+
+    #region Corrosion
+
+    private Coroutine _corrosionCoroutine;
+
+    protected void StartCorrosion()
+    {
+        if (_corrosionCoroutine != null)
+        {
+            return;
+        }
+
+        _corrosionCoroutine = StartCoroutine(HandleCorrosion());
+    }
+
+    protected void StopCorrosion()
+    {
+        if (_corrosionCoroutine != null)
+        {
+            StopCoroutine(_corrosionCoroutine);
+            _corrosionCoroutine = null;
+        }
+    }
+
+    private IEnumerator HandleCorrosion()
+    {
+        while (Status.IsCorroded)
+        {
+            yield return new WaitForSeconds(Status.CorrosionDamageInterval);
+            Health.DecreasePercentage(Status.CorrosionDamage, false);
+        }
+
+        yield return new WaitForSeconds(.5f);
+
+        _corrosionCoroutine = null;
+    }
+
+    #endregion
+
     /// <summary>
     /// This procedure is called when the health of the player reaches 0.
     /// </summary>

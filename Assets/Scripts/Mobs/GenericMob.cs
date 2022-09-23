@@ -79,18 +79,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     [SerializeField]
     private float _maxBlindnessLevel;
 
-    /// <summary>
-    /// The duration of the blindness.
-    /// </summary>
-    [SerializeField]
-    private float _blindnessDuration;
-
-    /// <summary>
-    /// After how much the mob can be blinded again.
-    /// </summary>
-    [SerializeField]
-    private float _blindnessCooldownTime;
-
+    [Range(0, 1)]
     /// <summary>
     /// How much the mob resists to the attacks which inflict blindness.
     /// </summary>
@@ -109,12 +98,19 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     [SerializeField]
     private float _maxCorrosionTime;
 
+    [Range(0, 1)]
     /// <summary>
-    /// How much the mob resists to the corrosion.
+    /// How much the mob gets damaged from corrosion.
     /// </summary>
     [SerializeField]
-    private float _corrosionResistence;
+    private float _corrosionDamage;
 
+    /// <summary>
+    /// How much time passes between two damages inflicted from corrosion.
+    /// </summary>
+    [SerializeField]
+    private float _corrosionDamageInterval;
+    
     /// <summary>
     /// How much time does it take to update the mob's perception of the player.
     /// </summary>
@@ -579,6 +575,60 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     protected UIBar HealthBar { get; set; }
 
     /// <summary>
+    /// A property which returns the eventual blindness bar prefab of the mob.
+    /// </summary>
+    protected virtual UIBar BlindnessBarResource
+    {
+        get
+        {
+            return Resources.Load<UIBar>("UI/MobBlindnessbar");
+        }
+    }
+
+    /// <summary>
+    /// Stores the position offset of the blindnessbar.
+    /// </summary>
+    protected virtual Vector3 BlindnessBarPositionOffset
+    {
+        get
+        {
+            return Vector3.zero;
+        }
+    }
+
+    /// <summary>
+    /// A property which returns the eventual blindness bar of the mob.
+    /// </summary>
+    protected UIBar BlindnessBar { get; set; }
+
+    /// <summary>
+    /// A property which returns the eventual corrosion bar prefab of the mob.
+    /// </summary>
+    protected virtual UIBar CorrosionBarResource
+    {
+        get
+        {
+            return Resources.Load<UIBar>("UI/MobCorrosionbar");
+        }
+    }
+
+    /// <summary>
+    /// Stores the position offset of the corrosion bar.
+    /// </summary>
+    protected virtual Vector3 CorrosionBarPositionOffset
+    {
+        get
+        {
+            return Vector3.zero;
+        }
+    }
+
+    /// <summary>
+    /// A property which returns the eventual corrosion bar of the mob.
+    /// </summary>
+    protected UIBar CorrosionBar { get; set; }
+    
+    /// <summary>
     /// An auto-implemented property which stores the animator controller of the mob.
     /// </summary>
     protected Animator AnimController { get; set; }
@@ -668,7 +718,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
 
         CustomUtilities.SetLayerRecursively(gameObject, LayerMask.NameToLayer(MobLayerName));
         SetupLayers();
-        SetupHealthBar();
+        SetupBars();
     }
 
     /// <summary>
@@ -706,8 +756,9 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     {
         if (Status != null)
         {
-            Status.Setup(_maxBlindnessLevel, _blindnessDuration, _blindnessCooldownTime, 
-                _blindnessResistence, _blindnessLevelDecrementSpeed, _maxCorrosionTime, _corrosionResistence);
+            Status.Setup(_maxBlindnessLevel, _blindnessResistence, _blindnessLevelDecrementSpeed, 
+                         _maxCorrosionTime, _corrosionDamage, _corrosionDamageInterval, 
+                         null, delegate { StartCorrosion(); });
         }
     }
 
@@ -741,19 +792,82 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     }
 
     /// <summary>
-    /// Procedure needed to setup the health bar.
+    /// Procedure needed to setup the bars of the mob.
     /// </summary>
-    protected virtual void SetupHealthBar()
+    protected virtual void SetupBars()
     {
-        if (HealthBarResource != null)
-        {
-            Canvas canvas = FindObjectOfType<Canvas>();
+        Canvas canvas = FindObjectOfType<Canvas>();
 
-            if (canvas != null)
+        if (canvas != null)
+        {
+            if (HealthBarResource != null)
             {
                 HealthBar = Instantiate(HealthBarResource, canvas.transform);
                 HealthBar.InitializeDynamic(transform, HealthBarPositionOffset, Health.MaxHealth);
             }
+
+            if (BlindnessBarResource != null)
+            {
+                BlindnessBar = Instantiate(BlindnessBarResource, canvas.transform);
+                BlindnessBar.InitializeDynamic(transform, BlindnessBarPositionOffset, Status.MaxBlindnesslevel);
+            }
+
+            if (CorrosionBarResource != null)
+            {
+                CorrosionBar = Instantiate(CorrosionBarResource, canvas.transform);
+                CorrosionBar.InitializeDynamic(transform, CorrosionBarPositionOffset, Status.MaxCorrosionTime);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Procedure needed to update the bars of the mob.
+    /// </summary>
+    protected void UpdateBars()
+    {
+        if (HealthBar != null)
+        {
+            HealthBar.UpdateValue(Health.CurrentHealth);
+        }
+
+        if (BlindnessBar != null)
+        {
+            if (Status.CurrentBlindnesslevel <= 0)
+            {
+                if (BlindnessBar.gameObject.activeSelf)
+                {
+                    BlindnessBar.gameObject.SetActive(false);
+                }
+            }
+            else
+            {
+                if (!BlindnessBar.gameObject.activeSelf)
+                {
+                    BlindnessBar.gameObject.SetActive(true);
+                }
+            }
+
+            BlindnessBar.UpdateValue(Status.CurrentBlindnesslevel);
+        }
+
+        if (CorrosionBar != null)
+        {
+            if (Status.CorrosionTimeLeft <= 0)
+            {
+                if (CorrosionBar.gameObject.activeSelf)
+                {
+                    CorrosionBar.gameObject.SetActive(false);
+                }
+            }
+            else
+            {
+                if (!CorrosionBar.gameObject.activeSelf)
+                {
+                    CorrosionBar.gameObject.SetActive(true);
+                }
+            }
+
+            CorrosionBar.UpdateValue(Status.CorrosionTimeLeft);
         }
     }
 
@@ -792,6 +906,44 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// <param name="target">the player to attack</param>
     protected abstract IEnumerator Attack(PlayerController target);
 
+    #region Corrosion
+
+    private Coroutine _corrosionCoroutine;
+
+    protected void StartCorrosion()
+    {
+        if (_corrosionCoroutine != null)
+        {
+            return;
+        }
+
+        _corrosionCoroutine = StartCoroutine(HandleCorrosion());
+    }
+
+    protected void StopCorrosion()
+    {
+        if (_corrosionCoroutine != null)
+        {
+            StopCoroutine(_corrosionCoroutine);
+            _corrosionCoroutine = null;
+        }
+    }
+
+    private IEnumerator HandleCorrosion()
+    {
+        while (Status.IsCorroded)
+        {
+            yield return new WaitForSeconds(Status.CorrosionDamageInterval);
+            Health.DecreasePercentage(Status.CorrosionDamage, false);
+        }
+
+        yield return new WaitForSeconds(.5f);
+
+        _corrosionCoroutine = null;
+    }
+
+    #endregion
+    
     /// <summary>
     /// The procedure called when the mob dies.
     /// </summary>
@@ -832,6 +984,16 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
             Destroy(HealthBar.gameObject);
         }
 
+        if (BlindnessBar != null)
+        {
+            Destroy(BlindnessBar.gameObject);
+        }
+
+        if (CorrosionBar != null)
+        {
+            Destroy(CorrosionBar.gameObject);
+        }
+        
         yield return StartCoroutine(Die());
 
         DropItem();
@@ -865,7 +1027,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
             }
         }
     }
-    
+
     /// <summary>
     /// Allows to change the color of the player for a while.
     /// </summary>

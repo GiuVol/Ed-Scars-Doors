@@ -45,7 +45,7 @@ public class Mantmare : GenericMob
         }
     }
 
-    protected override void SetupHealthBar()
+    protected override void SetupBars()
     {
         if (HealthBarResource != null)
         {
@@ -428,10 +428,16 @@ public class Mantmare : GenericMob
 
     private void FixedUpdate()
     {
-        if (HealthBar != null)
-        {
-            HealthBar.UpdateValue(Health.CurrentHealth);
-        }
+        UpdateBars();
+
+        Vector2 localSpaceXVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
+        float normalizedXSpeed = localSpaceXVelocity.x / (_speed / _attachedRigidbody.drag);
+
+        Vector2 localSpaceYVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
+        float normalizedYSpeed = localSpaceYVelocity.y / (_speed / _attachedRigidbody.drag);
+
+        AnimController.SetFloat(HorizontalSpeedParameterName, normalizedXSpeed);
+        AnimController.SetFloat(VerticalSpeedParameterName, normalizedYSpeed);
 
         if (!_isChangingColor)
         {
@@ -464,7 +470,7 @@ public class Mantmare : GenericMob
             _timeOnScreen = 0;
         }
 
-        if (_isAttacking || _isDying)
+        if (_isAttacking || _isDying || Status.IsBlinded)
         {
             return;
         }
@@ -485,15 +491,6 @@ public class Mantmare : GenericMob
                 }
             }
         }
-
-        Vector2 localSpaceXVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
-        float normalizedXSpeed = localSpaceXVelocity.x / (_speed / _attachedRigidbody.drag);
-
-        Vector2 localSpaceYVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
-        float normalizedYSpeed = localSpaceYVelocity.y / (_speed / _attachedRigidbody.drag);
-
-        AnimController.SetFloat(HorizontalSpeedParameterName, normalizedXSpeed);
-        AnimController.SetFloat(VerticalSpeedParameterName, normalizedYSpeed);
     }
 
     #region Movement

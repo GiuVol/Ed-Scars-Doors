@@ -26,6 +26,10 @@ public class Crawler : GenericMob
     
     protected override Vector3 HealthBarPositionOffset => new Vector3(0, _height, 0);
 
+    protected override Vector3 BlindnessBarPositionOffset => new Vector3(0, _height + 1, 0);
+    
+    protected override Vector3 CorrosionBarPositionOffset => new Vector3(0, _height + 2, 0);
+
     [SerializeField]
     private TriggerCaster _headCaster;
 
@@ -38,12 +42,19 @@ public class Crawler : GenericMob
 
     private void FixedUpdate()
     {
-        if (HealthBar != null)
+        UpdateBars();
+
+        Vector2 localSpaceVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
+        float normalizedSpeed = localSpaceVelocity.x / MaxSpeed;
+
+        if (normalizedSpeed < .2f)
         {
-            HealthBar.UpdateValue(Health.CurrentHealth);
+            normalizedSpeed = 0;
         }
-        
-        if (_isAttacking || _isDying)
+
+        AnimController.SetFloat(SpeedParameterName, normalizedSpeed);
+
+        if (_isAttacking || _isDying || Status.IsBlinded)
         {
             return;
         }
@@ -55,16 +66,6 @@ public class Crawler : GenericMob
         {
             HandlePlayer(_player);
         }
-
-        Vector2 localSpaceVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
-        float normalizedSpeed = localSpaceVelocity.x / MaxSpeed;
-
-        if (normalizedSpeed < .2f)
-        {
-            normalizedSpeed = 0;
-        }
-
-        AnimController.SetFloat(SpeedParameterName, normalizedSpeed);
     }
 
     #region Behaviour

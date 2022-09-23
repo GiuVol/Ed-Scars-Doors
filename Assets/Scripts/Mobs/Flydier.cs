@@ -37,14 +37,12 @@ public class Flydier : GenericMob
     /// </summary>
     public const string PrefabPath = "Mobs/Flydier";
 
-    protected override Vector3 HealthBarPositionOffset
-    {
-        get
-        {
-            return new Vector3(0, 3, 0);
-        }
-    }
+    protected override Vector3 HealthBarPositionOffset => new Vector3(0, _height, 0);
 
+    protected override Vector3 BlindnessBarPositionOffset => new Vector3(0, _height + 1, 0);
+
+    protected override Vector3 CorrosionBarPositionOffset => new Vector3(0, _height + 2, 0);
+    
     /// <summary>
     /// Specifies if the flydier should strictly follow the patrol points.
     /// </summary>
@@ -117,12 +115,14 @@ public class Flydier : GenericMob
 
     private void FixedUpdate()
     {
-        if (HealthBar != null)
-        {
-            HealthBar.UpdateValue(Health.CurrentHealth);
-        }
+        UpdateBars();
 
-        if (_isAttacking || _isDying)
+        Vector2 localSpaceVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
+        float normalizedSpeed = localSpaceVelocity.x / (_speed / _attachedRigidbody.drag);
+
+        AnimController.SetFloat(SpeedParameterName, normalizedSpeed);
+
+        if (_isAttacking || _isDying || Status.IsBlinded)
         {
             return;
         }
@@ -146,11 +146,6 @@ public class Flydier : GenericMob
                 HandlePlayer(_player);
             }
         }
-
-        Vector2 localSpaceVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
-        float normalizedSpeed = localSpaceVelocity.x / (_speed / _attachedRigidbody.drag);
-
-        AnimController.SetFloat(SpeedParameterName, normalizedSpeed);
     }
 
     /// <summary>

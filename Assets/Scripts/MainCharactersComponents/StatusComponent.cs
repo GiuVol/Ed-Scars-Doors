@@ -19,17 +19,6 @@ public class StatusComponent : MonoBehaviour
     public float MaxBlindnesslevel { get; private set; }
 
     /// <summary>
-    /// This value determines how long the character remains blinded.
-    /// </summary>
-    public float BlindnessDuration { get; private set; }
-
-    /// <summary>
-    /// This value determines how long it takes to increase the <c>CurrentBlindnesslevel</c> again 
-    /// after the <c>CurrentBlindnesslevel</c> reaches the 0.
-    /// </summary>
-    public float BlindnessCooldownTime { get; private set; }
-
-    /// <summary>
     /// The greater this value is, the more it will take to increase the <c>CurrentBlindnessLevel</c>.
     /// This value should be clamped between 0 and 1.
     /// </summary>
@@ -50,6 +39,16 @@ public class StatusComponent : MonoBehaviour
     /// </summary>
     public bool CanBeBlinded { get; private set; }
 
+    /// <summary>
+    /// Type of delegate method that has to be called when the character is blinded.
+    /// </summary>
+    public delegate void OnBlinded();
+
+    /// <summary>
+    /// Delegate method that has to be called when the character is blinded.
+    /// </summary>
+    public OnBlinded OnBlindedDelegate { get; private set; }
+
     #endregion
 
     #region Corrosion
@@ -65,16 +64,30 @@ public class StatusComponent : MonoBehaviour
     public float MaxCorrosionTime { get; private set; }
 
     /// <summary>
-    /// The greater this value is, the less the character will be damaged from corrosion.
-    /// This value should be clamped between 0 and 1.
+    /// Stores the damage that will be inflicted on the corrosion.
     /// </summary>
-    public float CorrosionResistence { get; private set; }
+    public float CorrosionDamage { get; private set; }
 
+    /// <summary>
+    /// Stores the time that passes between damages inflicted from corrosion.
+    /// </summary>
+    public float CorrosionDamageInterval { get; private set; }
+    
     /// <summary>
     /// This value represents whether the character is corroded or not.
     /// </summary>
     public bool IsCorroded { get; private set; }
 
+    /// <summary>
+    /// Type of delegate method that has to be called when the character is corroded.
+    /// </summary>
+    public delegate void OnCorroded();
+
+    /// <summary>
+    /// Delegate method that has to be called when the character is corroded.
+    /// </summary>
+    public OnCorroded OnCorrodedDelegate { get; private set; }
+    
     #endregion
 
     /// <summary>
@@ -93,32 +106,34 @@ public class StatusComponent : MonoBehaviour
     /// This method is used to setup the <c>StatusComponent</c> with the desired values.
     /// </summary>
     /// <param name="maxBlindnesslevel">
-    /// The desired value for <c>MaxBlindnesslevel</c>
-    /// </param>
-    /// <param name="blindnessDuration">
-    /// The desired value for <c>BlindnessDuration</c>
-    /// </param>
-    /// <param name="blindnessCooldownTime">
-    /// The desired value for <c>BlindnessCooldownTime</c>
+    /// The desired value for <c>MaxBlindnesslevel</c>.
     /// </param>
     /// <param name="blindnessResistence">
     /// The desired value for <c>BlindnessResistence</c>
     /// pre: this value should be clamped between 0 and 1.
     /// </param>
     /// <param name="blindnessLevelDecrementSpeed">
-    /// The desired value for <c>BlindnessLevelDecrementSpeed</c>
+    /// The desired value for <c>BlindnessLevelDecrementSpeed</c>.
     /// </param>
     /// <param name="maxCorrosionTime">
-    /// The desired value for <c>MaxCorrosionTime</c>
+    /// The desired value for <c>MaxCorrosionTime</c>.
     /// </param>
-    /// <param name="corrosionResistence">
-    /// The desired value for <c>CorrosionResistence</c>
-    /// pre: this value should be clamped between 0 and 1.
+    /// <param name="corrosionDamage">
+    /// The corrosion damage that the character will recieve.
     /// </param>
-    public void Setup(float maxBlindnesslevel, float blindnessDuration, 
-                      float blindnessCooldownTime, float blindnessResistence, 
+    /// <param name="corrosionDamageInterval">
+    /// How much time passes between damages inflicted from corrosion.
+    /// </param>
+    /// <param name="onBlindedDelegate">
+    /// A method that will be called when the character is blinded.
+    /// </param>
+    /// <param name="onCorrodedDelegate">
+    /// A method that will be called when the character is corroded.
+    /// </param>
+    public void Setup(float maxBlindnesslevel, float blindnessResistence, 
                       float blindnessLevelDecrementSpeed, float maxCorrosionTime, 
-                      float corrosionResistence)
+                      float corrosionDamage, float corrosionDamageInterval, 
+                      OnBlinded onBlindedDelegate = null, OnCorroded onCorrodedDelegate = null)
     {
         CurrentBlindnesslevel = 0;
         IsBlinded = false;
@@ -130,13 +145,14 @@ public class StatusComponent : MonoBehaviour
         blindnessLevelDecrementSpeed = Mathf.Max(blindnessLevelDecrementSpeed, 1);
         
         MaxBlindnesslevel = maxBlindnesslevel;
-        BlindnessDuration = Mathf.Min(blindnessDuration, maxBlindnesslevel / blindnessLevelDecrementSpeed);
-        BlindnessCooldownTime = blindnessCooldownTime;
         BlindnessResistence = blindnessResistence;
         BlindnessLevelDecrementSpeed = blindnessLevelDecrementSpeed;
+        OnBlindedDelegate = onBlindedDelegate;
 
         MaxCorrosionTime = maxCorrosionTime;
-        CorrosionResistence = corrosionResistence;
+        CorrosionDamage = corrosionDamage;
+        CorrosionDamageInterval = corrosionDamageInterval;
+        OnCorrodedDelegate = onCorrodedDelegate;
 
         _initialized = true;
     }
@@ -153,13 +169,22 @@ public class StatusComponent : MonoBehaviour
             StartCoroutine(InflictBlindness());
         }
 
+        if (CorrosionTimeLeft > 0 && !IsCorroded)
+        {
+            IsCorroded = true;
+            OnCorrodedDelegate?.Invoke();
+        }
+
+        if (CorrosionTimeLeft <= 0 && IsCorroded)
+        {
+            IsCorroded = false;
+        }
+
         CurrentBlindnesslevel -= BlindnessLevelDecrementSpeed * Time.fixedDeltaTime;
         CurrentBlindnesslevel = Mathf.Clamp(CurrentBlindnesslevel, 0, MaxBlindnesslevel);
 
         CorrosionTimeLeft -= Time.fixedDeltaTime;
         CorrosionTimeLeft = Mathf.Clamp(CorrosionTimeLeft, 0, MaxCorrosionTime);
-
-        IsCorroded = CorrosionTimeLeft > 0;
     }
 
     /// <summary>
@@ -177,6 +202,12 @@ public class StatusComponent : MonoBehaviour
         IsBlinded = true;
         CanBeBlinded = false;
 
+        OnBlindedDelegate?.Invoke();
+
+        #region Deprecated
+
+        /*
+
         float actualBlindnessLevelDecrementSpeed = Mathf.Max(BlindnessLevelDecrementSpeed, MinBlindnessLevelDecrementSpeed);
         float timeToWait = 
             Mathf.Min(BlindnessDuration, 
@@ -186,10 +217,13 @@ public class StatusComponent : MonoBehaviour
 
         IsBlinded = false;
 
+        */
+
+        #endregion
+
         yield return new WaitUntil(() => CurrentBlindnesslevel == 0);
 
-        yield return new WaitForSeconds(BlindnessCooldownTime);
-
+        IsBlinded = false;
         CanBeBlinded = true;
     }
 
@@ -218,7 +252,7 @@ public class StatusComponent : MonoBehaviour
     /// <param name="increment">The desired increment</param>
     public void IncreaseCorrosionTime(float increment)
     {
-        if (CorrosionTimeLeft > 0 || IsImmune)
+        if (IsImmune)
         {
             return;
         }
