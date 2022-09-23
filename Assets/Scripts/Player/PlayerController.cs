@@ -324,6 +324,72 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         }
     }
 
+    /// <summary>
+    /// Returns the prefab of the blindness effect.
+    /// </summary>
+    protected virtual GameObject BlindnessEffectResource
+    {
+        get
+        {
+            return Resources.Load<GameObject>("Effects/BlindnessEffect");
+        }
+    }
+
+    /// <summary>
+    /// Returns the position offset of the blindness effect.
+    /// </summary>
+    protected virtual Vector3 BlindnessEffectPositionOffset
+    {
+        get
+        {
+            return Vector3.zero;
+        }
+    }
+
+    /// <summary>
+    /// Returns the scale of the blindness effect.
+    /// </summary>
+    protected virtual Vector3 BlindnessEffectScale
+    {
+        get
+        {
+            return Vector3.one;
+        }
+    }
+
+    /// <summary>
+    /// Returns the prefab of the corrosion effect.
+    /// </summary>
+    protected virtual GameObject CorrosionEffectResource
+    {
+        get
+        {
+            return Resources.Load<GameObject>("Effects/CorrosionEffect");
+        }
+    }
+
+    /// <summary>
+    /// Returns the position offset of the corrosion effect.
+    /// </summary>
+    protected virtual Vector3 CorrosionEffectPositionOffset
+    {
+        get
+        {
+            return Vector3.zero;
+        }
+    }
+
+    /// <summary>
+    /// Returns the scale of the corrosion effect.
+    /// </summary>
+    protected virtual Vector3 CorrosionEffectScale
+    {
+        get
+        {
+            return Vector3.one;
+        }
+    }
+    
     #endregion
 
     #region Data
@@ -514,7 +580,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
                      delegate { ChangeColorTemporarily(Color.green, .25f); }, 
                      delegate { ChangeColorTemporarily(Color.red, .25f); });
         Stats.Setup(100, 50, 500, 100, 50, 500);
-        Status.Setup(100, 0, 1, 20, .1f, 10, null, delegate { StartCorrosion(); });
+        Status.Setup(100, 0, 1, 20, .1f, 10, delegate { StartBlindness(); }, delegate { StartCorrosion(); });
 
         CanDash = true;
         CanShoot = true;
@@ -888,7 +954,14 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
     private IEnumerator HandleCorrosion()
     {
-        GameObject poisonEffect = Instantiate(Resources.Load<GameObject>("Effects/PoisonEffect"), transform);
+        GameObject corrosionEffect = null;
+
+        if (CorrosionEffectResource != null)
+        {
+            corrosionEffect = Instantiate(CorrosionEffectResource, transform);
+            corrosionEffect.transform.localPosition = CorrosionEffectPositionOffset;
+            corrosionEffect.transform.localScale = CorrosionEffectScale;
+        }
 
         while (Status.IsCorroded)
         {
@@ -898,13 +971,62 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
         yield return new WaitForSeconds(.5f);
 
-        Destroy(poisonEffect.gameObject);
+        if (corrosionEffect != null)
+        {
+            Destroy(corrosionEffect.gameObject);
+        }
 
         _corrosionCoroutine = null;
     }
 
     #endregion
 
+    #region Blindness
+
+    private Coroutine _blindnessCoroutine;
+
+    protected void StartBlindness()
+    {
+        if (_blindnessCoroutine != null)
+        {
+            return;
+        }
+
+        _blindnessCoroutine = StartCoroutine(HandleBlindness());
+    }
+
+    protected void StopBlindness()
+    {
+        if (_blindnessCoroutine != null)
+        {
+            StopCoroutine(_blindnessCoroutine);
+            _blindnessCoroutine = null;
+        }
+    }
+
+    private IEnumerator HandleBlindness()
+    {
+        GameObject blindnessEffect = null;
+
+        if (BlindnessEffectResource != null)
+        {
+            blindnessEffect = Instantiate(BlindnessEffectResource, transform);
+            blindnessEffect.transform.localPosition = BlindnessEffectPositionOffset;
+            blindnessEffect.transform.localScale = BlindnessEffectScale;
+        }
+
+        yield return new WaitUntil(() => !Status.IsBlinded);
+
+        if (blindnessEffect != null)
+        {
+            Destroy(blindnessEffect.gameObject);
+        }
+
+        _blindnessCoroutine = null;
+    }
+
+    #endregion
+    
     /// <summary>
     /// This procedure is called when the health of the player reaches 0.
     /// </summary>

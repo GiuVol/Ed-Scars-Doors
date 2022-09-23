@@ -629,39 +629,6 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     protected UIBar CorrosionBar { get; set; }
 
     /// <summary>
-    /// Returns the prefab of the corrosion effect.
-    /// </summary>
-    protected virtual GameObject CorrosionEffectResource
-    {
-        get
-        {
-            return Resources.Load<GameObject>("Effects/CorrosionEffect");
-        }
-    }
-    
-    /// <summary>
-    /// Returns the position offset of the corrosion effect.
-    /// </summary>
-    protected virtual Vector3 CorrosionEffectPositionOffset
-    {
-        get
-        {
-            return Vector3.zero;
-        }
-    }
-
-    /// <summary>
-    /// Returns the scale of the corrosion effect.
-    /// </summary>
-    protected virtual Vector3 CorrosionEffectScale
-    {
-        get
-        {
-            return Vector3.one;
-        }
-    }
-
-    /// <summary>
     /// Returns the prefab of the blindness effect.
     /// </summary>
     protected virtual GameObject BlindnessEffectResource
@@ -694,6 +661,39 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
         }
     }
     
+    /// <summary>
+    /// Returns the prefab of the corrosion effect.
+    /// </summary>
+    protected virtual GameObject CorrosionEffectResource
+    {
+        get
+        {
+            return Resources.Load<GameObject>("Effects/CorrosionEffect");
+        }
+    }
+    
+    /// <summary>
+    /// Returns the position offset of the corrosion effect.
+    /// </summary>
+    protected virtual Vector3 CorrosionEffectPositionOffset
+    {
+        get
+        {
+            return Vector3.zero;
+        }
+    }
+
+    /// <summary>
+    /// Returns the scale of the corrosion effect.
+    /// </summary>
+    protected virtual Vector3 CorrosionEffectScale
+    {
+        get
+        {
+            return Vector3.one;
+        }
+    }
+
     /// <summary>
     /// An auto-implemented property which stores the animator controller of the mob.
     /// </summary>
