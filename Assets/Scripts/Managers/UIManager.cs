@@ -11,6 +11,7 @@ public class UIManager : MonoBehaviour
     private const string GameMenuResourcesPath = "UI/GameMenu";
     private const string HUDResourcesPath = "UI/HUD";
     private const string SceneLoadingInfoResourcesPath = "UI/SceneLoadingInfo";
+    private const string GameOverMenuResourcesPath = "UI/GameOverMenu";
 
     /// <summary>
     /// The only admissible instance of this singleton class.
@@ -93,7 +94,7 @@ public class UIManager : MonoBehaviour
     /// This field is null if no scene is loading.
     /// </summary>
     public TextMeshProUGUI SceneLoadingInfo { get; private set; }
-    
+
     /// <summary>
     /// Stores whether the UIManager is initialized or not.
     /// </summary>
@@ -319,6 +320,26 @@ public class UIManager : MonoBehaviour
         SceneLoadingInfo = null;
     }
 
+    /// <summary>
+    /// This method loads the gameover menu inside the canvas, if it's not already loaded.
+    /// </summary>
+    public void LoadGameOverMenu()
+    {
+        if (!_initialized)
+        {
+            return;
+        }
+
+        ClearCanvas();
+
+        GameOverMenu gameOverMenu = Resources.Load<GameOverMenu>(GameOverMenuResourcesPath);
+
+        if (gameOverMenu != null)
+        {
+            Instantiate(gameOverMenu, CurrentCanvas.transform);
+        }
+    }
+    
     /// <summary>
     /// This method deletes all the gameObjects inside the Canvas.
     /// </summary>

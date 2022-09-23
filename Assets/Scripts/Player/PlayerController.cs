@@ -1032,7 +1032,8 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     /// </summary>
     void Die()
     {
-        //Destroy(gameObject);
+        UIManager.Instance.LoadGameOverMenu();
+        Destroy(gameObject);
     }
 
     #region Abilities Methods

@@ -214,7 +214,7 @@ public class Regia : MonoBehaviour
 
     void LateUpdate()
     {
-        if (!_initialized || _disabled)
+        if (!_initialized || _disabled || _playerController == null)
         {
             return;
         }
