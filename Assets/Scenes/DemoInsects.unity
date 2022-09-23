@@ -475,7 +475,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6877007459322609218, guid: 3ec2a2e570c18654fbe0941523ca255e, type: 3}
       propertyPath: _maxBlindnessLevel
-      value: 150
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 6877007459322609218, guid: 3ec2a2e570c18654fbe0941523ca255e, type: 3}
       propertyPath: _corrosionDamageInterval

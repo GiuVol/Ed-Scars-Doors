@@ -888,6 +888,8 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
     private IEnumerator HandleCorrosion()
     {
+        GameObject poisonEffect = Instantiate(Resources.Load<GameObject>("Effects/PoisonEffect"), transform);
+
         while (Status.IsCorroded)
         {
             yield return new WaitForSeconds(Status.CorrosionDamageInterval);
@@ -895,6 +897,8 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         }
 
         yield return new WaitForSeconds(.5f);
+
+        Destroy(poisonEffect.gameObject);
 
         _corrosionCoroutine = null;
     }
@@ -1003,7 +1007,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             renderer.color = _currentColor;
         }
 
-        yield return new WaitForSeconds(duration);
+        yield return new WaitForSecondsRealtime(duration);
 
         _currentColor = new Color(oldColor.r, oldColor.g, oldColor.b, _currentAlphaValue);
         

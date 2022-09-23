@@ -627,6 +627,72 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// A property which returns the eventual corrosion bar of the mob.
     /// </summary>
     protected UIBar CorrosionBar { get; set; }
+
+    /// <summary>
+    /// Returns the prefab of the corrosion effect.
+    /// </summary>
+    protected virtual GameObject CorrosionEffectResource
+    {
+        get
+        {
+            return Resources.Load<GameObject>("Effects/CorrosionEffect");
+        }
+    }
+    
+    /// <summary>
+    /// Returns the position offset of the corrosion effect.
+    /// </summary>
+    protected virtual Vector3 CorrosionEffectPositionOffset
+    {
+        get
+        {
+            return Vector3.zero;
+        }
+    }
+
+    /// <summary>
+    /// Returns the scale of the corrosion effect.
+    /// </summary>
+    protected virtual Vector3 CorrosionEffectScale
+    {
+        get
+        {
+            return Vector3.one;
+        }
+    }
+
+    /// <summary>
+    /// Returns the prefab of the blindness effect.
+    /// </summary>
+    protected virtual GameObject BlindnessEffectResource
+    {
+        get
+        {
+            return Resources.Load<GameObject>("Effects/BlindnessEffect");
+        }
+    }
+
+    /// <summary>
+    /// Returns the position offset of the blindness effect.
+    /// </summary>
+    protected virtual Vector3 BlindnessEffectPositionOffset
+    {
+        get
+        {
+            return Vector3.zero;
+        }
+    }
+
+    /// <summary>
+    /// Returns the scale of the blindness effect.
+    /// </summary>
+    protected virtual Vector3 BlindnessEffectScale
+    {
+        get
+        {
+            return Vector3.one;
+        }
+    }
     
     /// <summary>
     /// An auto-implemented property which stores the animator controller of the mob.
@@ -758,7 +824,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
         {
             Status.Setup(_maxBlindnessLevel, _blindnessResistence, _blindnessLevelDecrementSpeed, 
                          _maxCorrosionTime, _corrosionDamage, _corrosionDamageInterval, 
-                         null, delegate { StartCorrosion(); });
+                         delegate { StartBlindness(); }, delegate { StartCorrosion(); });
         }
     }
 
@@ -931,6 +997,15 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
 
     private IEnumerator HandleCorrosion()
     {
+        GameObject corrosionEffect = null;
+
+        if (CorrosionEffectResource != null)
+        {
+            corrosionEffect = Instantiate(CorrosionEffectResource, transform);
+            corrosionEffect.transform.localPosition = CorrosionEffectPositionOffset;
+            corrosionEffect.transform.localScale = CorrosionEffectScale;
+        }
+        
         while (Status.IsCorroded)
         {
             yield return new WaitForSeconds(Status.CorrosionDamageInterval);
@@ -939,7 +1014,58 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
 
         yield return new WaitForSeconds(.5f);
 
+        if (corrosionEffect != null)
+        {
+            Destroy(corrosionEffect.gameObject);
+        }
+
         _corrosionCoroutine = null;
+    }
+
+    #endregion
+
+    #region Blindness
+
+    private Coroutine _blindnessCoroutine;
+
+    protected void StartBlindness()
+    {
+        if (_blindnessCoroutine != null)
+        {
+            return;
+        }
+
+        _blindnessCoroutine = StartCoroutine(HandleBlindness());
+    }
+
+    protected void StopBlindness()
+    {
+        if (_blindnessCoroutine != null)
+        {
+            StopCoroutine(_blindnessCoroutine);
+            _blindnessCoroutine = null;
+        }
+    }
+
+    private IEnumerator HandleBlindness()
+    {
+        GameObject blindnessEffect = null;
+
+        if (BlindnessEffectResource != null)
+        {
+            blindnessEffect = Instantiate(BlindnessEffectResource, transform);
+            blindnessEffect.transform.localPosition = BlindnessEffectPositionOffset;
+            blindnessEffect.transform.localScale = BlindnessEffectScale;
+        }
+
+        yield return new WaitUntil(() => !Status.IsBlinded);
+
+        if (blindnessEffect != null)
+        {
+            Destroy(blindnessEffect.gameObject);
+        }
+
+        _blindnessCoroutine = null;
     }
 
     #endregion
