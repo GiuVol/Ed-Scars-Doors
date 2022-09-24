@@ -94,6 +94,12 @@ public class Regia : MonoBehaviour
     [SerializeField]
     private List<CameraPresetValue> _cameraValues;
 
+    /// <summary>
+    /// The y threshold that implies player's death if surpassed.
+    /// </summary>
+    [SerializeField]
+    private float _yDeathThreshold;
+
     #endregion
 
     /// <summary>
@@ -214,7 +220,7 @@ public class Regia : MonoBehaviour
 
     void LateUpdate()
     {
-        if (!_initialized || _disabled || _playerController == null)
+        if (!_initialized || _disabled || _playerController == null || _playerController.Health.IsDead)
         {
             return;
         }
@@ -222,6 +228,11 @@ public class Regia : MonoBehaviour
         if (CameraValues.Count > 0)
         {
             HandleCamera(_playerController.transform.position.x);
+        }
+
+        if (_playerController.transform.position.y < _yDeathThreshold)
+        {
+            _playerController.Health.DecreasePercentage(1);
         }
     }
 

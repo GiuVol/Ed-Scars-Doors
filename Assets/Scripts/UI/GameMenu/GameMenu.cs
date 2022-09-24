@@ -8,6 +8,13 @@ public class GameMenu : UITabMenu
     {
         base.Start();
         HasControl = true;
+
+        if (GameManager.Instance != null && GameManager.Instance.Player != null)
+        {
+            GameManager.Instance.Player.HasControl = false;
+        }
+
+        Time.timeScale = 0;
     }
 
     // Update is called once per frame
@@ -27,5 +34,25 @@ public class GameMenu : UITabMenu
         {
             SelectedTab++;
         }
+    }
+
+    private void OnDisable()
+    {
+        if (GameManager.Instance != null && GameManager.Instance.Player != null)
+        {
+            GameManager.Instance.Player.HasControl = true;
+        }
+
+        Time.timeScale = 1;
+    }
+
+    private void OnDestroy()
+    {
+        if (GameManager.Instance != null && GameManager.Instance.Player != null)
+        {
+            GameManager.Instance.Player.HasControl = true;
+        }
+        
+        Time.timeScale = 1;
     }
 }

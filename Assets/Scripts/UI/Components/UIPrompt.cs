@@ -55,6 +55,8 @@ public class UIPrompt : MonoBehaviour
             }
 
             textComponent.text = "";
+
+            yield return new WaitForEndOfFrame();
         }
 
         if (operation != null)

@@ -116,19 +116,6 @@ public class GameManager : MonoBehaviour
                 UI.SwitchGameMenu();
             }
         }
-
-        if (Player != null)
-        {
-            Player.HasControl = !IsInGameMenu;
-        }
-
-        if (IsInGameMenu)
-        {
-            Time.timeScale = 0;
-        } else
-        {
-            Time.timeScale = 1;
-        }
     }
 
     /// <summary>

@@ -20,7 +20,7 @@ TagManager:
   - HidingPlace
   - Item
   - CollidesWithGroundOnly
-  - 
+  - EventTrigger
   - 
   - 
   - 
