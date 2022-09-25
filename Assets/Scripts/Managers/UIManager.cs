@@ -323,7 +323,8 @@ public class UIManager : MonoBehaviour
     /// <summary>
     /// This method loads the gameover menu inside the canvas, if it's not already loaded.
     /// </summary>
-    public void LoadGameOverMenu()
+    /// <param name="textValue">The message that will appear on the gameover menu</param>
+    public void LoadGameOverMenu(string textValue)
     {
         if (!_initialized)
         {
@@ -332,11 +333,12 @@ public class UIManager : MonoBehaviour
 
         ClearCanvas();
 
-        GameOverMenu gameOverMenu = Resources.Load<GameOverMenu>(GameOverMenuResourcesPath);
+        GameOverMenu gameOverMenuResource = Resources.Load<GameOverMenu>(GameOverMenuResourcesPath);
 
-        if (gameOverMenu != null)
+        if (gameOverMenuResource != null)
         {
-            Instantiate(gameOverMenu, CurrentCanvas.transform);
+            GameOverMenu gameOverMenu = Instantiate(gameOverMenuResource, CurrentCanvas.transform);
+            gameOverMenu.GameOverTextValue = textValue;
         }
     }
     

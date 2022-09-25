@@ -127,7 +127,7 @@ namespace Pathfinding {
 		/// Immediately after you have called this method.
 		/// </summary>
 		public void UpdateGraph () {
-			if (updatingGraph) {
+			if (updatingGraph || target == null) {
 				// We are already updating the graph
 				// so ignore this call
 				return;

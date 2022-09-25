@@ -1032,7 +1032,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     /// </summary>
     void Die()
     {
-        UIManager.Instance.LoadGameOverMenu();
+        UIManager.Instance.LoadGameOverMenu("Game Over... You lost.");
         Destroy(gameObject);
     }
 

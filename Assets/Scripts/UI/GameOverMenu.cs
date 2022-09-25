@@ -95,7 +95,23 @@ public class GameOverMenu : MonoBehaviour
     }
 
     #endregion
-    
+
+    [SerializeField]
+    private TextMeshProUGUI _gameOverText;
+
+    public string GameOverTextValue
+    {
+        set
+        {
+            if (_gameOverText == null)
+            {
+                return;
+            }
+
+            _gameOverText.text = value;
+        }
+    }
+
     /// <summary>
     /// This field stores the button to play again the demo.
     /// </summary>
@@ -156,6 +172,8 @@ public class GameOverMenu : MonoBehaviour
                 #endif
             }
         );
+
+        SelectedButtonIndex = 1;
     }
 
     private void Update()
