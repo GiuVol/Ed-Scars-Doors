@@ -35,6 +35,7 @@ public class DialogEventTrigger : EventTrigger
         PlayerController player = GameManager.Instance.Player;
         Canvas canvas = GameManager.Instance.UI.CurrentCanvas;
 
+        GameManager.Instance.UI.PromptIsLoaded = true;
         player.HasControl = false;
 
         UIPrompt prompt = Instantiate(promptResource, canvas.transform);
@@ -50,6 +51,7 @@ public class DialogEventTrigger : EventTrigger
                                                           {
                                                               Time.timeScale = 1;
                                                           }
+                                                          GameManager.Instance.UI.PromptIsLoaded = false;
                                                           player.HasControl = true; 
                                                       }, 
                                                       true));

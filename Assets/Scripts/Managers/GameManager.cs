@@ -104,7 +104,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (!UI.MainMenuIsLoaded)
+        if (!UI.MainMenuIsLoaded && !UI.PromptIsLoaded)
         {
             if (Input.GetKeyDown(KeyCode.H))
             {

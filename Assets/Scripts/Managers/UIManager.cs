@@ -95,6 +95,8 @@ public class UIManager : MonoBehaviour
     /// </summary>
     public TextMeshProUGUI SceneLoadingInfo { get; private set; }
 
+    public bool PromptIsLoaded { get; set; }
+
     /// <summary>
     /// Stores whether the UIManager is initialized or not.
     /// </summary>
