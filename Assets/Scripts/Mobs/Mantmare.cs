@@ -20,6 +20,7 @@ public class Mantmare : GenericMob
     private const string Attack3EndStateName = "Attack3_end";
     private const string WanderStateName = "Wander";
     private const string DieStateName = "Die";
+    private const string BlindedStateName = "Blinded";
 
     private const string HorizontalSpeedParameterName = "HorizontalSpeed";
     private const string VerticalSpeedParameterName = "VerticalSpeed";
@@ -32,6 +33,7 @@ public class Mantmare : GenericMob
     private const string EndAttack3ParameterName = "EndAttack3";
     private const string WanderParameterName = "IsWandering";
     private const string DieParameterName = "Die";
+    private const string BlindedParameterName = "Blinded";
 
     private const float DieScaleLerpingSpeed = 1.5f;
 
@@ -438,6 +440,8 @@ public class Mantmare : GenericMob
 
         AnimController.SetFloat(HorizontalSpeedParameterName, normalizedXSpeed);
         AnimController.SetFloat(VerticalSpeedParameterName, normalizedYSpeed);
+
+        AnimController.SetBool(BlindedParameterName, Status.IsBlinded);
 
         if (!_isChangingColor)
         {

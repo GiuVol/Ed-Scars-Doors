@@ -13,10 +13,12 @@ public class Crawler : GenericMob
     private const string LocomotionCycleName = "LocomotionCycle";
     private const string AttackStateName = "Attack";
     private const string DieStateName = "Die";
+    private const string BlindedStateName = "Blinded";
 
     private const string SpeedParameterName = "Speed";
     private const string AttackParameterName = "Attack";
     private const string DieParameterName = "Die";
+    private const string BlindedParameterName = "Blinded";
 
     private const float AttackDamagingPhasePercentage = .2f;
     private const float DieWaitPercentage = .5f;
@@ -53,6 +55,8 @@ public class Crawler : GenericMob
         }
 
         AnimController.SetFloat(SpeedParameterName, normalizedSpeed);
+
+        AnimController.SetBool(BlindedParameterName, Status.IsBlinded);
 
         if (_isAttacking || _isDying || Status.IsBlinded)
         {

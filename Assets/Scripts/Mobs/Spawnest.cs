@@ -14,9 +14,11 @@ public class Spawnest : GenericMob
 
     private const string WalkCycleStateName = "WalkCycle";
     private const string DieStateName = "Die";
+    private const string BlindedStateName = "Blinded";
 
     private const string SpeedParameterName = "Speed";
     private const string DieParameterName = "Die";
+    private const string BlindedParameterName = "Blinded";
 
     private const float DieWaitPercentage = .25f;
     private const float DieScaleLerpingSpeed = 1.5f;
@@ -146,6 +148,8 @@ public class Spawnest : GenericMob
 
         AnimController.SetFloat(SpeedParameterName, normalizedSpeed);
 
+        AnimController.SetBool(BlindedParameterName, Status.IsBlinded);
+        
         if (_isDying || Status.IsBlinded)
         {
             return;

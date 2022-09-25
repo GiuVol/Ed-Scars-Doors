@@ -21,10 +21,12 @@ public class Flydier : GenericMob
     private const string FlyCycleStateName = "FlyCycle";
     private const string AttackStateName = "Attack";
     private const string DieStateName = "Die";
+    private const string BlindedStateName = "Blinded";
 
     private const string SpeedParameterName = "Speed";
     private const string AttackParameterName = "Attack";
     private const string DieParameterName = "Die";
+    private const string BlindedParameterName = "Blinded";
 
     private const float AttackProjectileSpawnPercentage = .25f;
     private const float DieWaitPercentage = .5f;
@@ -121,6 +123,8 @@ public class Flydier : GenericMob
         float normalizedSpeed = localSpaceVelocity.x / (_speed / _attachedRigidbody.drag);
 
         AnimController.SetFloat(SpeedParameterName, normalizedSpeed);
+
+        AnimController.SetBool(BlindedParameterName, Status.IsBlinded);
 
         if (_isAttacking || _isDying || Status.IsBlinded)
         {
