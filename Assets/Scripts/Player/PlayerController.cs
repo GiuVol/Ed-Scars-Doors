@@ -11,6 +11,9 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     private const float MinHidingRefreshTime = 2;
     private const float MaxHidingRefreshTime = 5;
 
+    private const string BlindedStateName = "Blinded";
+    
+    private const string BlindedParameterName = "Blinded";
     private const string SpeedParameterName = "Speed";
 
     public const string PlayerLayerName = "Player";
@@ -642,6 +645,8 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
     void FixedUpdate()
     {
+        AttachedAnimator.SetBool(BlindedParameterName, Status.IsBlinded);
+
         if (HasControl && !Status.IsBlinded)
         {
             float horizontalInput = InputHandler.HorizontalInput;
