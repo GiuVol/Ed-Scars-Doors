@@ -1032,6 +1032,10 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     /// </summary>
     void Die()
     {
+        UIManager.Instance.CurrentHUD.PlayerHealthBar.UpdateValueInstantly(0);
+        UIManager.Instance.CurrentHUD.PlayerBlindnessBar.UpdateValueInstantly(0);
+        UIManager.Instance.CurrentHUD.PlayerCorrosionBar.UpdateValueInstantly(0);
+        UIManager.Instance.UnloadHUD();
         UIManager.Instance.LoadGameOverMenu("Game Over... You lost.");
         Destroy(gameObject);
     }
