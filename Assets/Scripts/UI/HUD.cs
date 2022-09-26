@@ -52,4 +52,22 @@ public class HUD : MonoBehaviour
             return _playerCorrosionBar;
         }
     }
+
+    public void ResetBars()
+    {
+        if (PlayerHealthBar != null)
+        {
+            PlayerHealthBar.UpdateValueInstantly(0);
+        }
+
+        if (PlayerBlindnessBar != null)
+        {
+            PlayerBlindnessBar.UpdateValueInstantly(0);
+        }
+
+        if (PlayerCorrosionBar != null)
+        {
+            PlayerCorrosionBar.UpdateValueInstantly(0);
+        }
+    }
 }

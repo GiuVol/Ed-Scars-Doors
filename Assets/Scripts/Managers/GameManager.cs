@@ -111,9 +111,9 @@ public class GameManager : MonoBehaviour
                 UI.SwitchHUD();
             }
 
-            if (Input.GetKeyDown(KeyCode.M))
+            if (!UI.GameMenuIsLoaded && Input.GetKeyDown(KeyCode.M))
             {
-                UI.SwitchGameMenu();
+                UI.LoadGameMenu();
             }
         }
     }

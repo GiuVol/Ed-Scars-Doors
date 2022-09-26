@@ -262,16 +262,19 @@ public class UIManager : MonoBehaviour
                 if (CurrentHUD.PlayerHealthBar != null)
                 {
                     CurrentHUD.PlayerHealthBar.InitializeStatic(player.Health.MaxHealth, "HP");
+                    CurrentHUD.PlayerHealthBar.UpdateValueInstantly(player.Health.CurrentHealth);
                 }
 
                 if (CurrentHUD.PlayerCorrosionBar != null)
                 {
                     CurrentHUD.PlayerCorrosionBar.InitializeStatic(player.Status.MaxCorrosionTime, "CR");
+                    CurrentHUD.PlayerCorrosionBar.UpdateValueInstantly(player.Status.CorrosionTimeLeft);
                 }
 
                 if (CurrentHUD.PlayerBlindnessBar != null)
                 {
                     CurrentHUD.PlayerBlindnessBar.InitializeStatic(player.Status.MaxBlindnesslevel, "BL");
+                    CurrentHUD.PlayerBlindnessBar.UpdateValueInstantly(player.Status.CurrentBlindnesslevel);
                 }
             }
         }

@@ -34,6 +34,11 @@ public class GameMenu : UITabMenu
         {
             SelectedTab++;
         }
+
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            GameManager.Instance.UI.UnloadGameMenu();
+        }
     }
 
     private void OnDisable()
