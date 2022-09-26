@@ -58,35 +58,41 @@ public class GameOverMenu : MultiButtonsMenu
 
     private void Start()
     {
-        PlayAgainButton.onClick.AddListener(
-            delegate
-            {
-                if (UIManager.Instance == null)
+        if (PlayAgainButton != null)
+        {
+            PlayAgainButton.onClick.AddListener(
+                delegate
                 {
-                    return;
-                }
-                
-                UIManager.Instance.ClearCanvas();
+                    if (UIManager.Instance == null)
+                    {
+                        return;
+                    }
 
-                foreach (Transform canvasChildTransform in UIManager.Instance.CurrentCanvas.transform)
+                    UIManager.Instance.ClearCanvas();
+
+                    foreach (Transform canvasChildTransform in UIManager.Instance.CurrentCanvas.transform)
+                    {
+                        Destroy(canvasChildTransform.gameObject);
+                    }
+
+                    GameManager.Instance.StartCoroutine(GameManager.Instance.LoadScene("DemoInsects"));
+                }
+            );
+        }
+
+        if (QuitButton != null)
+        {
+            QuitButton.onClick.AddListener(
+                delegate
                 {
-                    Destroy(canvasChildTransform.gameObject);
+                    #if UNITY_EDITOR
+                    UnityEditor.EditorApplication.isPlaying = false;
+                    #else
+                    Application.Quit();
+                    #endif
                 }
-
-                GameManager.Instance.StartCoroutine(GameManager.Instance.LoadScene("DemoInsects"));
-            }
-        );
-
-        QuitButton.onClick.AddListener(
-            delegate
-            {
-                #if UNITY_EDITOR
-                UnityEditor.EditorApplication.isPlaying = false;
-                #else
-                Application.Quit();
-                #endif
-            }
-        );
+            );
+        }
 
         SelectedButtonIndex = 1;
     }

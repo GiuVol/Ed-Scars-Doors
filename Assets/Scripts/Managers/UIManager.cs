@@ -147,15 +147,23 @@ public class UIManager : MonoBehaviour
 
         ClearCanvas();
 
-        MainMenu = Instantiate(Resources.Load<MainMenu>(MainMenuResourcesPath), CurrentCanvas.transform);
+        MainMenu mainMenuResource = Resources.Load<MainMenu>(MainMenuResourcesPath);
 
-        MainMenu.PlayDemoButton.onClick.AddListener(
-            delegate {
-                Destroy(MainMenu.gameObject);
-                MainMenu = null;
-                StartCoroutine(GameManager.Instance.LoadScene("DemoInsects"));
-            }
-            );
+        if (mainMenuResource != null)
+        {
+            MainMenu = Instantiate(mainMenuResource, CurrentCanvas.transform);
+        }
+
+        if (MainMenu != null && MainMenu.PlayDemoButton != null)
+        {
+            MainMenu.PlayDemoButton.onClick.AddListener(
+                delegate {
+                    Destroy(MainMenu.gameObject);
+                    MainMenu = null;
+                    StartCoroutine(GameManager.Instance.LoadScene("DemoInsects"));
+                }
+                );
+        }
     }
 
     /// <summary>
