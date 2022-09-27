@@ -126,7 +126,7 @@ NavMeshSettings:
 --- !u!224 &267156586 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1203340745151996996, guid: 9aea1f42a3d6f8846aeccd9041f84d27, type: 3}
-  m_PrefabInstance: {fileID: 1203340745065732142}
+  m_PrefabInstance: {fileID: 7930451497611371843}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &942739899
 PrefabInstance:
@@ -380,7 +380,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ca67b773409fb24883a3816cfcee93f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1001 &1203340745065732142
+--- !u!1001 &7930451497611371843
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -474,10 +474,6 @@ PrefabInstance:
     - target: {fileID: 1203340745151996999, guid: 9aea1f42a3d6f8846aeccd9041f84d27, type: 3}
       propertyPath: m_Name
       value: ControlsMenu
-      objectReference: {fileID: 0}
-    - target: {fileID: 1203340745151996999, guid: 9aea1f42a3d6f8846aeccd9041f84d27, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9aea1f42a3d6f8846aeccd9041f84d27, type: 3}
