@@ -8650,7 +8650,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8795391578495541522
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8687,11 +8687,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _menuButtons:
-  - {fileID: 4072101589026819644}
-  - {fileID: 2078684486}
-  - {fileID: 1760628728}
-  _enabledTextColor: {r: 1, g: 0, b: 0, a: 1}
-  _disabledTextColor: {r: 1, g: 1, b: 1, a: 1}
+  - _button: {fileID: 4072101589026819644}
+    _disabled: 0
+  - _button: {fileID: 2078684486}
+    _disabled: 0
+  - _button: {fileID: 1760628728}
+    _disabled: 0
+  _selectedEnabledTextColor: {r: 1, g: 0, b: 0, a: 1}
+  _unselectedEnabledTextColor: {r: 1, g: 1, b: 1, a: 1}
+  _selectedDisabledTextColor: {r: 0.49019608, g: 0, b: 0, a: 1}
+  _unselectedDisabledTextColor: {r: 0.5176471, g: 0.5294118, b: 0.3764706, a: 1}
   _controlsButton: {fileID: 4072101589026819644}
   _restartDemoButton: {fileID: 2078684486}
   _quitButton: {fileID: 1760628728}

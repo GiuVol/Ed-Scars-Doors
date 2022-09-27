@@ -7,16 +7,52 @@ public abstract class MultiButtonsMenu : MonoBehaviour
 {
     #region Buttons Logic
 
-    [SerializeField]
-    private List<Button> _menuButtons;
+    [System.Serializable]
+    public class ButtonInfo
+    {
+        public static implicit operator ButtonInfo(Button b) => new ButtonInfo(b, !b.enabled);
 
-    private List<Button> MenuButtons
+        public static implicit operator Button(ButtonInfo bi) => (bi != null) ? bi._button : null;
+
+        [SerializeField]
+        private Button _button;
+
+        public Button Button
+        {
+            get
+            {
+                return _button;
+            }
+        }
+
+        [SerializeField]
+        private bool _disabled;
+
+        public bool Disabled
+        {
+            get
+            {
+                return _disabled;
+            }
+        }
+
+        public ButtonInfo(Button button, bool enabled)
+        {
+            _button = button;
+            _disabled = enabled;
+        }
+    }
+
+    [SerializeField]
+    private List<ButtonInfo> _menuButtons;
+
+    private List<ButtonInfo> MenuButtons
     {
         get
         {
             if (_menuButtons == null)
             {
-                _menuButtons = new List<Button>();
+                _menuButtons = new List<ButtonInfo>();
             }
 
             return _menuButtons;
@@ -55,16 +91,24 @@ public abstract class MultiButtonsMenu : MonoBehaviour
 
             for (int i = 1; i <= MenuButtons.Count; i++)
             {
-                Button currentButton = _menuButtons[i - 1];
+                ButtonInfo currentButtonInfo = _menuButtons[i - 1];
 
-                if (currentButton == null)
+                if (currentButtonInfo == null || currentButtonInfo.Button == null)
                 {
                     continue;
                 }
 
-                TextMeshProUGUI currentButtonText = currentButton.GetComponentInChildren<TextMeshProUGUI>();
+                TextMeshProUGUI currentButtonText = currentButtonInfo.Button.GetComponentInChildren<TextMeshProUGUI>();
 
-                Color selectedColor = (_selectedButtonIndex == i) ? _enabledTextColor : _disabledTextColor;
+                Color selectedColor;
+
+                if (_selectedButtonIndex == i)
+                {
+                    selectedColor = (currentButtonInfo.Disabled) ? _selectedDisabledTextColor : _selectedEnabledTextColor;
+                } else
+                {
+                    selectedColor = (currentButtonInfo.Disabled) ? _unselectedDisabledTextColor : _unselectedEnabledTextColor;
+                }
 
                 if (currentButtonText != null)
                 {
@@ -75,11 +119,17 @@ public abstract class MultiButtonsMenu : MonoBehaviour
     }
 
     [SerializeField]
-    private Color _enabledTextColor;
+    private Color _selectedEnabledTextColor;
 
     [SerializeField]
-    private Color _disabledTextColor;
+    private Color _unselectedEnabledTextColor;
 
+    [SerializeField]
+    private Color _selectedDisabledTextColor;
+
+    [SerializeField]
+    private Color _unselectedDisabledTextColor;
+    
     public int NumberOfButtons
     {
         get
@@ -88,7 +138,7 @@ public abstract class MultiButtonsMenu : MonoBehaviour
         }
     }
 
-    public Button SelectedButton
+    public ButtonInfo SelectedButtonInfo
     {
         get
         {
@@ -98,6 +148,14 @@ public abstract class MultiButtonsMenu : MonoBehaviour
             }
 
             return MenuButtons[SelectedButtonIndex - 1];
+        }
+    }
+    
+    public Button SelectedButton
+    {
+        get
+        {
+            return SelectedButtonInfo.Button;
         }
     }
 

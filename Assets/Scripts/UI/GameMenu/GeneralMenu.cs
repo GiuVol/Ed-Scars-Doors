@@ -114,8 +114,14 @@ public class GeneralMenu : MultiButtonsMenu, ITabContent
             {
                 if (SelectedButton != null)
                 {
-                    AudioClipHandler.PlayAudio("Audio/PressButton", 0, transform.position);
-                    SelectedButton.onClick.Invoke();
+                    if (SelectedButtonInfo.Disabled)
+                    {
+                        AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
+                    } else
+                    {
+                        AudioClipHandler.PlayAudio("Audio/PressButton", 0, transform.position);
+                        SelectedButton.onClick.Invoke();
+                    }
                 }
             }
         }
