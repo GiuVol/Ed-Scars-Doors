@@ -85,17 +85,27 @@ public class GeneralMenu : MultiButtonsMenu, ITabContent
         {
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
-                if (SelectedButton != null)
+                if (SelectedButtonIndex > 1)
                 {
+                    AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
                     SelectedButtonIndex--;
+                }
+                else
+                {
+                    AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
                 }
             }
 
             if (Input.GetKeyDown(KeyCode.DownArrow))
             {
-                if (SelectedButton != null)
+                if (SelectedButtonIndex < NumberOfButtons)
                 {
+                    AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
                     SelectedButtonIndex++;
+                }
+                else
+                {
+                    AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
                 }
             }
 
@@ -103,6 +113,7 @@ public class GeneralMenu : MultiButtonsMenu, ITabContent
             {
                 if (SelectedButton != null)
                 {
+                    AudioClipHandler.PlayAudio("Audio/PressButton", 0, transform.position);
                     SelectedButton.onClick.Invoke();
                 }
             }

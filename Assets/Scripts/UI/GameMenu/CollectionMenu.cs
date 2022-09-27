@@ -60,14 +60,30 @@ public class CollectionMenu : UIListMenu, ITabContent
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            SelectedElementIndex++;
-        }
-
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            SelectedElementIndex--;
+            if (SelectedElementIndex > 1)
+            {
+                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
+                SelectedElementIndex--;
+            }
+            else
+            {
+                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            if (SelectedElementIndex < NumberOfElements)
+            {
+                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
+                SelectedElementIndex++;
+            }
+            else
+            {
+                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
+            }
         }
     }
 }

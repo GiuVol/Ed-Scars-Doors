@@ -62,7 +62,7 @@ public abstract class UIOperationSelector : MonoBehaviour
         }
     }
 
-    private int NumberOfOperations
+    protected int NumberOfOperations
     {
         get
         {

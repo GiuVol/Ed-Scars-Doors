@@ -101,11 +101,13 @@ public class ControlsMenu : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
+            AudioClipHandler.PlayAudio("Audio/SelectTab", 0, transform.position);
             SelectedSheetIndex--;
         }
 
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
+            AudioClipHandler.PlayAudio("Audio/SelectTab", 0, transform.position);
             SelectedSheetIndex++;
         }
 

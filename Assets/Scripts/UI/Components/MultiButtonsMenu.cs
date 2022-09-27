@@ -80,6 +80,14 @@ public abstract class MultiButtonsMenu : MonoBehaviour
     [SerializeField]
     private Color _disabledTextColor;
 
+    public int NumberOfButtons
+    {
+        get
+        {
+            return MenuButtons.Count;
+        }
+    }
+
     public Button SelectedButton
     {
         get

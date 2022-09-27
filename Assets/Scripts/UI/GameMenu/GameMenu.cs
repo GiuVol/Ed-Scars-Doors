@@ -27,12 +27,20 @@ public class GameMenu : UITabMenu
 
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            SelectedTab--;
+            if (SelectedTab > 1)
+            {
+                AudioClipHandler.PlayAudio("Audio/SelectTab", 0, transform.position);
+                SelectedTab--;
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            SelectedTab++;
+            if (SelectedTab < NumberOfTabs)
+            {
+                AudioClipHandler.PlayAudio("Audio/SelectTab", 0, transform.position);
+                SelectedTab++;
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.M))
