@@ -34,6 +34,7 @@ public class GeneralMenu : MultiButtonsMenu, ITabContent
 
                     if (UIManager.Instance.CurrentCanvas != null && controlsMenuResource != null)
                     {
+                        AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
                         ControlsMenu controlsMenu = Instantiate(controlsMenuResource, UIManager.Instance.CurrentCanvas.transform);
                     }
                 }

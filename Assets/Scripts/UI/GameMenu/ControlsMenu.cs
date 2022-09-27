@@ -113,6 +113,7 @@ public class ControlsMenu : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.M))
         {
+            AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
             Destroy(gameObject);
         }
     }

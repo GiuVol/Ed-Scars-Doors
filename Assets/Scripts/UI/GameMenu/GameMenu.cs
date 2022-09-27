@@ -45,6 +45,7 @@ public class GameMenu : UITabMenu
 
         if (Input.GetKeyDown(KeyCode.M))
         {
+            AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
             GameManager.Instance.UI.UnloadGameMenu();
         }
     }

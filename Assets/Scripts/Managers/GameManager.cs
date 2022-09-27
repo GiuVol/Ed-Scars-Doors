@@ -124,11 +124,13 @@ public class GameManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.H))
             {
+                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
                 UI.SwitchHUD();
             }
 
             if (!UI.GameMenuIsLoaded && Input.GetKeyDown(KeyCode.M))
             {
+                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
                 UI.LoadGameMenu();
             }
         }

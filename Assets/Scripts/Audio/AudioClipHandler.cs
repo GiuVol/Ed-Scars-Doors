@@ -21,14 +21,16 @@ public class AudioClipHandler : MonoBehaviour
     private Coroutine _handlingLifetimeCoroutine;
 
     public static AudioClipHandler PlayAudio(string clipResourcePath, float spatialBlend = 0, 
-                                             NullableVector3 position = null, bool loop = false, float volume = 1)
+                                             NullableVector3 position = null, bool loop = false, 
+                                             float volume = 1, bool destroyOnLoad = true)
     {
         AudioClip clipResource = Resources.Load<AudioClip>(clipResourcePath);
-        return PlayAudio(clipResource, spatialBlend, position, loop, volume);
+        return PlayAudio(clipResource, spatialBlend, position, loop, volume, destroyOnLoad);
     }
     
     public static AudioClipHandler PlayAudio(AudioClip clip, float spatialBlend = 0, 
-                                             NullableVector3 position = null, bool loop = false, float volume = 1)
+                                             NullableVector3 position = null, bool loop = false, 
+                                             float volume = 1, bool destroyOnLoad = true)
     {
         if (clip == null)
         {
@@ -42,18 +44,20 @@ public class AudioClipHandler : MonoBehaviour
             audioClipHandler.transform.position = (Vector3) position;
         }
 
-        audioClipHandler.StartClip(clip, spatialBlend, loop, volume);
+        audioClipHandler.StartClip(clip, spatialBlend, loop, volume, destroyOnLoad);
 
         return audioClipHandler;
     }
 
-    private void StartClip(string clipResourcePath, float spatialBlend = 0, bool loop = false, float volume = 1)
+    private void StartClip(string clipResourcePath, float spatialBlend = 0, 
+                           bool loop = false, float volume = 1, bool destroyOnLoad = true)
     {
         AudioClip clipResource = Resources.Load<AudioClip>(clipResourcePath);
-        StartClip(clipResource, spatialBlend, loop, volume);
+        StartClip(clipResource, spatialBlend, loop, volume, destroyOnLoad);
     }
 
-    private void StartClip(AudioClip clip, float spatialBlend = 0, bool loop = false, float volume = 1)
+    private void StartClip(AudioClip clip, float spatialBlend = 0, 
+                           bool loop = false, float volume = 1, bool destroyOnLoad = true)
     {
         if (clip == null)
         {
@@ -67,6 +71,11 @@ public class AudioClipHandler : MonoBehaviour
         Source.volume = Mathf.Clamp01(volume);
         Source.Play();
         _handlingLifetimeCoroutine = StartCoroutine(HandleLifetime());
+        
+        if (!destroyOnLoad)
+        {
+            DontDestroyOnLoad(gameObject);
+        }
     }
 
     public void StopClip()

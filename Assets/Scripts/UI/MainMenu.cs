@@ -51,7 +51,7 @@ public class MainMenu : MultiButtonsMenu
         {
             if (SelectedButton != null)
             {
-                AudioClipHandler.PlayAudio("Audio/PressButton", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/PressButton", 0, transform.position, false, 1, false);
                 SelectedButton.onClick.Invoke();
             }
         }
