@@ -81,6 +81,14 @@ public class ControlsMenu : MonoBehaviour
             Time.timeScale = 0;
         }
 
+        if (GameManager.Instance != null)
+        {
+            if (GameManager.Instance.Player != null)
+            {
+                GameManager.Instance.Player.HasControl = false;
+            }
+        }
+        
         if (_controlsImageArea != null)
         {
             _controlsImageArea.color = new Color(1, 1, 1, 0);

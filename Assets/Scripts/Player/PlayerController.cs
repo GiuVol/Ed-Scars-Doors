@@ -715,6 +715,8 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         Vector2 jumpDirection = Vector2.up;
         MovementController.GiveImpulse(jumpDirection, CurrentJumpForce);
 
+        AudioClipHandler.PlayAudio("Audio/CartoonJump", 0, transform.position);
+
         if (!isGrounded)
         {
             CurrentNumberOfJumpsInTheAir++;
@@ -799,6 +801,8 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
         Projectile currentProjectileAsset = CurrentProjectile;
 
+        AudioClipHandler chargingClip = null;
+
         if (currentProjectileAsset.IsChargeable)
         {
             while (InputHandler.Shoot() || Time.timeScale == 0)
@@ -809,11 +813,22 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
                 }
 
                 yield return null;
+
+                if (chargingClip == null)
+                {
+                    chargingClip = AudioClipHandler.PlayAudio("Audio/Charging", 0, transform.position, true);
+                }
             }
+        }
+
+        if (chargingClip != null)
+        {
+            chargingClip.StopClip();
         }
 
         Projectile projectile = 
             Instantiate(currentProjectileAsset, ProjectilesSpawnPoint.position, transform.rotation);
+        AudioClipHandler.PlayAudio("Audio/Fireball", 0, transform.position);
 
         projectile.AttackerAttack = Stats.Attack.CurrentValue;
 

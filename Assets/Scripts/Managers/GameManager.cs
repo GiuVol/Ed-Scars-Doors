@@ -66,6 +66,21 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public UIManager UI { get; private set; }
 
+    private AudioManager _audioManager;
+
+    public AudioManager AudioManager
+    {
+        get
+        {
+            if (_audioManager == null)
+            {
+                _audioManager = gameObject.AddComponent<AudioManager>();
+            }
+
+            return _audioManager;
+        }
+    }
+
     /// <summary>
     /// Property that stores the current Pathfinder.
     /// </summary>
@@ -97,8 +112,9 @@ public class GameManager : MonoBehaviour
         UI = gameObject.AddComponent<UIManager>();
         UI.Setup();
         UI.LoadMainMenu();
+        AudioManager.PlayOst("Audio/Ost/MainMenuOst");
 
-        MainCamera = new GameObject("Camera", typeof(Camera)).GetComponent<Camera>();
+        MainCamera = new GameObject("Camera", typeof(Camera), typeof(AudioListener)).GetComponent<Camera>();
         MainCamera.backgroundColor = Color.black;
     }
 
@@ -150,6 +166,8 @@ public class GameManager : MonoBehaviour
         }
 
         UI.UnloadSceneLoadingInfo();
+
+        AudioManager.PlayOst("Audio/Ost/DemoInsectsOst");
 
         Vector3 playerPosition = Vector3.zero;
         Vector3 cameraPosition = Vector3.zero;

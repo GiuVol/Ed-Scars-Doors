@@ -10,6 +10,11 @@ public class NullableVector3
     public static implicit operator NullableVector3(Vector3 v) => new NullableVector3(v);
 
     /// <summary>
+    /// The explicit coercion operator, to assign NullableVector3 to Vector3.
+    /// </summary>
+    public static implicit operator Vector3(NullableVector3 nv) => (nv != null) ? new Vector3(nv.x, nv.y, nv.z) : Vector3.zero;
+
+    /// <summary>
     /// The x component of the vector.
     /// </summary>
     private float _x;
