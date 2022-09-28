@@ -19,19 +19,33 @@ public class GameMenuOperationSelector : UIOperationSelector
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            SelectOperation();
-        }
-
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            SelectedOperationIndex--;
+            if (SelectedOperationIndex > 1)
+            {
+                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
+                SelectedOperationIndex--;
+            } else
+            {
+                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            SelectedOperationIndex++;
+            if (SelectedOperationIndex < NumberOfOperations)
+            {
+                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
+                SelectedOperationIndex++;
+            } else
+            {
+                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            SelectOperation();
         }
     }
 

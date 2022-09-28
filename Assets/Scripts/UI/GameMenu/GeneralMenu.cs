@@ -34,6 +34,7 @@ public class GeneralMenu : MultiButtonsMenu, ITabContent
 
                     if (UIManager.Instance.CurrentCanvas != null && controlsMenuResource != null)
                     {
+                        AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
                         ControlsMenu controlsMenu = Instantiate(controlsMenuResource, UIManager.Instance.CurrentCanvas.transform);
                     }
                 }
@@ -85,17 +86,27 @@ public class GeneralMenu : MultiButtonsMenu, ITabContent
         {
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
-                if (SelectedButton != null)
+                if (SelectedButtonIndex > 1)
                 {
+                    AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
                     SelectedButtonIndex--;
+                }
+                else
+                {
+                    AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
                 }
             }
 
             if (Input.GetKeyDown(KeyCode.DownArrow))
             {
-                if (SelectedButton != null)
+                if (SelectedButtonIndex < NumberOfButtons)
                 {
+                    AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
                     SelectedButtonIndex++;
+                }
+                else
+                {
+                    AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
                 }
             }
 
@@ -103,7 +114,14 @@ public class GeneralMenu : MultiButtonsMenu, ITabContent
             {
                 if (SelectedButton != null)
                 {
-                    SelectedButton.onClick.Invoke();
+                    if (SelectedButtonInfo.Disabled)
+                    {
+                        AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
+                    } else
+                    {
+                        AudioClipHandler.PlayAudio("Audio/PressButton", 0, transform.position);
+                        SelectedButton.onClick.Invoke();
+                    }
                 }
             }
         }

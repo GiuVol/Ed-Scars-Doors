@@ -365,15 +365,29 @@ public class UIManager : MonoBehaviour
             return;
         }
 
-        Destroy(MainMenu);
-        Destroy(GameMenu);
-        Destroy(CurrentHUD);
-        Destroy(SceneLoadingInfo);
+        if (MainMenu != null)
+        {
+            Destroy(MainMenu.gameObject);
+            MainMenu = null;
+        }
 
-        MainMenu = null;
-        GameMenu = null;
-        CurrentHUD = null;
-        SceneLoadingInfo = null;
+        if (GameMenu != null)
+        {
+            Destroy(GameMenu.gameObject);
+            GameMenu = null;
+        }
+
+        if (CurrentHUD != null)
+        {
+            Destroy(CurrentHUD.gameObject);
+            CurrentHUD = null;
+        }
+
+        if (SceneLoadingInfo != null)
+        {
+            Destroy(SceneLoadingInfo.gameObject);
+            SceneLoadingInfo = null;
+        }
     }
 
     private void Update()

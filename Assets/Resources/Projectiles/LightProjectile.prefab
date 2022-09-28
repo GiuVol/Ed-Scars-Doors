@@ -119,3 +119,4 @@ MonoBehaviour:
   DistanceToLast: 100
   AdditionalEffects: []
   MaxChargeTime: 1
+  _impactSound: {fileID: 8300000, guid: 0080d6915062ce34d9e15a18834d80dc, type: 3}

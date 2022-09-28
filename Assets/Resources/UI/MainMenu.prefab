@@ -1082,8 +1082,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _menuButtons:
-  - {fileID: 2287533459731712942}
-  - {fileID: 1902664721}
-  _enabledTextColor: {r: 1, g: 0, b: 0, a: 1}
-  _disabledTextColor: {r: 1, g: 1, b: 1, a: 1}
+  - _button: {fileID: 2287533459731712942}
+    _disabled: 0
+  - _button: {fileID: 1902664721}
+    _disabled: 1
+  _selectedEnabledTextColor: {r: 1, g: 0, b: 0, a: 1}
+  _unselectedEnabledTextColor: {r: 1, g: 1, b: 1, a: 1}
+  _selectedDisabledTextColor: {r: 0.49019608, g: 0, b: 0, a: 1}
+  _unselectedDisabledTextColor: {r: 0.5176471, g: 0.5294118, b: 0.3764706, a: 1}
   _playDemoButton: {fileID: 2287533459731712942}

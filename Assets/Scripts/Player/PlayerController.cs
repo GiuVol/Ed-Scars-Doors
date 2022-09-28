@@ -580,8 +580,12 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         Status = gameObject.GetComponent<StatusComponent>();
 
         Health.Setup(100, Die, 
-                     delegate { ChangeColorTemporarily(Color.green, .25f); }, 
-                     delegate { ChangeColorTemporarily(Color.red, .25f); });
+                     delegate {
+                         ChangeColorTemporarily(Color.green, .25f); 
+                     }, 
+                     delegate { 
+                         ChangeColorTemporarily(Color.red, .25f); 
+                     });
         Stats.Setup(100, 50, 500, 100, 50, 500);
         Status.Setup(100, 0, 1, 20, .1f, 10, delegate { StartBlindness(); }, delegate { StartCorrosion(); });
 
@@ -715,6 +719,8 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         Vector2 jumpDirection = Vector2.up;
         MovementController.GiveImpulse(jumpDirection, CurrentJumpForce);
 
+        AudioClipHandler.PlayAudio("Audio/CartoonJump", 0, transform.position);
+
         if (!isGrounded)
         {
             CurrentNumberOfJumpsInTheAir++;
@@ -799,6 +805,8 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
         Projectile currentProjectileAsset = CurrentProjectile;
 
+        AudioClipHandler chargingClip = null;
+
         if (currentProjectileAsset.IsChargeable)
         {
             while (InputHandler.Shoot() || Time.timeScale == 0)
@@ -809,11 +817,22 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
                 }
 
                 yield return null;
+
+                if (chargingClip == null)
+                {
+                    chargingClip = AudioClipHandler.PlayAudio("Audio/Charging", 0, transform.position, true);
+                }
             }
+        }
+
+        if (chargingClip != null)
+        {
+            chargingClip.StopClip();
         }
 
         Projectile projectile = 
             Instantiate(currentProjectileAsset, ProjectilesSpawnPoint.position, transform.rotation);
+        AudioClipHandler.PlayAudio("Audio/Fireball", 0, transform.position);
 
         projectile.AttackerAttack = Stats.Attack.CurrentValue;
 
@@ -858,6 +877,8 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             yield break;
         }
 
+        AudioClipHandler.PlayAudio("Audio/Hide", 0, transform.position);
+
         float currentTime = 0;
         float timeItTakesToFade = .1f;
         float fadeConst = Renderers[0].color.a;
@@ -899,6 +920,8 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             yield break;
         }
 
+        AudioClipHandler.PlayAudio("Audio/Hide", 0, transform.position);
+        
         float currentTime = 0;
         float timeItTakesToVisible = .1f;
         float fadeConst = Renderers[0].color.a;
@@ -1183,10 +1206,12 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
                 {
                     if (itemData is UsableItem)
                     {
+                        AudioClipHandler.PlayAudio("Audio/CollectedItem", 0, transform.position);
                         Inventory.AddItem((UsableItem) itemData, 1);
                     }
                     else if (itemData is CollectableItem)
                     {
+                        AudioClipHandler.PlayAudio("Audio/CollectedItem2", 0, transform.position);
                         Collection.AddItem((CollectableItem) itemData, 1);
                     }
                 }

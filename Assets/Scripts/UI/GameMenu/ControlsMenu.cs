@@ -81,6 +81,14 @@ public class ControlsMenu : MonoBehaviour
             Time.timeScale = 0;
         }
 
+        if (GameManager.Instance != null)
+        {
+            if (GameManager.Instance.Player != null)
+            {
+                GameManager.Instance.Player.HasControl = false;
+            }
+        }
+        
         if (_controlsImageArea != null)
         {
             _controlsImageArea.color = new Color(1, 1, 1, 0);
@@ -93,16 +101,19 @@ public class ControlsMenu : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
+            AudioClipHandler.PlayAudio("Audio/SelectTab", 0, transform.position);
             SelectedSheetIndex--;
         }
 
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
+            AudioClipHandler.PlayAudio("Audio/SelectTab", 0, transform.position);
             SelectedSheetIndex++;
         }
 
         if (Input.GetKeyDown(KeyCode.M))
         {
+            AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
             Destroy(gameObject);
         }
     }

@@ -443,10 +443,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _menuButtons:
-  - {fileID: 2912566567779278901}
-  - {fileID: 2912566567832728966}
-  _enabledTextColor: {r: 1, g: 0, b: 0, a: 1}
-  _disabledTextColor: {r: 1, g: 1, b: 1, a: 1}
+  - _button: {fileID: 2912566567779278901}
+    _disabled: 0
+  - _button: {fileID: 2912566567832728966}
+    _disabled: 0
+  _selectedEnabledTextColor: {r: 1, g: 0, b: 0, a: 1}
+  _unselectedEnabledTextColor: {r: 1, g: 1, b: 1, a: 1}
+  _selectedDisabledTextColor: {r: 0.49019608, g: 0, b: 0, a: 1}
+  _unselectedDisabledTextColor: {r: 0.5176471, g: 0.5294118, b: 0.3764706, a: 1}
   _gameOverText: {fileID: 2912566567446648810}
   _playAgainButton: {fileID: 2912566567779278901}
   _quitButton: {fileID: 2912566567832728966}

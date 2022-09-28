@@ -480,6 +480,17 @@ public abstract class UIListMenu : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// The number of elements metadata that has to be displayed.
+    /// </summary>
+    protected int NumberOfElements
+    {
+        get
+        {
+            return ElementsMetadata.Count;
+        }
+    }
+
     #region Shared Areas
 
     /// <summary>

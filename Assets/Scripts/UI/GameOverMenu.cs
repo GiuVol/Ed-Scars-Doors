@@ -94,6 +94,7 @@ public class GameOverMenu : MultiButtonsMenu
             );
         }
 
+        AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
         SelectedButtonIndex = 1;
     }
 
@@ -101,19 +102,42 @@ public class GameOverMenu : MultiButtonsMenu
     {
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            SelectedButtonIndex--;
+            if (SelectedButtonIndex > 1)
+            {
+                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
+                SelectedButtonIndex--;
+            }
+            else
+            {
+                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            SelectedButtonIndex++;
+            if (SelectedButtonIndex < NumberOfButtons)
+            {
+                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
+                SelectedButtonIndex++;
+            }
+            else
+            {
+                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.Return))
         {
             if (SelectedButton != null)
             {
-                SelectedButton.onClick.Invoke();
+                if (SelectedButtonInfo.Disabled)
+                {
+                    AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
+                } else
+                {
+                    AudioClipHandler.PlayAudio("Audio/PressButton", 0, transform.position, false, 1, false);
+                    SelectedButton.onClick.Invoke();
+                }
             }
         }
     }
