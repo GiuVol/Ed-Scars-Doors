@@ -149,8 +149,7 @@ public class GameManager : MonoBehaviour
             yield break;
         }
 
-        AsyncOperation sceneLoadingOperation = 
-            SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
+        AsyncOperation sceneLoadingOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
         float activationProgress;
 
         UI.LoadSceneLoadingInfo();
@@ -168,9 +167,6 @@ public class GameManager : MonoBehaviour
         }
 
         UI.UnloadSceneLoadingInfo();
-
-        AudioManager.PlayOst("Audio/Ost/AStrangeTale");
-        AudioManager.PlayAmbience("Audio/Ambience/ForestAmbience");
 
         Vector3 playerPosition = Vector3.zero;
         Vector3 cameraPosition = Vector3.zero;
