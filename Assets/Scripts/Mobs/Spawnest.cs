@@ -128,6 +128,8 @@ public class Spawnest : GenericMob
         }
     }
 
+    private Coroutine _spawningFlydiersCoroutine;
+
     protected new void Start()
     {
         base.Start();
@@ -193,7 +195,7 @@ public class Spawnest : GenericMob
 
             if (_canAttack && distanceFromPlayer < _attackRange)
             {
-                StartCoroutine(HandleAttack(_player));
+                _spawningFlydiersCoroutine = StartCoroutine(HandleAttack(_player));
             }
         }
     }
@@ -252,6 +254,8 @@ public class Spawnest : GenericMob
         newFlydier.RemainsOnPattern = _flydiersRemainOnPattern;
 
         SpawnedFlydiers.Add(newFlydier);
+
+        _spawningFlydiersCoroutine = null;
     }
 
     /// <summary>
@@ -270,6 +274,11 @@ public class Spawnest : GenericMob
 
     protected override IEnumerator Die()
     {
+        if (_spawningFlydiersCoroutine != null)
+        {
+            StopCoroutine(_spawningFlydiersCoroutine);
+        }
+
         _attachedRigidbody.velocity = Vector3.zero;
 
         AnimController.SetTrigger(DieParameterName);

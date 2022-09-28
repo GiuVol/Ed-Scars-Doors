@@ -1,24 +1,37 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
-    private AudioSource _source;
+    private AudioSource _ostSource;
 
-    public AudioSource Source
+    public AudioSource OstSource
     {
         get
         {
-            if (_source == null)
+            if (_ostSource == null)
             {
-                _source = gameObject.AddComponent<AudioSource>();
+                _ostSource = gameObject.AddComponent<AudioSource>();
             }
 
-            return _source;
+            return _ostSource;
         }
     }
 
+    private AudioSource _ambienceSource;
+
+    public AudioSource AmbienceSource
+    {
+        get
+        {
+            if (_ambienceSource == null)
+            {
+                _ambienceSource = gameObject.AddComponent<AudioSource>();
+            }
+
+            return _ambienceSource;
+        }
+    }
+    
     public void PlayOst(string clipResourcePath)
     {
         AudioClip clipResource = Resources.Load<AudioClip>(clipResourcePath);
@@ -32,13 +45,46 @@ public class AudioManager : MonoBehaviour
             return;
         }
 
-        if (!Source.isPlaying)
+        StopOst();
+
+        OstSource.clip = clip;
+        OstSource.loop = true;
+        OstSource.Play();
+    }
+
+    public void StopOst()
+    {
+        if (!OstSource.isPlaying)
         {
-            Source.Stop();
+            OstSource.Stop();
+        }
+    }
+
+    public void PlayAmbience(string clipResourcePath)
+    {
+        AudioClip clipResource = Resources.Load<AudioClip>(clipResourcePath);
+        PlayAmbience(clipResource);
+    }
+    
+    public void PlayAmbience(AudioClip clip)
+    {
+        if (clip == null)
+        {
+            return;
         }
 
-        Source.clip = clip;
-        Source.loop = true;
-        Source.Play();
+        StopAmbience();
+
+        AmbienceSource.clip = clip;
+        AmbienceSource.loop = true;
+        AmbienceSource.Play();
+    }
+
+    public void StopAmbience()
+    {
+        if (!AmbienceSource.isPlaying)
+        {
+            AmbienceSource.Stop();
+        }
     }
 }

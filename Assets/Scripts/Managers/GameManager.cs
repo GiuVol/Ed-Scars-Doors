@@ -170,6 +170,7 @@ public class GameManager : MonoBehaviour
         UI.UnloadSceneLoadingInfo();
 
         AudioManager.PlayOst("Audio/Ost/DemoInsectsOst");
+        AudioManager.PlayAmbience("Audio/Ambience/ForestAmbience");
 
         Vector3 playerPosition = Vector3.zero;
         Vector3 cameraPosition = Vector3.zero;
