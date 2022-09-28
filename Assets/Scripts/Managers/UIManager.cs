@@ -301,7 +301,6 @@ public class UIManager : MonoBehaviour
         }
         
         Destroy(CurrentHUD.gameObject);
-        Debug.Log("Destroyed");
         CurrentHUD = null;
 
         _wantsHudLoaded = false;

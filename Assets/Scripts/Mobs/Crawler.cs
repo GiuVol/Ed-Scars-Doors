@@ -35,11 +35,20 @@ public class Crawler : GenericMob
     [SerializeField]
     private TriggerCaster _headCaster;
 
+    private AudioClipHandler _crawlAudioClip;
+
+    private float _desiredCrawlVolume;
+    private float _crawlVolume;
+    private float _crawlVolumeRefVelocity;
+    
     protected new void Start()
     {
         base.Start();
 
         AnimController = GetComponentInChildren<Animator>();
+
+        _crawlAudioClip = AudioClipHandler.PlayAudio("Audio/Crawl", .5f, transform.position, true, 1);
+        _crawlAudioClip.transform.parent = transform;
     }
 
     private void FixedUpdate()
@@ -57,6 +66,17 @@ public class Crawler : GenericMob
         AnimController.SetFloat(SpeedParameterName, normalizedSpeed);
 
         AnimController.SetBool(BlindedParameterName, Status.IsBlinded);
+
+        _desiredCrawlVolume = (normalizedSpeed < .2f) ? 0 : 1;
+        _crawlVolume = Mathf.SmoothDamp(_crawlVolume, _desiredCrawlVolume, ref _crawlVolumeRefVelocity, .1f);
+
+        if (_crawlAudioClip != null)
+        {
+            if (_crawlAudioClip.GetComponent<AudioSource>() != null)
+            {
+                _crawlAudioClip.GetComponent<AudioSource>().volume = _crawlVolume;
+            }
+        }
 
         if (_isAttacking || _isDying || Status.IsBlinded)
         {
@@ -191,9 +211,14 @@ public class Crawler : GenericMob
 
         yield return new WaitForSeconds(animationDuration * AttackDamagingPhasePercentage);
 
+        AudioClipHandler.PlayAudio("Audio/Slash", 0, transform.position);
+
         if (_headCaster != null)
         {
-            _headCaster.TriggerFunction = collider => { InflictDamage(collider, 20); };
+            _headCaster.TriggerFunction = collider => {
+                AudioClipHandler.PlayAudio("Audio/Damage", 0, transform.position);
+                InflictDamage(collider, 20); 
+            };
         }
 
         foreach (Collider2D collider in _headCaster.GetComponents<Collider2D>())
@@ -241,6 +266,13 @@ public class Crawler : GenericMob
     {
         AnimController.SetTrigger(DieParameterName);
 
+        if (_crawlAudioClip != null)
+        {
+            _crawlAudioClip.StopClip();
+        }
+
+        AudioClipHandler.PlayAudio("Audio/DyingCrawler", 0, transform.position);
+        
         yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName(DieStateName));
 
         AnimatorStateInfo info = AnimController.GetCurrentAnimatorStateInfo(0);

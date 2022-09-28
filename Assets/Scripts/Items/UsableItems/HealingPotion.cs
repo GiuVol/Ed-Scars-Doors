@@ -26,6 +26,8 @@ public class HealingPotion : UsableItem
             return;
         }
 
+        int oldHealthValue = player.Health.CurrentHealth;
+
         if (UsePercentageIncrement)
         {
             player.Health.IncreasePercentage(PercentageIncrement);
@@ -33,6 +35,11 @@ public class HealingPotion : UsableItem
         else
         {
             player.Health.Increase(IntegerIncrement);
+        }
+
+        if (player.Health.CurrentHealth != oldHealthValue)
+        {
+            AudioClipHandler.PlayAudio("Audio/Healing", 0, player.transform.position);
         }
     }
 }

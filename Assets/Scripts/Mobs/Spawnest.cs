@@ -218,6 +218,13 @@ public class Spawnest : GenericMob
 
         #endregion
 
+        AudioClipHandler _eggGrowingClip = AudioClipHandler.PlayAudio("Audio/SpawnestEggGrowing", .5f, transform.position, true);
+
+        if (_eggGrowingClip != null)
+        {
+            _eggGrowingClip.transform.parent = transform;
+        }
+
         float currentScaleFactor = 0;
 
         while (currentScaleFactor < EggMaxScale)
@@ -226,6 +233,13 @@ public class Spawnest : GenericMob
             ChangeEggScale(Mathf.Clamp(currentScaleFactor, 0, EggMaxScale));
 
             yield return null;
+        }
+
+        AudioClipHandler.PlayAudio("Audio/SpawnestEggHatching", 0, transform.position, false, .6f);
+        
+        if (_eggGrowingClip != null)
+        {
+            _eggGrowingClip.StopClip();
         }
 
         ChangeEggScale(0);
@@ -259,6 +273,8 @@ public class Spawnest : GenericMob
         _attachedRigidbody.velocity = Vector3.zero;
 
         AnimController.SetTrigger(DieParameterName);
+
+        AudioClipHandler.PlayAudio("Audio/SpawnestDying", .5f, transform.position);
 
         yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName(DieStateName));
 

@@ -93,7 +93,9 @@ public class Flydier : GenericMob
     /// Stores a randomly generated value that gives variability to the target position of the flydier.
     /// </summary>
     private float _xPositionOffset;
-    
+
+    private AudioClipHandler _flyAudioClip;
+
     #region Start and Setup
 
     protected new void Start()
@@ -105,6 +107,9 @@ public class Flydier : GenericMob
         _target = new GameObject("FlydierTarget").transform;
 
         InvokeRepeating("UpdateXOffset", 0, 5);
+
+        _flyAudioClip = AudioClipHandler.PlayAudio("Audio/FlyNoise", .5f, transform.position, true, 1);
+        _flyAudioClip.transform.parent = transform;
     }
 
     protected override void SetupLayers()
@@ -357,6 +362,8 @@ public class Flydier : GenericMob
         Projectile resource =
             Resources.Load<Projectile>(Projectile.ProjectileResourcesPath + Projectile.NormalProjectileName);
 
+        AudioClipHandler.PlayAudio("Audio/Slash2", 0, transform.position);
+        
         Projectile projectile = Instantiate(resource, spawnPosition, desiredRotation);
 
         projectile.AttackerAttack = Stats.Attack.CurrentValue;
@@ -377,6 +384,10 @@ public class Flydier : GenericMob
     {
         AnimController.SetTrigger(DieParameterName);
 
+        _flyAudioClip.StopClip();
+
+        AudioClipHandler.PlayAudio("Audio/DyingFlydier", 0, transform.position);
+        
         yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName(DieStateName));
 
         AnimatorStateInfo info = AnimController.GetCurrentAnimatorStateInfo(0);

@@ -125,6 +125,12 @@ public class Projectile : MonoBehaviour
     public float MaxChargeTime;
 
     /// <summary>
+    /// The sound clip that has to play when the projectile hits something.
+    /// </summary>
+    [SerializeField]
+    private AudioClip _impactSound;
+
+    /// <summary>
     /// Returns wether this projectile can be charged or not.
     /// </summary>
     public bool IsChargeable
@@ -302,6 +308,8 @@ public class Projectile : MonoBehaviour
     /// <param name="collided">The <c>GameObject</c> with which the projectile collided</param>
     private void Hit(GameObject collided)
     {
+        AudioClipHandler.PlayAudio(_impactSound, 0, collided.transform.position);
+
         float basePower = Power;
         float attackerAttack = Mathf.Max(AttackerAttack, 1);
         float targetDefence = 1;
