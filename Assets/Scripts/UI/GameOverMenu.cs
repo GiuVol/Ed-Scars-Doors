@@ -75,7 +75,10 @@ public class GameOverMenu : MultiButtonsMenu
                         Destroy(canvasChildTransform.gameObject);
                     }
 
-                    GameManager.Instance.StartCoroutine(GameManager.Instance.LoadScene("DemoInsects"));
+                    if (GameManager.Instance != null)
+                    {
+                        GameManager.Instance.StartCoroutine(GameManager.Instance.LoadScene("Corridor"));
+                    }
                 }
             );
         }

@@ -12,6 +12,7 @@ public class GameFormulas
     public const string HidingPlaceLayerName = "HidingPlace";
     public const string ItemLayerName = "Item";
     public const string CollidesWithGroundOnlyLayerName = "CollidesWithGroundOnly";
+    public const string DoorLayerName = "Door";
 
     public static int Damage(float power, float attackerAttack, float targetDefence)
     {

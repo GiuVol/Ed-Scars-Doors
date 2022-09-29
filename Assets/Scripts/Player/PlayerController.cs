@@ -276,8 +276,10 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             return IsNearHidingPlace && _timeToWaitToHide <= 0 && !IsHidden;
         }
     }
-    
+
     #endregion
+
+    private Door _currentDoor;
 
     /// <summary>
     /// Structure that stores the abilities currently equipped by the player.
@@ -629,6 +631,11 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             if (InputHandler.Shoot("Down") && CanShoot)
             {
                 StartCoroutine(Shoot());
+            }
+
+            if (_currentDoor != null && Input.GetKeyDown(KeyCode.E))
+            {
+                _currentDoor.CrossDoor();
             }
         }
 
@@ -1219,6 +1226,16 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
                 Destroy(physicalItem.gameObject);
             }
         }
+
+        if (col.gameObject.layer == LayerMask.NameToLayer(GameFormulas.DoorLayerName))
+        {
+            Door door = col.GetComponent<Door>();
+
+            if (door != null)
+            {
+                _currentDoor = door;
+            }
+        }
     }
 
     private void OnTriggerExit2D(Collider2D col)
@@ -1231,6 +1248,11 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         if (col.gameObject.layer == LayerMask.NameToLayer(GameFormulas.HidingPlaceLayerName))
         {
             CurrentHidingPlace = null;
+        }
+
+        if (col.gameObject.layer == LayerMask.NameToLayer(GameFormulas.DoorLayerName))
+        {
+            _currentDoor = null;
         }
     }
 }
