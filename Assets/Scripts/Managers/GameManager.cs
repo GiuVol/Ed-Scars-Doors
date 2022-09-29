@@ -160,7 +160,7 @@ public class GameManager : MonoBehaviour
 
             if (UI.SceneLoadingInfo != null)
             {
-                UI.SceneLoadingInfo.text = activationProgress.ToString();
+                UI.SceneLoadingInfo.text = (Mathf.RoundToInt(activationProgress * 100f)).ToString() + "%";
             }
 
             yield return null;

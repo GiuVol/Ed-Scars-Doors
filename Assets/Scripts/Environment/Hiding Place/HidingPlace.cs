@@ -87,32 +87,39 @@ public class HidingPlace : MonoBehaviour
         
         if (currentCanvas != null)
         {
-            _uiHideMessage = Instantiate(Resources.Load<DynamicUIComponent>(HideMessageResourcesPath),
-                                                         currentCanvas.transform);
-            _uiHideMessage.InitializeDynamic(transform, Vector3.zero);
+            DynamicUIComponent uiHideMessageResource = Resources.Load<DynamicUIComponent>(HideMessageResourcesPath);
+            DynamicUIComponent uiGetOutMessageResource = Resources.Load<DynamicUIComponent>(GetOutMessageResourcesPath);
 
-            _uiHideMessage.gameObject.SetActive(false);
-
-            _hideButtonHoldingBar = _uiHideMessage.GetComponentInChildren<UIBar>();
-
-            if (_hideButtonHoldingBar != null)
+            if (uiHideMessageResource != null)
             {
-                _hideButtonHoldingBar.InitializeStatic(1);
-                _hideButtonHoldingBar.UpdateValueInstantly(0);
+                _uiHideMessage = Instantiate(uiHideMessageResource, currentCanvas.transform);
+                _uiHideMessage.InitializeDynamic(transform, Vector3.zero);
+
+                _uiHideMessage.gameObject.SetActive(false);
+
+                _hideButtonHoldingBar = _uiHideMessage.GetComponentInChildren<UIBar>();
+
+                if (_hideButtonHoldingBar != null)
+                {
+                    _hideButtonHoldingBar.InitializeStatic(1);
+                    _hideButtonHoldingBar.UpdateValueInstantly(0);
+                }
             }
 
-            _uiGetOutMessage = Instantiate(Resources.Load<DynamicUIComponent>(GetOutMessageResourcesPath),
-                                                         currentCanvas.transform);
-            _uiGetOutMessage.InitializeDynamic(transform, Vector3.zero);
-
-            _uiGetOutMessage.gameObject.SetActive(false);
-
-            _getOutButtonHoldingBar = _uiGetOutMessage.GetComponentInChildren<UIBar>();
-
-            if (_getOutButtonHoldingBar != null)
+            if (uiGetOutMessageResource != null)
             {
-                _getOutButtonHoldingBar.InitializeStatic(1);
-                _getOutButtonHoldingBar.UpdateValueInstantly(0);
+                _uiGetOutMessage = Instantiate(uiGetOutMessageResource, currentCanvas.transform);
+                _uiGetOutMessage.InitializeDynamic(transform, Vector3.zero);
+
+                _uiGetOutMessage.gameObject.SetActive(false);
+
+                _getOutButtonHoldingBar = _uiGetOutMessage.GetComponentInChildren<UIBar>();
+
+                if (_getOutButtonHoldingBar != null)
+                {
+                    _getOutButtonHoldingBar.InitializeStatic(1);
+                    _getOutButtonHoldingBar.UpdateValueInstantly(0);
+                }
             }
         }
     }
