@@ -140,8 +140,15 @@ public class GameManager : MonoBehaviour
     /// This method loads the scene named <c>sceneName</c>, loading player and camera prefabs too.
     /// </summary>
     /// <param name="sceneName">The name of the scene to load</param>
-    public IEnumerator LoadScene(string sceneName)
+    /// <param name="timeToWait">The time to wait before to load the scene</param>
+    /// <returns></returns>
+    public IEnumerator LoadScene(string sceneName, float timeToWait = 0)
     {
+        if (timeToWait > 0)
+        {
+            yield return new WaitForSeconds(Mathf.Max(timeToWait, 0));
+        }
+
         int buildIndex = SceneUtility.GetBuildIndexByScenePath(sceneName);
 
         if (buildIndex < 0)
@@ -215,6 +222,14 @@ public class GameManager : MonoBehaviour
             {
                 proceduralGridMover.target = playerController.transform;
             }
+        }
+
+        Regia regia = FindObjectOfType<Regia>();
+
+        if (regia != null)
+        {
+            AudioManager.PlayOst(regia.OstClip);
+            AudioManager.PlayAmbience(regia.AmbienceClip);
         }
 
         UI.LoadHUD();

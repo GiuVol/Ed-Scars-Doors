@@ -361,6 +361,8 @@ MonoBehaviour:
     _cameraSize: 8
     _cameraOffset: {x: 8, y: 8}
   _yDeathThreshold: -50
+  _ostClip: {fileID: 8300000, guid: 1664b4cdcdcb2e041a49e39d41e1dd2a, type: 3}
+  _ambienceClip: {fileID: 8300000, guid: 0362d99126a364646a49049bd83fa214, type: 3}
 --- !u!4 &1194199462
 Transform:
   m_ObjectHideFlags: 0

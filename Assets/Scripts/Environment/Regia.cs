@@ -100,6 +100,40 @@ public class Regia : MonoBehaviour
     [SerializeField]
     private float _yDeathThreshold;
 
+    /// <summary>
+    /// The ost of the level.
+    /// </summary>
+    [SerializeField]
+    private AudioClip _ostClip;
+
+    /// <summary>
+    /// The ost of the level.
+    /// </summary>
+    public AudioClip OstClip
+    {
+        get
+        {
+            return _ostClip;
+        }
+    }
+
+    /// <summary>
+    /// The ambience sound of the level.
+    /// </summary>
+    [SerializeField]
+    private AudioClip _ambienceClip;
+
+    /// <summary>
+    /// The ambience sound of the level.
+    /// </summary>
+    public AudioClip AmbienceClip
+    {
+        get
+        {
+            return _ambienceClip;
+        }
+    }
+
     #endregion
 
     /// <summary>

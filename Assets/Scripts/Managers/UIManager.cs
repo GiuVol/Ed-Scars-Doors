@@ -164,8 +164,6 @@ public class UIManager : MonoBehaviour
                     if (GameManager.Instance != null)
                     {
                         GameManager.Instance.StartCoroutine(GameManager.Instance.LoadScene("Corridor"));
-                        GameManager.Instance.AudioManager.PlayOst("Audio/Ost/AStrangeTale");
-                        GameManager.Instance.AudioManager.PlayAmbience("Audio/Ambience/ForestAmbience");
                     }
                 }
                 );
