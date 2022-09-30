@@ -14,6 +14,87 @@ public class InputHandler
     }
 
     /// <summary>
+    /// Returns the vertical input.
+    /// </summary>
+    public static float VerticalInput
+    {
+        get
+        {
+            return Input.GetAxis("Vertical");
+        }
+    }
+
+    /// <summary>
+    /// Returns whether an event occurs on the Jump key.
+    /// </summary>
+    /// <param name="pressType">
+    /// This value specifies the type of the event you want to intercept.
+    /// </param>
+    /// <returns>
+    /// This method returns a boolean that is true if the desired event occurs on the specified key, false otherwise.
+    /// </returns>
+    public static bool Run(string pressType = "")
+    {
+        return ButtonPressed("Run", pressType);
+    }
+    
+    /// <summary>
+    /// Returns whether an event occurs on the Jump key.
+    /// </summary>
+    /// <param name="pressType">
+    /// This value specifies the type of the event you want to intercept.
+    /// </param>
+    /// <returns>
+    /// This method returns a boolean that is true if the desired event occurs on the specified key, false otherwise.
+    /// </returns>
+    public static bool Left(string pressType = "")
+    {
+        return ButtonPressed("Left", pressType);
+    }
+
+    /// <summary>
+    /// Returns whether an event occurs on the Jump key.
+    /// </summary>
+    /// <param name="pressType">
+    /// This value specifies the type of the event you want to intercept.
+    /// </param>
+    /// <returns>
+    /// This method returns a boolean that is true if the desired event occurs on the specified key, false otherwise.
+    /// </returns>
+    public static bool Right(string pressType = "")
+    {
+        return ButtonPressed("Right", pressType);
+    }
+
+    /// <summary>
+    /// Returns whether an event occurs on the Jump key.
+    /// </summary>
+    /// <param name="pressType">
+    /// This value specifies the type of the event you want to intercept.
+    /// </param>
+    /// <returns>
+    /// This method returns a boolean that is true if the desired event occurs on the specified key, false otherwise.
+    /// </returns>
+    public static bool Down(string pressType = "")
+    {
+        return ButtonPressed("Down", pressType);
+    }
+
+    /// <summary>
+    /// Returns whether an event occurs on the Jump key.
+    /// </summary>
+    /// <param name="pressType">
+    /// This value specifies the type of the event you want to intercept.
+    /// </param>
+    /// <returns>
+    /// This method returns a boolean that is true if the desired event occurs on the specified key, false otherwise.
+    /// </returns>
+    public static bool Up(string pressType = "")
+    {
+        return ButtonPressed("Up", pressType);
+    }
+    
+    /// <summary>
     /// Returns whether an event occurs on the Jump key.
     /// </summary>
     /// <param name="pressType">
@@ -64,11 +145,53 @@ public class InputHandler
     /// <returns>
     /// This method returns a boolean that is true if the desired event occurs on the specified key, false otherwise.
     /// </returns>
-    public static bool Hide(string pressType = "")
+    public static bool Interact(string pressType = "")
     {
-        return ButtonPressed("Hide", pressType);
+        return ButtonPressed("Interact", pressType);
     }
 
+    /// <summary>
+    /// Returns whether an event occurs on the Hide key.
+    /// </summary>
+    /// <param name="pressType">
+    /// This value specifies the type of the event you want to intercept.
+    /// </param>
+    /// <returns>
+    /// This method returns a boolean that is true if the desired event occurs on the specified key, false otherwise.
+    /// </returns>
+    public static bool ToggleHUD(string pressType = "")
+    {
+        return ButtonPressed("ToggleHUD", pressType);
+    }
+
+    /// <summary>
+    /// Returns whether an event occurs on the Hide key.
+    /// </summary>
+    /// <param name="pressType">
+    /// This value specifies the type of the event you want to intercept.
+    /// </param>
+    /// <returns>
+    /// This method returns a boolean that is true if the desired event occurs on the specified key, false otherwise.
+    /// </returns>
+    public static bool OpenMenu(string pressType = "")
+    {
+        return ButtonPressed("OpenMenu", pressType);
+    }
+
+    /// <summary>
+    /// Returns whether an event occurs on the Hide key.
+    /// </summary>
+    /// <param name="pressType">
+    /// This value specifies the type of the event you want to intercept.
+    /// </param>
+    /// <returns>
+    /// This method returns a boolean that is true if the desired event occurs on the specified key, false otherwise.
+    /// </returns>
+    public static bool Submit(string pressType = "")
+    {
+        return ButtonPressed("Submit", pressType);
+    }
+    
     /// <summary>
     /// Returns whether an event occurs on a certain key.
     /// </summary>

@@ -99,19 +99,19 @@ public class ControlsMenu : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        if (InputHandler.Left("Down"))
         {
             AudioClipHandler.PlayAudio("Audio/SelectTab", 0, transform.position);
             SelectedSheetIndex--;
         }
 
-        if (Input.GetKeyDown(KeyCode.RightArrow))
+        if (InputHandler.Right("Down"))
         {
             AudioClipHandler.PlayAudio("Audio/SelectTab", 0, transform.position);
             SelectedSheetIndex++;
         }
 
-        if (Input.GetKeyDown(KeyCode.M))
+        if (InputHandler.OpenMenu("Down"))
         {
             AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
             Destroy(gameObject);

@@ -23,7 +23,7 @@ public class InventoryMenu : UIListMenu, ITabContent
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        if (InputHandler.Up("Down"))
         {
             if (SelectedElementIndex > 1)
             {
@@ -36,7 +36,7 @@ public class InventoryMenu : UIListMenu, ITabContent
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.DownArrow))
+        if (InputHandler.Down("Down"))
         {
             if (SelectedElementIndex < NumberOfElements)
             {
@@ -48,7 +48,7 @@ public class InventoryMenu : UIListMenu, ITabContent
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (InputHandler.Submit("Down"))
         {
             StartCoroutine(ChooseOperation());
         }

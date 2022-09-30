@@ -25,7 +25,7 @@ public class GameMenu : UITabMenu
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        if (InputHandler.Left("Down"))
         {
             if (SelectedTab > 1)
             {
@@ -34,7 +34,7 @@ public class GameMenu : UITabMenu
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.RightArrow))
+        if (InputHandler.Right("Down"))
         {
             if (SelectedTab < NumberOfTabs)
             {
@@ -43,7 +43,7 @@ public class GameMenu : UITabMenu
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.M))
+        if (InputHandler.OpenMenu("Down"))
         {
             AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
             GameManager.Instance.UI.UnloadGameMenu();
