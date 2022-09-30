@@ -19,7 +19,7 @@ public class GameMenuOperationSelector : UIOperationSelector
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        if (InputHandler.Up("Down"))
         {
             if (SelectedOperationIndex > 1)
             {
@@ -31,7 +31,7 @@ public class GameMenuOperationSelector : UIOperationSelector
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.DownArrow))
+        if (InputHandler.Down("Down"))
         {
             if (SelectedOperationIndex < NumberOfOperations)
             {
@@ -43,7 +43,7 @@ public class GameMenuOperationSelector : UIOperationSelector
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (InputHandler.Submit("Down"))
         {
             SelectOperation();
         }

@@ -103,7 +103,7 @@ public class GameOverMenu : MultiButtonsMenu
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        if (InputHandler.Up("Down"))
         {
             if (SelectedButtonIndex > 1)
             {
@@ -116,7 +116,7 @@ public class GameOverMenu : MultiButtonsMenu
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.DownArrow))
+        if (InputHandler.Down("Down"))
         {
             if (SelectedButtonIndex < NumberOfButtons)
             {
@@ -129,7 +129,7 @@ public class GameOverMenu : MultiButtonsMenu
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (InputHandler.Submit("Down"))
         {
             if (SelectedButton != null)
             {

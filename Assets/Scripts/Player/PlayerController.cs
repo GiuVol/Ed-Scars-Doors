@@ -633,7 +633,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
                 StartCoroutine(Shoot());
             }
 
-            if (_currentDoor != null && Input.GetKeyDown(KeyCode.E))
+            if (_currentDoor != null && InputHandler.Interact("Down"))
             {
                 _currentDoor.CrossDoor();
             }
@@ -661,7 +661,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         if (HasControl && !Status.IsBlinded)
         {
             float horizontalInput = InputHandler.HorizontalInput;
-            float movementSpeed = Input.GetKey(KeyCode.B) ? CurrentRunSpeed : CurrentWalkSpeed;
+            float movementSpeed = InputHandler.Run() ? CurrentRunSpeed : CurrentWalkSpeed;
 
             MovementController.HandleMovementWithSpeed(horizontalInput, movementSpeed);
         }

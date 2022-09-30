@@ -135,7 +135,7 @@ public class HidingPlace : MonoBehaviour
             return;
         }
 
-        if (!InputHandler.Hide() || _player.CurrentHidingPlace != this)
+        if (!InputHandler.Interact() || _player.CurrentHidingPlace != this)
         {
             timer = Mathf.Max(timer - Time.deltaTime, 0);
         }
@@ -152,7 +152,7 @@ public class HidingPlace : MonoBehaviour
         
         if (_player.CurrentHidingPlace == this)
         {
-            if (InputHandler.Hide("Down") && (_player.CanHide || _player.IsHidden) && _hideButtonPressingCoroutine == null)
+            if (InputHandler.Interact("Down") && (_player.CanHide || _player.IsHidden) && _hideButtonPressingCoroutine == null)
             {
                 _hideButtonPressingCoroutine = StartCoroutine(HandleHideButton());
             }
@@ -175,7 +175,7 @@ public class HidingPlace : MonoBehaviour
                 yield break;
             }
 
-            if (InputHandler.Hide())
+            if (InputHandler.Interact())
             {
                 timer += Time.deltaTime;
 

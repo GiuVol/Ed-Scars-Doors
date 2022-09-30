@@ -60,7 +60,7 @@ public class CollectionMenu : UIListMenu, ITabContent
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        if (InputHandler.Up("Down"))
         {
             if (SelectedElementIndex > 1)
             {
@@ -73,7 +73,7 @@ public class CollectionMenu : UIListMenu, ITabContent
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.DownArrow))
+        if (InputHandler.Down("Down"))
         {
             if (SelectedElementIndex < NumberOfElements)
             {
