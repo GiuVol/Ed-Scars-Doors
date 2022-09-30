@@ -52,7 +52,7 @@ MonoBehaviour:
     _loopHorizontal: 1
     _loopVertical: 1
     _parallaxMultiplier: {x: 0.7, y: 0}
-    _sortingLayerIndex: -200
+    _sortingLayerIndex: -5002
   - _layerSprite: {fileID: 21300000, guid: f29057eb81907344aab8dd04cc5ada45, type: 3}
     _positionOffset: {x: 0, y: -5}
     _transformScale: {x: 2, y: 2}
@@ -60,7 +60,7 @@ MonoBehaviour:
     _loopHorizontal: 1
     _loopVertical: 0
     _parallaxMultiplier: {x: 0.5, y: 0}
-    _sortingLayerIndex: -199
+    _sortingLayerIndex: -5001
   - _layerSprite: {fileID: 21300000, guid: 45c18d17c8a0b144483daa0b15006060, type: 3}
     _positionOffset: {x: 0, y: -7}
     _transformScale: {x: 2, y: 2}
@@ -68,5 +68,5 @@ MonoBehaviour:
     _loopHorizontal: 1
     _loopVertical: 0
     _parallaxMultiplier: {x: 0.3, y: 0}
-    _sortingLayerIndex: -198
+    _sortingLayerIndex: -5000
   _zPosition: 200
