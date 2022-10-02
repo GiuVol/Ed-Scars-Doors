@@ -206,7 +206,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &309844530
 BoxCollider2D:
@@ -234,6 +234,83 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!1001 &677151748
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2180543457260714897, guid: adba0c44185a67540b390e932d446137, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2180543457260714897, guid: adba0c44185a67540b390e932d446137, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -215.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2180543457260714897, guid: adba0c44185a67540b390e932d446137, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 25.66
+      objectReference: {fileID: 0}
+    - target: {fileID: 2180543457260714897, guid: adba0c44185a67540b390e932d446137, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2180543457260714897, guid: adba0c44185a67540b390e932d446137, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2180543457260714897, guid: adba0c44185a67540b390e932d446137, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2180543457260714897, guid: adba0c44185a67540b390e932d446137, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2180543457260714897, guid: adba0c44185a67540b390e932d446137, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2180543457260714897, guid: adba0c44185a67540b390e932d446137, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2180543457260714897, guid: adba0c44185a67540b390e932d446137, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2180543457260714897, guid: adba0c44185a67540b390e932d446137, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2729309071411191328, guid: adba0c44185a67540b390e932d446137, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2729309071411191328, guid: adba0c44185a67540b390e932d446137, type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2729309071411191328, guid: adba0c44185a67540b390e932d446137, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2929833934274889358, guid: adba0c44185a67540b390e932d446137, type: 3}
+      propertyPath: _sceneToLoadName
+      value: MantmareTest
+      objectReference: {fileID: 0}
+    - target: {fileID: 5069691454677213152, guid: adba0c44185a67540b390e932d446137, type: 3}
+      propertyPath: m_Name
+      value: Red Door_gfx
+      objectReference: {fileID: 0}
+    - target: {fileID: 7291620942156896518, guid: adba0c44185a67540b390e932d446137, type: 3}
+      propertyPath: m_Name
+      value: RedDoor
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: adba0c44185a67540b390e932d446137, type: 3}
 --- !u!1 &961980867
 GameObject:
   m_ObjectHideFlags: 0
@@ -263,7 +340,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1194199460
 GameObject:
@@ -301,7 +378,7 @@ MonoBehaviour:
     _cameraOffset: {x: 8, y: 8}
   _yDeathThreshold: -50
   _ostClip: {fileID: 8300000, guid: 1664b4cdcdcb2e041a49e39d41e1dd2a, type: 3}
-  _ambienceClip: {fileID: 8300000, guid: 0362d99126a364646a49049bd83fa214, type: 3}
+  _ambienceClip: {fileID: 0}
 --- !u!4 &1194199462
 Transform:
   m_ObjectHideFlags: 0
@@ -346,7 +423,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1635885432
 PrefabInstance:
@@ -398,6 +475,10 @@ PrefabInstance:
     - target: {fileID: 2180543457260714897, guid: adba0c44185a67540b390e932d446137, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2929833934274889358, guid: adba0c44185a67540b390e932d446137, type: 3}
+      propertyPath: _sceneToLoadName
+      value: DemoInsects
       objectReference: {fileID: 0}
     - target: {fileID: 7291620942156896518, guid: adba0c44185a67540b390e932d446137, type: 3}
       propertyPath: m_Name

@@ -22,7 +22,7 @@ TagManager:
   - CollidesWithGroundOnly
   - EventTrigger
   - Door
-  - 
+  - ScreenBoundries
   - 
   - 
   - 

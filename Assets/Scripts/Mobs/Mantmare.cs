@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class Mantmare : GenericMob
 {
+    private const float Attack1Power = 5;
+    private const float Attack2Power = 2.5f;
+    private const float Attack3Power = 7.5f;
+
     #region Animator Consts
 
     private const string FlyCycleStateName = "FlyCycle";
@@ -51,8 +55,13 @@ public class Mantmare : GenericMob
     {
         if (HealthBarResource != null)
         {
-            HealthBar = Instantiate(HealthBarResource, GameObject.FindObjectOfType<Canvas>().transform);
-            HealthBar.InitializeStatic(Health.MaxHealth);
+            Canvas canvas = GameObject.FindObjectOfType<Canvas>();
+
+            if (canvas != null)
+            {
+                HealthBar = Instantiate(HealthBarResource, GameObject.FindObjectOfType<Canvas>().transform);
+                HealthBar.InitializeStatic(Health.MaxHealth);
+            }
         }
     }
 
@@ -189,14 +198,18 @@ public class Mantmare : GenericMob
         {
             bool isOnScreen = false;
 
+            Camera camera = Camera.main;
             Vector3 position = transform.position;
 
-            if (position.x >= Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).x + (_width / 2) &&
-                position.x <= Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x - (_width / 2) &&
-                position.y >= Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).y &&
-                position.y <= Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height)).y - (_height))
+            if (camera != null)
             {
-                isOnScreen = true;
+                if (position.x >= camera.ScreenToWorldPoint(new Vector2(0, 0)).x + (_width / 2) &&
+                    position.x <= camera.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x - (_width / 2) &&
+                    position.y >= camera.ScreenToWorldPoint(new Vector2(0, 0)).y &&
+                    position.y <= camera.ScreenToWorldPoint(new Vector2(0, Screen.height)).y - (_height))
+                {
+                    isOnScreen = true;
+                }
             }
 
             return isOnScreen;
@@ -438,6 +451,16 @@ public class Mantmare : GenericMob
         Vector2 localSpaceYVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
         float normalizedYSpeed = localSpaceYVelocity.y / (_speed / _attachedRigidbody.drag);
 
+        if (normalizedXSpeed < .2f)
+        {
+            normalizedXSpeed = 0;
+        }
+
+        if (normalizedYSpeed < .2f)
+        {
+            normalizedYSpeed = 0;
+        }
+        
         AnimController.SetFloat(HorizontalSpeedParameterName, normalizedXSpeed);
         AnimController.SetFloat(VerticalSpeedParameterName, normalizedYSpeed);
 
@@ -507,6 +530,11 @@ public class Mantmare : GenericMob
     /// <param name="rotate">If this value is true, Mantmare will rotate towards the position to reach</param>
     private void ReachPosition(Vector3 positionToReach, float speed = 0, bool rotate = false)
     {
+        if (Vector3.Distance(transform.position, positionToReach) < 2f)
+        {
+            return;
+        }
+
         if (speed <= 0)
         {
             speed = _speed;
@@ -539,8 +567,6 @@ public class Mantmare : GenericMob
     /// <param name="playerTransform"></param>
     private void RandomWander(Transform playerTransform)
     {
-        AnimController.SetBool(WanderParameterName, true);
-
         if (playerTransform == null)
         {
             return;
@@ -593,16 +619,16 @@ public class Mantmare : GenericMob
     /// </summary>
     private IEnumerator Pattern1(PlayerController target)
     {
-        Vector2 targetPosition = target.transform.position + 
-                                 target.transform.right * _attackRange - 
-                                 Vector3.up * _height / 2;
-
+        Vector2 targetPosition;
         float distance;
 
         do
         {
+            targetPosition = target.transform.position +
+                                 target.transform.right * _attackRange -
+                                 Vector3.up * _height / 2;
             distance = Vector2.Distance(transform.position, targetPosition);
-            ReachPosition(targetPosition, _speed, true);
+            ReachPosition(targetPosition, 80, true);
             yield return null;
         } while (distance > 2);
 
@@ -624,10 +650,10 @@ public class Mantmare : GenericMob
 
         AnimController.SetTrigger(StartAttack1ParameterName);
 
-        _leftArmTriggerCaster.TriggerFunction = collider => InflictDamage(collider, 70);
+        yield return new WaitForSeconds(.5f);
 
-        yield return new WaitForSeconds(TimeMultiplierByStage);
-
+        _leftArmTriggerCaster.TriggerFunction = collider => InflictDamage(collider, Attack1Power);
+        
         AnimController.SetTrigger(EndAttack1ParameterName);
 
         yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName(Attack1EndStateName));
@@ -706,12 +732,12 @@ public class Mantmare : GenericMob
 
             yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName(Attack2BoostStateName));
 
-            _headTriggerCaster.TriggerFunction = collider => InflictDamage(collider, 50);
+            _headTriggerCaster.TriggerFunction = collider => InflictDamage(collider, Attack2Power);
             
             do
             {
                 distance = Vector3.Distance(transform.position, patternEndPosition);
-                ReachPosition(patternEndPosition, 50);
+                ReachPosition(patternEndPosition, 150);
                 yield return null;
             } while (distance > 2);
 
@@ -761,7 +787,7 @@ public class Mantmare : GenericMob
         do
         {
             distance = Vector2.Distance(transform.position, patternStartPosition);
-            ReachPosition(patternStartPosition, _speed);
+            ReachPosition(patternStartPosition);
             yield return null;
         } while (distance > 2);
 

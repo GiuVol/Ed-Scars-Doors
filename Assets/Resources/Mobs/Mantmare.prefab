@@ -57,17 +57,17 @@ MonoBehaviour:
   _blindnessResistence: 0.25
   _blindnessLevelDecrementSpeed: 1
   _maxCorrosionTime: 5
-  _corrosionDamage: 0
+  _corrosionDamage: 0.01
   _corrosionDamageInterval: 0
   _playerCheckInterval: 0.1
   _rangeToCheck: 100
   _attackRange: 5
   _attackInterval: 2
   _mass: 100
-  _speed: 25
+  _speed: 50
   _canFloat: 1
   _repulsiveForce: 1000
-  _contactDamage: 1
+  _contactDamage: 0
   _width: 12
   _height: 18
   _patrolPointsGroup: {fileID: 0}
