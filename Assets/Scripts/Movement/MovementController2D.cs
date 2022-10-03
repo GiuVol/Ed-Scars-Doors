@@ -59,6 +59,8 @@ public class MovementController2D : MonoBehaviour
         }
     }
 
+    private LayerMask _groundCheckMask;
+
     /// <summary>
     /// A boolean property (get only) that returns whether the character has something beneath him or not.
     /// </summary>
@@ -66,7 +68,7 @@ public class MovementController2D : MonoBehaviour
     {
         get
         {
-            LayerMask toCast = ~(1 << gameObject.layer);
+            LayerMask toCast = _groundCheckMask;//~(1 << gameObject.layer);
 
             Vector3 positionOffset = Vector3.up * .1f;
             Vector3 offsettedPosition = transform.position + positionOffset;
@@ -96,7 +98,7 @@ public class MovementController2D : MonoBehaviour
     /// </summary>
     private bool _initialized;
 
-    void Start()
+    public void Setup(LayerMask groundCheckMask)
     {
         if (!gameObject.GetComponent<Rigidbody2D>())
         {
@@ -105,12 +107,15 @@ public class MovementController2D : MonoBehaviour
 
         AttachedRigidbody = gameObject.GetComponent<Rigidbody2D>();
         AttachedRigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
+        AttachedRigidbody.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
 
         _zeroFriction = new PhysicsMaterial2D();
         _zeroFriction.friction = 0;
 
         _maxFriction = new PhysicsMaterial2D();
         _maxFriction.friction = 1;
+
+        _groundCheckMask = groundCheckMask;
 
         _initialized = true;
     }

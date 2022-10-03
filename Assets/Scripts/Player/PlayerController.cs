@@ -7,6 +7,8 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 {
     public const int MaxNumberOfEquippableAbilities = 4;
 
+    private const float DashTime = .5f;
+
     private const float MaxHiddenTime = 10;
     private const float MinHidingRefreshTime = 2;
     private const float MaxHidingRefreshTime = 5;
@@ -105,7 +107,28 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     /// <summary>
     /// The current gravity scale of the attached rigidbody.
     /// </summary>
-    public float CurrentGravityScale { get; set; }
+    public float CurrentGravityScale
+    {
+        get
+        {
+            float gravityScale = 0;
+
+            if (MovementController != null)
+            {
+                gravityScale = MovementController.GravityScale;
+            }
+
+            return gravityScale;
+        }
+
+        set
+        {
+            if (MovementController != null)
+            {
+                MovementController.GravityScale = value;
+            }
+        }
+    }
 
     /// <summary>
     /// The current time that elapses between different series of jumps.
@@ -128,6 +151,9 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     public int CurrentNumberOfJumpsAllowedInAir { get; set; }
 
     #endregion
+
+    [SerializeField]
+    private LayerMask _groundCheckMask;
 
     /// <summary>
     /// Returns whether the character can be controlled through player's inpput or not.
@@ -576,6 +602,8 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         HasControl = true;
         
         MovementController = gameObject.GetComponent<MovementController2D>();
+        MovementController.Setup(_groundCheckMask);
+        CurrentGravityScale = StandardGravityScale;
 
         Health = gameObject.GetComponent<HealthComponent>();
         Stats = gameObject.GetComponent<StatsComponent>();
@@ -665,8 +693,6 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
             MovementController.HandleMovementWithSpeed(horizontalInput, movementSpeed);
         }
-
-        MovementController.GravityScale = CurrentGravityScale;
 
         _timeToWaitToJump = Mathf.Max(_timeToWaitToJump - Time.fixedDeltaTime, 0);
         _timeToWaitToHide = Mathf.Max(_timeToWaitToHide - Time.fixedDeltaTime, 0);
@@ -762,8 +788,8 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
         #endregion
 
-        Health.SetInvincibilityTemporarily(1);
-        Status.SetImmunityTemporarily(1);
+        //Health.SetInvincibilityTemporarily(1);
+        //Status.SetImmunityTemporarily(1);
 
         yield return new WaitUntil(() => !MovementController.IsGrounded);
         
@@ -786,12 +812,22 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             yield break;
         }
 
-        Health.SetInvincibilityTemporarily(1);
-        Status.SetImmunityTemporarily(1);
+        CanDash = false;
         
         MovementController.GiveImpulse(transform.right, CurrentDashForce);
 
-        CanDash = false;
+        Collider2D collider = GetComponent<Collider2D>();
+
+        Health.SetInvincibilityTemporarily(DashTime);
+        Status.SetImmunityTemporarily(DashTime);
+
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(PlayerLayerName), LayerMask.NameToLayer(GenericMob.MobLayerName));
+        //CurrentGravityScale = 0;
+
+        yield return new WaitForSeconds(DashTime);
+
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(PlayerLayerName), LayerMask.NameToLayer(GenericMob.MobLayerName), false);
+        //CurrentGravityScale = oldGravityScale;
 
         yield return new WaitForSeconds(CurrentDashInterval);
 

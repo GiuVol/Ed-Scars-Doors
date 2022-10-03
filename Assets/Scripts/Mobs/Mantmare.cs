@@ -619,6 +619,11 @@ public class Mantmare : GenericMob
     /// </summary>
     private IEnumerator Pattern1(PlayerController target)
     {
+        if (target == null)
+        {
+            yield break;
+        }
+
         Vector2 targetPosition;
         float distance;
 
@@ -630,7 +635,7 @@ public class Mantmare : GenericMob
             distance = Vector2.Distance(transform.position, targetPosition);
             ReachPosition(targetPosition, 80, true);
             yield return null;
-        } while (distance > 2);
+        } while (distance > 5);
 
         _attachedRigidbody.velocity = Vector3.zero;
 
@@ -668,6 +673,11 @@ public class Mantmare : GenericMob
     /// </summary>
     private IEnumerator Pattern2(PlayerController target)
     {
+        if (target == null)
+        {
+            yield break;
+        }
+
         Vector3 leftScreenPosition = 
             Camera.main.ScreenToWorldPoint(new Vector3(Mathf.RoundToInt((1f / 8f) * Screen.width), 
                                            0, 
@@ -695,11 +705,13 @@ public class Mantmare : GenericMob
                 endScreenPosition = rightScreenPosition;
             }
 
-            Vector3 patternStartPosition =
-                new Vector3(startScreenPosition.x, target.transform.position.y - _height / 2.5f);
+            Vector3 patternStartPosition = (target != null) ? 
+                new Vector3(startScreenPosition.x, target.transform.position.y) : 
+                new Vector3(startScreenPosition.x, transform.position.y);
             
-            Vector3 patternEndPosition =
-                new Vector3(endScreenPosition.x, target.transform.position.y - _height / 2.5f);
+            Vector3 patternEndPosition = (target != null) ? 
+                new Vector3(endScreenPosition.x, target.transform.position.y) : 
+                new Vector3(endScreenPosition.x, transform.position.y);
 
             float distance;
 
@@ -757,6 +769,11 @@ public class Mantmare : GenericMob
     /// </summary>
     private IEnumerator Pattern3(PlayerController target)
     {
+        if (target == null)
+        {
+            yield break;
+        }
+
         Vector2 leftScreenPosition =
             Camera.main.ScreenToWorldPoint(new Vector3(Mathf.RoundToInt((2f / 8f) * Screen.width),
                                            Mathf.RoundToInt((7f / 8f) * Screen.height),
@@ -899,11 +916,20 @@ public class Mantmare : GenericMob
         {
             return;
         }
-        
-        Vector3 offsettedPosition = new Vector3(transform.position.x, player.transform.position.y);
-        Vector2 conjunctionLine = (player.transform.position - offsettedPosition).normalized;
 
-        player.GetComponent<Rigidbody2D>().AddForce(conjunctionLine * _repulsiveForce);
+        Vector3 offsettedPosition = new Vector3(transform.position.x, player.transform.position.y, player.transform.position.z);
+        Vector3 conjunctionLine = (player.transform.position - offsettedPosition);
+        conjunctionLine.z = 0;
+        conjunctionLine.Normalize();
+
+        Rigidbody2D playerRigidbody = player.GetComponent<Rigidbody2D>();
+
+        if (playerRigidbody != null)
+        {
+            Debug.Log("Collided");
+            playerRigidbody.AddForce(conjunctionLine * _repulsiveForce);
+        }
+
         player.Health.Decrease(_contactDamage);
     }
 }

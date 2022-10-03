@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: Mantmare
-  _maxHealthValue: 1000
+  _maxHealthValue: 5000
   _attackStandardValue: 100
   _attackMinValue: 100
   _attackMaxValue: 200
@@ -66,8 +66,8 @@ MonoBehaviour:
   _mass: 100
   _speed: 50
   _canFloat: 1
-  _repulsiveForce: 1000
-  _contactDamage: 0
+  _repulsiveForce: 5000
+  _contactDamage: 1
   _width: 12
   _height: 18
   _patrolPointsGroup: {fileID: 0}
