@@ -2109,6 +2109,7 @@ GameObject:
   - component: {fileID: 4830061323521949257}
   - component: {fileID: 5204367678897474187}
   - component: {fileID: 768612641360317368}
+  - component: {fileID: 5624570399325374923}
   m_Layer: 3
   m_Name: ed_final F
   m_TagString: Untagged
@@ -2204,6 +2205,19 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &5624570399325374923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6039268800475145770}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b9e175be507a284c94b71aa2edb8b84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _footstepClip: {fileID: 8300000, guid: 07b2bdef7afe92c44bf0d3efbaddf262, type: 3}
 --- !u!1 &6043684958203652041
 GameObject:
   m_ObjectHideFlags: 0

@@ -420,7 +420,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             return Vector3.one;
         }
     }
-    
+
     #endregion
 
     #region Data
