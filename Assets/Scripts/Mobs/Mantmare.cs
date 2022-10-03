@@ -926,7 +926,6 @@ public class Mantmare : GenericMob
 
         if (playerRigidbody != null)
         {
-            Debug.Log("Collided");
             playerRigidbody.AddForce(conjunctionLine * _repulsiveForce);
         }
 
