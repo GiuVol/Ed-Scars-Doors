@@ -8,7 +8,8 @@ public class Projectile : MonoBehaviour
     public const string NormalProjectileName = "LightProjectile";
     public const string DarkProjectileName = "DarkProjectile";
     public const string SwarmProjectileName = "SwarmProjectile";
-    
+    public const string PoisonStingName = "PoisonSting";
+
     /// <summary>
     /// The min scale that a Projectile can have.
     /// </summary>

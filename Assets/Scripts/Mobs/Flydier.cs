@@ -364,7 +364,7 @@ public class Flydier : GenericMob
         #endregion
         
         Projectile resource =
-            Resources.Load<Projectile>(Projectile.ProjectileResourcesPath + Projectile.NormalProjectileName);
+            Resources.Load<Projectile>(Projectile.ProjectileResourcesPath + Projectile.PoisonStingName);
 
         AudioClipHandler.PlayAudio("Audio/Slash2", 0, transform.position);
         
