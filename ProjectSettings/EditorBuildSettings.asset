@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MantmareTest.unity
     guid: 3f78977b4c75a284aab27db3517314a0
+  - enabled: 1
+    path: Assets/Scenes/Empty.unity
+    guid: 8f78d4f40996ba548be2ee7c760af850
   m_configObjects: {}

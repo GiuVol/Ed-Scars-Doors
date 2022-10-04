@@ -161,6 +161,16 @@ public class GameManager : MonoBehaviour
 
         UI.LoadSceneLoadingInfo();
 
+        Canvas canvas = UI.CurrentCanvas;
+
+        if (canvas != null)
+        {
+            foreach (Transform transform in canvas.transform)
+            {
+                Destroy(transform.gameObject);
+            }
+        }
+
         while (!sceneLoadingOperation.isDone)
         {
             activationProgress = Mathf.Clamp01(sceneLoadingOperation.progress / .9f);
@@ -233,5 +243,61 @@ public class GameManager : MonoBehaviour
         }
 
         UI.LoadHUD();
+    }
+
+    /// <summary>
+    /// This method loads the scene named <c>sceneName</c>, loading player and camera prefabs too.
+    /// </summary>
+    /// <param name="sceneName">The name of the scene to load</param>
+    /// <param name="timeToWait">The time to wait before to load the scene</param>
+    /// <returns></returns>
+    public IEnumerator LoadMainMenu()
+    {
+        int buildIndex = SceneUtility.GetBuildIndexByScenePath("Empty");
+
+        if (buildIndex < 0)
+        {
+            yield break;
+        }
+
+        AsyncOperation sceneLoadingOperation = SceneManager.LoadSceneAsync("Empty", LoadSceneMode.Single);
+        float activationProgress;
+
+        UI.LoadSceneLoadingInfo();
+
+        while (!sceneLoadingOperation.isDone)
+        {
+            activationProgress = Mathf.Clamp01(sceneLoadingOperation.progress / .9f);
+
+            if (UI.SceneLoadingInfo != null)
+            {
+                UI.SceneLoadingInfo.text = (Mathf.RoundToInt(activationProgress * 100f)).ToString() + "%";
+            }
+
+            yield return null;
+        }
+
+        UI.UnloadSceneLoadingInfo();
+
+        Canvas canvas = UI.CurrentCanvas;
+
+        if (canvas == null)
+        {
+            yield break;
+        }
+
+        foreach (Transform transform in canvas.transform)
+        {
+            Destroy(transform.gameObject);
+        }
+
+        UI.LoadMainMenu();
+        AudioManager.PlayOst("Audio/Ost/MainMenuOst");
+
+        if (MainCamera == null)
+        {
+            MainCamera = new GameObject("Camera", typeof(Camera), typeof(AudioListener)).GetComponent<Camera>();
+            MainCamera.backgroundColor = Color.black;
+        }
     }
 }
