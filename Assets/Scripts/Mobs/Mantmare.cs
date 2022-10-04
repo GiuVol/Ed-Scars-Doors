@@ -51,6 +51,10 @@ public class Mantmare : GenericMob
         }
     }
 
+    protected override Vector3 BlindnessEffectPositionOffset => new Vector3(0, _height / 2, 0);
+
+    protected override Vector3 CorrosionEffectPositionOffset => new Vector3(0, _height / 2, 0);
+    
     protected override void SetupBars()
     {
         if (HealthBarResource != null)
@@ -925,11 +929,15 @@ public class Mantmare : GenericMob
         if (_noisesClipHandler != null)
         {
             _noisesClipHandler.StopClip();
+            _noisesClipHandler = null;
         }
 
         AudioClipHandler.PlayAudio("Audio/DyingMantmare", 0, transform.position);
-        
-        StopCoroutine(_attackCoroutine);
+
+        if (_attackCoroutine != null)
+        {
+            StopCoroutine(_attackCoroutine);
+        }
 
         AnimController.SetTrigger(DieParameterName);
 

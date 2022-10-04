@@ -32,6 +32,10 @@ public class Crawler : GenericMob
     
     protected override Vector3 CorrosionBarPositionOffset => new Vector3(0, _height + 2, 0);
 
+    protected override Vector3 BlindnessEffectPositionOffset => new Vector3(0, _height / 2, 0);
+
+    protected override Vector3 CorrosionEffectPositionOffset => new Vector3(0, _height / 2, 0);
+
     [SerializeField]
     private TriggerCaster _headCaster;
 
