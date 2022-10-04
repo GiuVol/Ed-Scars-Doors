@@ -373,7 +373,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     {
         get
         {
-            return Vector3.zero;
+            return new Vector3(0, 5, 0);
         }
     }
 
@@ -406,7 +406,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     {
         get
         {
-            return Vector3.zero;
+            return new Vector3(0, 5, 0);
         }
     }
 
