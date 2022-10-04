@@ -35,6 +35,8 @@ public class ElegantMan : GenericMob
 
     private new void Start()
     {
+        Appear();
+
         base.Start();
         Health.IsInvincible = true;
         Status.IsImmune = true;
@@ -195,8 +197,62 @@ public class ElegantMan : GenericMob
         yield break;
     }
 
+    private void Appear()
+    {
+        StartCoroutine(AppearCoroutine());
+    }
+
+    private IEnumerator AppearCoroutine()
+    {
+        SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>();
+
+        if (renderers.Length <= 0)
+        {
+            yield break;
+        }
+
+        foreach (SpriteRenderer renderer in renderers)
+        {
+            renderer.color = new Color(renderer.color.r, renderer.color.g, renderer.color.b, 0);
+        }
+        
+        float timeToAppear = 1;
+        float timePassed = 0;
+
+        if (timeToAppear > 0)
+        {
+            float alphaValue;
+
+            do
+            {
+                yield return new WaitForFixedUpdate();
+
+                timePassed += Time.fixedDeltaTime;
+
+                alphaValue = Mathf.Clamp01(timePassed / timeToAppear);
+
+                foreach (SpriteRenderer renderer in renderers)
+                {
+                    renderer.color = new Color(renderer.color.r, renderer.color.g, renderer.color.b, alphaValue);
+                }
+
+            } while (alphaValue < 1);
+        } else
+        {
+            foreach (SpriteRenderer renderer in renderers)
+            {
+                renderer.color = new Color(renderer.color.r, renderer.color.g, renderer.color.b, 1);
+            }
+        }
+    }
+
     private void Disappear()
     {
+        if (_isDisappearing)
+        {
+            return;
+        }
+
         _isDisappearing = true;
         StartCoroutine(DisappearCoroutine());
     }
@@ -208,27 +264,30 @@ public class ElegantMan : GenericMob
 
         SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>();
 
-        if (renderers.Length > 0)
+        if (timeToFade > 0)
         {
-            float alphaValue = renderers[0].color.a;
-            float startingAlphaValue = alphaValue;
-
-            do
+            if (renderers.Length > 0)
             {
-                yield return new WaitForFixedUpdate();
+                float alphaValue = renderers[0].color.a;
+                float startingAlphaValue = alphaValue;
 
-                timePassed += Time.fixedDeltaTime;
-
-                alphaValue = startingAlphaValue * (1 - Mathf.Clamp01(timePassed / timeToFade));
-
-                alphaValue = Mathf.Max(alphaValue, 0);
-
-                foreach (SpriteRenderer renderer in renderers)
+                do
                 {
-                    renderer.color = new Color(renderer.color.r, renderer.color.g, renderer.color.b, alphaValue);
-                }
+                    yield return new WaitForFixedUpdate();
 
-            } while (alphaValue > 0);
+                    timePassed += Time.fixedDeltaTime;
+
+                    alphaValue = startingAlphaValue * (1 - Mathf.Clamp01(timePassed / timeToFade));
+
+                    alphaValue = Mathf.Max(alphaValue, 0);
+
+                    foreach (SpriteRenderer renderer in renderers)
+                    {
+                        renderer.color = new Color(renderer.color.r, renderer.color.g, renderer.color.b, alphaValue);
+                    }
+
+                } while (alphaValue > 0);
+            }
         }
 
         Destroy(gameObject);

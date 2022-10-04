@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5795095890735370373}
   - component: {fileID: 5795095890735370374}
   m_Layer: 6
-  m_Name: Elegant man
+  m_Name: ElegantMan
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -79,7 +79,7 @@ MonoBehaviour:
   _playerCheckInterval: 0.1
   _rangeToCheck: 50
   _attackRange: 10
-  _attackInterval: 3
+  _attackInterval: 1
   _mass: 100
   _speed: 45
   _canFloat: 0
