@@ -5,6 +5,7 @@ using UnityEngine;
 public class ElegantMan : GenericMob
 {
     private const float MaxSpeed = 7;
+    private const string ElegantManLayerName = "ElegantMan";
 
     [SerializeField]
     private TriggerCaster _armTriggerCaster;
@@ -33,6 +34,10 @@ public class ElegantMan : GenericMob
     
     protected override UIBar HealthBarResource => null;
 
+    protected override UIBar BlindnessBarResource => null;
+
+    protected override UIBar CorrosionBarResource => null;
+
     private new void Start()
     {
         Appear();
@@ -45,6 +50,11 @@ public class ElegantMan : GenericMob
 
         _ingameTime = 0;
         _isDisappearing = false;
+    }
+
+    protected override void SetupLayers()
+    {
+        CustomUtilities.SetLayerRecursively(gameObject, LayerMask.NameToLayer(ElegantManLayerName));
     }
 
     private void FixedUpdate()
