@@ -385,8 +385,10 @@ public class Mantmare : GenericMob
             return color;
         }
     }
-    
+
     #endregion
+
+    private AudioClipHandler _noisesClipHandler;
 
     protected new void Start()
     {
@@ -402,6 +404,9 @@ public class Mantmare : GenericMob
         }
 
         InvokeRepeating("UpdateRandomWanderPosition", 0, 3);
+
+        _noisesClipHandler = AudioClipHandler.PlayAudio("Audio/MantmareNoises", 1, transform.position, true);
+        _noisesClipHandler.transform.parent = transform;
     }
 
     #region Random points on screen
@@ -655,11 +660,28 @@ public class Mantmare : GenericMob
 
         AnimController.SetTrigger(StartAttack1ParameterName);
 
+        if (_leftArmTriggerCaster != null)
+        {
+            foreach (Collider2D collider in _leftArmTriggerCaster.GetComponents<Collider2D>())
+            {
+                collider.enabled = false;
+            }
+        }
+
         yield return new WaitForSeconds(.5f);
 
-        _leftArmTriggerCaster.TriggerFunction = collider => InflictDamage(collider, Attack1Power);
-        
+        if (_leftArmTriggerCaster != null)
+        {
+            _leftArmTriggerCaster.TriggerFunction = collider => InflictDamage(collider, Attack1Power);
+
+            foreach (Collider2D collider in _leftArmTriggerCaster.GetComponents<Collider2D>())
+            {
+                collider.enabled = true;
+            }
+        }
+
         AnimController.SetTrigger(EndAttack1ParameterName);
+        AudioClipHandler.PlayAudio("Audio/Slash", 1, transform.position);
 
         yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName(Attack1EndStateName));
 
@@ -742,10 +764,28 @@ public class Mantmare : GenericMob
 
             AnimController.SetTrigger(StopChargingAttack2ParameterName);
 
+            if (_headTriggerCaster != null)
+            {
+                foreach (Collider2D collider in _headTriggerCaster.GetComponents<Collider2D>())
+                {
+                    collider.enabled = false;
+                }
+            }
+            
             yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName(Attack2BoostStateName));
 
-            _headTriggerCaster.TriggerFunction = collider => InflictDamage(collider, Attack2Power);
-            
+            if (_headTriggerCaster != null)
+            {
+                _headTriggerCaster.TriggerFunction = collider => InflictDamage(collider, Attack2Power);
+                
+                foreach (Collider2D collider in _headTriggerCaster.GetComponents<Collider2D>())
+                {
+                    collider.enabled = true;
+                }
+            }
+
+            AudioClipHandler.PlayAudio("Audio/Whoosh2", 1, transform.position);
+
             do
             {
                 distance = Vector3.Distance(transform.position, patternEndPosition);
@@ -757,6 +797,10 @@ public class Mantmare : GenericMob
             AnimController.SetTrigger(EndAttack2ParameterName);
 
             yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName(Attack2EndStateName));
+
+            yield return new WaitForSeconds(.1f);
+
+            AudioClipHandler.PlayAudio("Audio/Whoosh", 1, transform.position);
             
             yield return new WaitUntil(() => !AnimController.GetCurrentAnimatorStateInfo(0).IsName(Attack2EndStateName));
 
@@ -826,7 +870,15 @@ public class Mantmare : GenericMob
 
         AnimController.SetTrigger(StartAttack3ParameterName);
 
+        AudioClipHandler preparingSpitClip = AudioClipHandler.PlayAudio("Audio/SpawnestEggGrowing", 1, transform.position, true);
+
         yield return new WaitForSeconds(2 * TimeMultiplierByStage);
+
+        if (preparingSpitClip != null)
+        {
+            preparingSpitClip.StopClip();
+        }
+        AudioClipHandler.PlayAudio("Audio/SpawnestEggHatching", 1, transform.position);
 
         AnimController.SetTrigger(EndAttack3ParameterName);
 
@@ -870,6 +922,13 @@ public class Mantmare : GenericMob
 
     protected override IEnumerator Die()
     {
+        if (_noisesClipHandler != null)
+        {
+            _noisesClipHandler.StopClip();
+        }
+
+        AudioClipHandler.PlayAudio("Audio/DyingMantmare", 0, transform.position);
+        
         StopCoroutine(_attackCoroutine);
 
         AnimController.SetTrigger(DieParameterName);

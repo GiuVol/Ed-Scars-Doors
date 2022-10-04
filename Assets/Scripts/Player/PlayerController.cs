@@ -815,6 +815,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         CanDash = false;
         
         MovementController.GiveImpulse(transform.right, CurrentDashForce);
+        AudioClipHandler.PlayAudio("Audio/Whoosh", 0, transform.position);
 
         Collider2D collider = GetComponent<Collider2D>();
 
