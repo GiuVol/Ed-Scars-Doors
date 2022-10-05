@@ -24,15 +24,14 @@ public class InsectsPlatform : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (_player == null)
-        {
-            _timeWithoutPlayer = Mathf.Clamp(_timeWithoutPlayer + Time.deltaTime, 0, TimeWithoutPlayerToResetTimer + 1);
+        bool playerIsOnPlatform = false;
 
-            if (_insectsForceField != null)
-            {
-                _insectsForceField.gameObject.SetActive(false);
-            }
-        } else
+        if (_player != null)
+        {
+            playerIsOnPlatform = _player.transform.position.y > transform.position.y;
+        }
+
+        if (playerIsOnPlatform)
         {
             _timeWithoutPlayer = 0;
 
@@ -43,6 +42,14 @@ public class InsectsPlatform : MonoBehaviour
                                                                     _insectsForceField.transform.position.y,
                                                                     _insectsForceField.transform.position.z);
             }
+        } else
+        {
+            _timeWithoutPlayer = Mathf.Clamp(_timeWithoutPlayer + Time.deltaTime, 0, TimeWithoutPlayerToResetTimer + 1);
+
+            if (_insectsForceField != null)
+            {
+                _insectsForceField.gameObject.SetActive(false);
+            }
         }
 
         if (_timeWithoutPlayer >= 5)
@@ -51,7 +58,7 @@ public class InsectsPlatform : MonoBehaviour
             return;
         }
 
-        if (_player != null)
+        if (playerIsOnPlatform)
         {
             _timer += Time.deltaTime;
             
