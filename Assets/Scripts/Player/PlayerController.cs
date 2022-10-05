@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
     private const float DashTime = .5f;
 
-    private const float MaxHiddenTime = 10;
+    private const float MaxHiddenTime = 150;
     private const float MinHidingRefreshTime = 2;
     private const float MaxHidingRefreshTime = 5;
 
@@ -676,9 +676,12 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             _hiddenTime = 0;
         }
 
-        if (_hiddenTime >= MaxHiddenTime)
+        if (CurrentHidingPlace != null)
         {
-            GetOutOfHiding();
+            if (_hiddenTime >= Mathf.Min(MaxHiddenTime, CurrentHidingPlace.MaxHidingTime))
+            {
+                GetOutOfHiding();
+            }
         }
     }
 
