@@ -12,6 +12,9 @@ public class InsectsPlatform : MonoBehaviour
     [SerializeField]
     private float _interval;
 
+    [SerializeField]
+    private ParticleSystemForceField _insectsForceField;
+
     private PlayerController _player;
 
     private float _timer;
@@ -24,9 +27,22 @@ public class InsectsPlatform : MonoBehaviour
         if (_player == null)
         {
             _timeWithoutPlayer = Mathf.Clamp(_timeWithoutPlayer + Time.deltaTime, 0, TimeWithoutPlayerToResetTimer + 1);
+
+            if (_insectsForceField != null)
+            {
+                _insectsForceField.gameObject.SetActive(false);
+            }
         } else
         {
             _timeWithoutPlayer = 0;
+
+            if (_insectsForceField != null)
+            {
+                _insectsForceField.gameObject.SetActive(true);
+                _insectsForceField.transform.position = new Vector3(_player.transform.position.x,
+                                                                    _insectsForceField.transform.position.y,
+                                                                    _insectsForceField.transform.position.z);
+            }
         }
 
         if (_timeWithoutPlayer >= 5)
