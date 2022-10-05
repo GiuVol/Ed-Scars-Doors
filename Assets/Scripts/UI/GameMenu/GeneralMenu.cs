@@ -46,6 +46,14 @@ public class GeneralMenu : MultiButtonsMenu, ITabContent
             _restartDemoButton.onClick.AddListener(
                 delegate
                 {
+                    if (GameManager.Instance != null)
+                    {
+                        if (GameManager.Instance.Player != null)
+                        {
+                            Destroy(GameManager.Instance.Player.gameObject);
+                        }
+                    }
+
                     if (UIManager.Instance == null)
                     {
                         return;

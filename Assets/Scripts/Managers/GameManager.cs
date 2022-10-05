@@ -156,6 +156,11 @@ public class GameManager : MonoBehaviour
             yield break;
         }
 
+        if (Player != null)
+        {
+            Player.gameObject.SetActive(false);
+        }
+
         AsyncOperation sceneLoadingOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
         float activationProgress;
 
@@ -201,15 +206,21 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        PlayerController playerController = 
-            Instantiate(Resources.Load<PlayerController>(PlayerResourcesPath), playerPosition, Quaternion.identity);
+        if (Player != null)
+        {
+            Player.transform.position = playerPosition;
+            Player.gameObject.SetActive(true);
+        } else
+        {
+            Player = Instantiate(Resources.Load<PlayerController>(PlayerResourcesPath), playerPosition, Quaternion.identity);
+            Player.Setup();
+            DontDestroyOnLoad(Player.gameObject);
+        }
+
         CameraController cameraController = 
             Instantiate(Resources.Load<CameraController>(CameraResourcesPath), cameraPosition, Quaternion.identity);
 
-        cameraController.Target = playerController.transform;
-
-        Player = playerController;
-        Player.Setup();
+        cameraController.Target = Player.transform;
         MainCamera = cameraController.CameraComponent;
 
         GameObject astarManagerPrefab = Resources.Load<GameObject>("AI/AstarGrid");
@@ -230,7 +241,7 @@ public class GameManager : MonoBehaviour
 
             if (proceduralGridMover != null)
             {
-                proceduralGridMover.target = playerController.transform;
+                proceduralGridMover.target = Player.transform;
             }
         }
 
@@ -258,6 +269,12 @@ public class GameManager : MonoBehaviour
         if (buildIndex < 0)
         {
             yield break;
+        }
+
+        if (Player != null)
+        {
+            Destroy(Player.gameObject);
+            Player = null;
         }
 
         AsyncOperation sceneLoadingOperation = SceneManager.LoadSceneAsync("Empty", LoadSceneMode.Single);
