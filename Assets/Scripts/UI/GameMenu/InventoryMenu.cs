@@ -5,8 +5,10 @@ using UnityEngine;
 public class InventoryMenu : UIListMenu, ITabContent
 {
     private const string OperationSelectorPath = "UI/OperationSelector";
+    private const string PromptPath = "UI/GameMenuPrompt";
 
     private UIOperationSelector _uiOperationSelectorPrefab;
+    private UIPrompt _uiPromptPrefab;
     
     public bool HasControl { get; set; }
 
@@ -14,6 +16,7 @@ public class InventoryMenu : UIListMenu, ITabContent
     {
         base.Start();
         _uiOperationSelectorPrefab = Resources.Load<GameMenuOperationSelector>(OperationSelectorPath);
+        _uiPromptPrefab = Resources.Load<UIPrompt>(PromptPath);
     }
 
     void Update()
@@ -139,9 +142,38 @@ public class InventoryMenu : UIListMenu, ITabContent
             ListElementOperation useOperation =
                 new ListElementOperation("Usa",
                     delegate {
-                        item.Use(player);
-                        player.Inventory.RemoveIstances(item, 1);
-                        UpdateElements();
+                        try
+                        {
+                            item.Use(player);
+                            AudioClipHandler.PlayAudio("Audio/PressButton");
+                            player.Inventory.RemoveIstances(item, 1);
+                            UpdateElements();
+                        }
+                        catch (NoNeedToUseThisItemException ex)
+                        {
+                            if (_uiPromptPrefab == null)
+                            {
+                                return;
+                            }
+
+                            AudioClipHandler.PlayAudio("Audio/Disabled");
+                            UIPrompt prompt = Instantiate(_uiPromptPrefab, gameObject.transform);
+
+                            if (prompt == null)
+                            {
+                                return;
+                            }
+
+                            UIManager.Instance.GameMenu.HasControl = false;
+                            HasControl = false;
+
+                            Task promptTask = new Task(prompt.PromptText(ex.Message,
+                                delegate {
+                                    UIManager.Instance.GameMenu.HasControl = true;
+                                    HasControl = true;
+                                    AudioClipHandler.PlayAudio("Audio/PressButton");
+                                }, true));
+                        }
                     }
                 );
 

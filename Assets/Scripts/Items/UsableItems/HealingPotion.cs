@@ -26,6 +26,11 @@ public class HealingPotion : UsableItem
             return;
         }
 
+        if (player.Health.CurrentHealth >= player.Health.MaxHealth)
+        {
+            throw new NoNeedToUseThisItemException();
+        }
+
         int oldHealthValue = player.Health.CurrentHealth;
 
         if (UsePercentageIncrement)
