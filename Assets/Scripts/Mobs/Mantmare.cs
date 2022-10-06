@@ -826,13 +826,13 @@ public class Mantmare : GenericMob
         }
 
         Vector2 leftScreenPosition =
-            Camera.main.ScreenToWorldPoint(new Vector3(Mathf.RoundToInt((2f / 8f) * Screen.width),
-                                           Mathf.RoundToInt((7f / 8f) * Screen.height),
+            Camera.main.ScreenToWorldPoint(new Vector3(Mathf.RoundToInt((1f / 8f) * Screen.width),
+                                           Mathf.RoundToInt((7.5f / 8f) * Screen.height),
                                            0)) - (Vector3.up * _height);
 
         Vector2 rightScreenPosition =
-            Camera.main.ScreenToWorldPoint(new Vector3(Mathf.RoundToInt((6f / 8f) * Screen.width),
-                                           Mathf.RoundToInt((7f / 8f) * Screen.height),
+            Camera.main.ScreenToWorldPoint(new Vector3(Mathf.RoundToInt((7f / 8f) * Screen.width),
+                                           Mathf.RoundToInt((7.5f / 8f) * Screen.height),
                                            0)) - (Vector3.up * _height);
 
         Vector3 patternStartPosition;
@@ -874,11 +874,32 @@ public class Mantmare : GenericMob
         }
 
         transform.rotation = desiredRotation;
-        
-        int iterations = 3;
 
-        for (int i = 0; i < iterations; i++)
+        int iterations;
+        
+        switch (MantmareStageByHealth)
         {
+            case 1:
+                iterations = 2;
+                break;
+            case 2:
+                iterations = 3;
+                break;
+            case 3:
+                iterations = 4;
+                break;
+            default:
+                iterations = 3;
+                break;
+        }
+        
+        for (int spitCounter = 0; spitCounter < iterations; spitCounter++)
+        {
+            if (target == null)
+            {
+                yield break;
+            }
+
             AnimController.SetTrigger(StartAttack3ParameterName);
 
             AudioClipHandler preparingSpitClip = AudioClipHandler.PlayAudio("Audio/SpawnestEggGrowing", 1, transform.position, true);
@@ -893,21 +914,49 @@ public class Mantmare : GenericMob
             AudioClipHandler.PlayAudio("Audio/SpawnestEggHatching", 1, transform.position);
             AnimController.SetTrigger(EndAttack3ParameterName);
 
+            int numberOfProjectiles;
+
+            switch (MantmareStageByHealth)
+            {
+                case 1:
+                    numberOfProjectiles = 3;
+                    break;
+                case 2:
+                    numberOfProjectiles = 4;
+                    break;
+                case 3:
+                    numberOfProjectiles = 5;
+                    break;
+                default:
+                    numberOfProjectiles = 3;
+                    break;
+            }
+            
             if (_spitSpawnPoint != null)
             {
-                Projectile resource =
-                    Resources.Load<Projectile>(Projectile.ProjectileResourcesPath + Projectile.MantmareSpitName);
-
-                Projectile projectile = Instantiate(resource, _spitSpawnPoint.transform.position, desiredRotation);
-
-                Rigidbody2D projectileRigidbody = projectile.GetComponentInParent<Rigidbody2D>();
-
-                if (projectileRigidbody != null)
+                for (int projectilesCounter = 0; projectilesCounter < numberOfProjectiles; projectilesCounter++)
                 {
-                    Vector3 forceDirection = (target.transform.position - _spitSpawnPoint.transform.position);
-                    forceDirection.z = 0;
-                    float forceFactor = Random.Range(3, 5);
-                    projectileRigidbody.AddForce(forceDirection * forceFactor, ForceMode2D.Impulse);
+                    if (target != null)
+                    {
+                        Projectile resource =
+                            Resources.Load<Projectile>(Projectile.ProjectileResourcesPath + Projectile.MantmareSpitName);
+
+                        Projectile projectile = Instantiate(resource, _spitSpawnPoint.transform.position, desiredRotation);
+
+                        Rigidbody2D projectileRigidbody = projectile.GetComponentInParent<Rigidbody2D>();
+
+                        if (projectileRigidbody != null)
+                        {
+                            Vector3 forceDirection = (target.transform.position - _spitSpawnPoint.transform.position);
+                            forceDirection.z = 0;
+                            float forceIncrement = projectilesCounter * 2;
+                            float forceFactor = Random.Range(1 + forceIncrement, 2 + forceIncrement);
+                            projectileRigidbody.AddForce(forceDirection * forceFactor, ForceMode2D.Impulse);
+                        }
+                    } else
+                    {
+                        yield break;
+                    }
                 }
             }
 

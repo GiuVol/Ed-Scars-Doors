@@ -755,7 +755,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         Vector2 jumpDirection = Vector2.up;
         MovementController.GiveImpulse(jumpDirection, CurrentJumpForce);
 
-        AudioClipHandler.PlayAudio("Audio/CartoonJump", 0, transform.position);
+        AudioClipHandler.PlayAudio("Audio/Whoosh", 0, transform.position);
 
         if (!isGrounded)
         {
@@ -820,18 +820,13 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         MovementController.GiveImpulse(transform.right, CurrentDashForce);
         AudioClipHandler.PlayAudio("Audio/Whoosh", 0, transform.position);
 
-        Collider2D collider = GetComponent<Collider2D>();
-
-        Health.SetInvincibilityTemporarily(DashTime);
-        Status.SetImmunityTemporarily(DashTime);
-
         Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(PlayerLayerName), LayerMask.NameToLayer(GenericMob.MobLayerName));
-        //CurrentGravityScale = 0;
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(PlayerLayerName), LayerMask.NameToLayer(GenericMob.MobProjectileLayerName));
 
         yield return new WaitForSeconds(DashTime);
 
         Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(PlayerLayerName), LayerMask.NameToLayer(GenericMob.MobLayerName), false);
-        //CurrentGravityScale = oldGravityScale;
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(PlayerLayerName), LayerMask.NameToLayer(GenericMob.MobProjectileLayerName), false);
 
         yield return new WaitForSeconds(CurrentDashInterval);
 
