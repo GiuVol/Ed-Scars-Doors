@@ -47,10 +47,10 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 5
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0.5
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -84,7 +84,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5f99697fd0cf6944a21e0eb53f75005, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BasePower: 35
+  BasePower: 80
   Speed: 0
   DistanceToLast: 500
   AdditionalEffects: []
@@ -165,7 +165,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 4000
   m_Sprite: {fileID: 21300000, guid: 5780085bcfc3b604a92b0d4c948342f2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

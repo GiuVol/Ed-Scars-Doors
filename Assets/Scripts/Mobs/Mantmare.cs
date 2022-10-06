@@ -874,38 +874,47 @@ public class Mantmare : GenericMob
         }
 
         transform.rotation = desiredRotation;
-
-        AnimController.SetTrigger(StartAttack3ParameterName);
-
-        AudioClipHandler preparingSpitClip = AudioClipHandler.PlayAudio("Audio/SpawnestEggGrowing", 1, transform.position, true);
-
-        yield return new WaitForSeconds(2 * TimeMultiplierByStage);
-
-        if (preparingSpitClip != null)
-        {
-            preparingSpitClip.StopClip();
-        }
-
-        AudioClipHandler.PlayAudio("Audio/SpawnestEggHatching", 1, transform.position);
-        AnimController.SetTrigger(EndAttack3ParameterName);
-
-        Projectile resource =
-            Resources.Load<Projectile>(Projectile.ProjectileResourcesPath + Projectile.MantmareSpitName);
-
-        Projectile projectile = Instantiate(resource, _spitSpawnPoint.transform.position, desiredRotation);
-
-        Rigidbody2D projectileRigidbody = projectile.GetComponentInParent<Rigidbody2D>();
-
-        if (projectileRigidbody)
-        {
-            Vector3 forceDirection = (target.transform.position - _spitSpawnPoint.transform.position);
-            forceDirection.z = 0;
-            projectileRigidbody.AddForce(forceDirection);
-        }
         
-        yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName(Attack3EndStateName));
+        int iterations = 3;
 
-        yield return new WaitUntil(() => !AnimController.GetCurrentAnimatorStateInfo(0).IsName(Attack3EndStateName));
+        for (int i = 0; i < iterations; i++)
+        {
+            AnimController.SetTrigger(StartAttack3ParameterName);
+
+            AudioClipHandler preparingSpitClip = AudioClipHandler.PlayAudio("Audio/SpawnestEggGrowing", 1, transform.position, true);
+
+            yield return new WaitForSeconds(1 * TimeMultiplierByStage);
+
+            if (preparingSpitClip != null)
+            {
+                preparingSpitClip.StopClip();
+            }
+
+            AudioClipHandler.PlayAudio("Audio/SpawnestEggHatching", 1, transform.position);
+            AnimController.SetTrigger(EndAttack3ParameterName);
+
+            if (_spitSpawnPoint != null)
+            {
+                Projectile resource =
+                    Resources.Load<Projectile>(Projectile.ProjectileResourcesPath + Projectile.MantmareSpitName);
+
+                Projectile projectile = Instantiate(resource, _spitSpawnPoint.transform.position, desiredRotation);
+
+                Rigidbody2D projectileRigidbody = projectile.GetComponentInParent<Rigidbody2D>();
+
+                if (projectileRigidbody != null)
+                {
+                    Vector3 forceDirection = (target.transform.position - _spitSpawnPoint.transform.position);
+                    forceDirection.z = 0;
+                    float forceFactor = Random.Range(3, 5);
+                    projectileRigidbody.AddForce(forceDirection * forceFactor, ForceMode2D.Impulse);
+                }
+            }
+
+            yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName(Attack3EndStateName));
+
+            yield return new WaitUntil(() => !AnimController.GetCurrentAnimatorStateInfo(0).IsName(Attack3EndStateName));
+        }
     }
     
     /// <summary>
