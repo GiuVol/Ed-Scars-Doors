@@ -243,7 +243,10 @@ public class Mantmare : GenericMob
     /// </summary>
     [SerializeField]
     private TriggerCaster _headTriggerCaster;
-    
+
+    [SerializeField]
+    private Transform _spitSpawnPoint;
+
     #endregion
 
     #region Graphics
@@ -607,10 +610,10 @@ public class Mantmare : GenericMob
         switch (decidedPattern)
         {
             case 1:
-                yield return Pattern1(target);
+                yield return Pattern3(target);
                 break;
             case 2:
-                yield return Pattern2(target);
+                yield return Pattern3(target);
                 break;
             case 3:
                 yield return Pattern3(target);
@@ -882,10 +885,24 @@ public class Mantmare : GenericMob
         {
             preparingSpitClip.StopClip();
         }
-        AudioClipHandler.PlayAudio("Audio/SpawnestEggHatching", 1, transform.position);
 
+        AudioClipHandler.PlayAudio("Audio/SpawnestEggHatching", 1, transform.position);
         AnimController.SetTrigger(EndAttack3ParameterName);
 
+        Projectile resource =
+            Resources.Load<Projectile>(Projectile.ProjectileResourcesPath + Projectile.MantmareSpitName);
+
+        Projectile projectile = Instantiate(resource, _spitSpawnPoint.transform.position, desiredRotation);
+
+        Rigidbody2D projectileRigidbody = projectile.GetComponentInParent<Rigidbody2D>();
+
+        if (projectileRigidbody)
+        {
+            Vector3 forceDirection = (target.transform.position - _spitSpawnPoint.transform.position);
+            forceDirection.z = 0;
+            projectileRigidbody.AddForce(forceDirection);
+        }
+        
         yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName(Attack3EndStateName));
 
         yield return new WaitUntil(() => !AnimController.GetCurrentAnimatorStateInfo(0).IsName(Attack3EndStateName));

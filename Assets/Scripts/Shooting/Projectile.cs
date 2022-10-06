@@ -9,6 +9,7 @@ public class Projectile : MonoBehaviour
     public const string DarkProjectileName = "DarkProjectile";
     public const string SwarmProjectileName = "SwarmProjectile";
     public const string PoisonStingName = "PoisonSting";
+    public const string MantmareSpitName = "MantmareSpit";
 
     /// <summary>
     /// The min scale that a Projectile can have.
@@ -234,17 +235,49 @@ public class Projectile : MonoBehaviour
             }
         }
     }
+
+    [SerializeField]
+    private bool _dontDestroy;
+
+    [SerializeField]
+    private bool _useRigidbody;
     
-    void Start()
+    public delegate void OnHitDelegate();
+
+    private OnHitDelegate _onHit;
+
+    public OnHitDelegate OnHit
+    {
+        get
+        {
+            if (_onHit == null)
+            {
+                return delegate { };
+            } else
+            {
+                return _onHit;
+            }
+        }
+
+        set
+        {
+            _onHit = value;
+        }
+    }
+    
+    protected void Start()
     {
         if (gameObject.GetComponent<Rigidbody2D>() == null)
         {
             gameObject.AddComponent<Rigidbody2D>();
         }
 
-        AttachedRigidbody = gameObject.GetComponent<Rigidbody2D>();
-        AttachedRigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
-        AttachedRigidbody.gravityScale = 0;
+        if (!_useRigidbody)
+        {
+            AttachedRigidbody = gameObject.GetComponent<Rigidbody2D>();
+            AttachedRigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
+            AttachedRigidbody.gravityScale = 0;
+        }
 
         Collider2D attachedCollider = gameObject.GetComponentInChildren<Collider2D>();
 
@@ -265,7 +298,10 @@ public class Projectile : MonoBehaviour
 
     void FixedUpdate()
     {
-        transform.Translate(transform.right * Speed, Space.World);
+        if (!_useRigidbody)
+        {
+            transform.Translate(transform.right * Speed, Space.World);
+        }
     }
 
     /// <summary>
@@ -387,6 +423,12 @@ public class Projectile : MonoBehaviour
         }
 
         StopAllCoroutines();
-        Destroy(gameObject);
+
+        OnHit?.Invoke();
+
+        if (!_dontDestroy)
+        {
+            Destroy(gameObject);
+        }
     }
 }
