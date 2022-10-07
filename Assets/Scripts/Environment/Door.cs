@@ -57,7 +57,7 @@ public class Door : MonoBehaviour
         NullableVector3 playerPosition = (_useCustomPlayerPosition) ? _desiredPlayerPosition : null;
         NullableVector3 cameraPosition = (_useCustomCameraPosition) ? _desiredCameraPosition : null;
 
-        GameManager.Instance.StartCoroutine(GameManager.Instance.LoadScene(_sceneToLoadName, 0, playerPosition, cameraPosition));
+        GameManager.Instance.StartCoroutine(GameManager.Instance.LoadLevel(_sceneToLoadName, 0, playerPosition, cameraPosition));
     }
 
     private void EnableEnterMessage(bool enabled)

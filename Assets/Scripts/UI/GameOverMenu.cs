@@ -91,7 +91,7 @@ public class GameOverMenu : MultiButtonsMenu
 
                     if (GameManager.Instance != null)
                     {
-                        GameManager.Instance.StartCoroutine(GameManager.Instance.LoadScene("Corridor"));
+                        GameManager.Instance.StartCoroutine(GameManager.Instance.LoadLevel("Corridor"));
                     }
                 }
             );

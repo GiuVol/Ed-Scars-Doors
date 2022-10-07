@@ -142,7 +142,7 @@ public class GameManager : MonoBehaviour
     /// <param name="sceneName">The name of the scene to load</param>
     /// <param name="timeToWait">The time to wait before to load the scene</param>
     /// <returns></returns>
-    public IEnumerator LoadScene(string sceneName, float timeToWait = 0, NullableVector3 playerPosition = null, NullableVector3 cameraPosition = null)
+    public IEnumerator LoadLevel(string sceneName, float timeToWait = 0, NullableVector3 playerPosition = null, NullableVector3 cameraPosition = null)
     {
         if (timeToWait > 0)
         {

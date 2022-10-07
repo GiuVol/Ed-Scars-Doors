@@ -68,7 +68,7 @@ public class GeneralMenu : MultiButtonsMenu, ITabContent
 
                     if (GameManager.Instance != null)
                     {
-                        GameManager.Instance.StartCoroutine(GameManager.Instance.LoadScene("Corridor"));
+                        GameManager.Instance.StartCoroutine(GameManager.Instance.LoadLevel("Corridor"));
                     }
                 }
             );
