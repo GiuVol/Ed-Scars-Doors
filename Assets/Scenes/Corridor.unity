@@ -301,6 +301,34 @@ PrefabInstance:
       propertyPath: _sceneToLoadName
       value: MantmareTest
       objectReference: {fileID: 0}
+    - target: {fileID: 2929833934274889358, guid: adba0c44185a67540b390e932d446137, type: 3}
+      propertyPath: _useCustomCameraPosition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2929833934274889358, guid: adba0c44185a67540b390e932d446137, type: 3}
+      propertyPath: _useCustomPlayerPosition
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2929833934274889358, guid: adba0c44185a67540b390e932d446137, type: 3}
+      propertyPath: _desiredCameraPosition._x
+      value: -80
+      objectReference: {fileID: 0}
+    - target: {fileID: 2929833934274889358, guid: adba0c44185a67540b390e932d446137, type: 3}
+      propertyPath: _desiredCameraPosition._y
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2929833934274889358, guid: adba0c44185a67540b390e932d446137, type: 3}
+      propertyPath: _desiredCameraPosition._z
+      value: -30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2929833934274889358, guid: adba0c44185a67540b390e932d446137, type: 3}
+      propertyPath: _desiredPlayerPosition._x
+      value: -80
+      objectReference: {fileID: 0}
+    - target: {fileID: 2929833934274889358, guid: adba0c44185a67540b390e932d446137, type: 3}
+      propertyPath: _desiredPlayerPosition._y
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 5069691454677213152, guid: adba0c44185a67540b390e932d446137, type: 3}
       propertyPath: m_Name
       value: Red Door_gfx

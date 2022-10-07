@@ -11,6 +11,18 @@ public class Door : MonoBehaviour
     [SerializeField]
     private bool _locked;
 
+    [SerializeField]
+    private bool _useCustomPlayerPosition;
+
+    [SerializeField]
+    private NullableVector3 _desiredPlayerPosition;
+
+    [SerializeField]
+    private bool _useCustomCameraPosition;
+
+    [SerializeField]
+    private NullableVector3 _desiredCameraPosition;
+
     private DynamicUIComponent _uiEnterMessage;
     
     void Start()
@@ -42,7 +54,10 @@ public class Door : MonoBehaviour
             return;
         }
 
-        GameManager.Instance.StartCoroutine(GameManager.Instance.LoadScene(_sceneToLoadName));
+        NullableVector3 playerPosition = (_useCustomPlayerPosition) ? _desiredPlayerPosition : null;
+        NullableVector3 cameraPosition = (_useCustomCameraPosition) ? _desiredCameraPosition : null;
+
+        GameManager.Instance.StartCoroutine(GameManager.Instance.LoadScene(_sceneToLoadName, 0, playerPosition, cameraPosition));
     }
 
     private void EnableEnterMessage(bool enabled)

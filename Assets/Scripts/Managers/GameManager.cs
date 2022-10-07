@@ -142,7 +142,7 @@ public class GameManager : MonoBehaviour
     /// <param name="sceneName">The name of the scene to load</param>
     /// <param name="timeToWait">The time to wait before to load the scene</param>
     /// <returns></returns>
-    public IEnumerator LoadScene(string sceneName, float timeToWait = 0)
+    public IEnumerator LoadScene(string sceneName, float timeToWait = 0, NullableVector3 playerPosition = null, NullableVector3 cameraPosition = null)
     {
         if (timeToWait > 0)
         {
@@ -190,19 +190,22 @@ public class GameManager : MonoBehaviour
 
         UI.UnloadSceneLoadingInfo();
 
-        Vector3 playerPosition = Vector3.zero;
-        Vector3 cameraPosition = Vector3.zero;
-
         GameObject playerSpawn = GameObject.Find(PlayerStartPositionName);
         GameObject cameraSpawn = GameObject.Find(CameraStartPositionName);
         
         if (playerSpawn != null)
         {
-            playerPosition = playerSpawn.transform.position;
+            if (playerPosition == null)
+            {
+                playerPosition = playerSpawn.transform.position;
+            }
 
             if (cameraSpawn != null)
             {
-                cameraPosition = cameraSpawn.transform.position;
+                if (cameraPosition == null)
+                {
+                    cameraPosition = cameraSpawn.transform.position;
+                }
             }
         }
 
