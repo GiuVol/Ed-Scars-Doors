@@ -21,7 +21,7 @@ public class CameraController : MonoBehaviour
     /// <summary>
     /// The z position that the camera must have.
     /// </summary>
-    private const float DesiredZ = -30;
+    private const float DesiredZ = -1;
 
     /// <summary>
     /// The time (in seconds) that the camera needs to reach the desired position.
