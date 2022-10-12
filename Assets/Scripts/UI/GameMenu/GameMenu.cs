@@ -43,7 +43,7 @@ public class GameMenu : UITabMenu
             }
         }
 
-        if (InputHandler.OpenMenu("Down"))
+        if (InputHandler.CloseMenu("Down"))
         {
             AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
             GameManager.Instance.UI.UnloadGameMenu();

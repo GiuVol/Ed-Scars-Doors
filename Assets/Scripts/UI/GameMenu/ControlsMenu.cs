@@ -192,7 +192,7 @@ public class ControlsMenu : MonoBehaviour
             }
         }
 
-        if (InputHandler.OpenMenu("Down"))
+        if (InputHandler.CloseMenu("Down"))
         {
             AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
             Destroy(gameObject);
