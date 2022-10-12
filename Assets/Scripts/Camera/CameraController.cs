@@ -220,7 +220,7 @@ public class CameraController : MonoBehaviour
         bool flipX = _canFlipX && Target.transform.right.x < 0;
 
         float actualPositionOffsetX = flipX ? -PositionOffset.x : PositionOffset.x;
-        Vector3 actualPositionOffset = new Vector3(actualPositionOffsetX, PositionOffset.y, PositionOffset.z);
+        Vector3 actualPositionOffset = new Vector3(actualPositionOffsetX, PositionOffset.y, Mathf.Min(PositionOffset.z, Target.transform.position.z - 1));
 
         _desiredPosition = Target.position + actualPositionOffset;
         //_desiredPosition.z = DesiredZ;
