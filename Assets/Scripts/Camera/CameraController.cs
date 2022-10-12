@@ -223,7 +223,7 @@ public class CameraController : MonoBehaviour
         Vector3 actualPositionOffset = new Vector3(actualPositionOffsetX, PositionOffset.y, PositionOffset.z);
 
         _desiredPosition = Target.position + actualPositionOffset;
-        _desiredPosition.z = DesiredZ;
+        //_desiredPosition.z = DesiredZ;
 
         transform.position = Vector3.SmoothDamp(transform.position, _desiredPosition, ref _currentVelocity, _smoothTime);
     }
@@ -253,7 +253,7 @@ public class CameraController : MonoBehaviour
         do
         {
             _desiredPosition = Vector3.Lerp(startPosition, position, lerpFactor);
-            _desiredPosition.z = DesiredZ;
+            //_desiredPosition.z = DesiredZ;
             transform.position = _desiredPosition;
             lerpFactor = Mathf.Clamp01(lerpFactor + Time.fixedDeltaTime * speed);
 
