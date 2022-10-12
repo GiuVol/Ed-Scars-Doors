@@ -32,6 +32,12 @@ public class GameOverMenu : MultiButtonsMenu
     /// This field stores the button of to quit the game.
     /// </summary>
     [SerializeField]
+    private Button _mainMenuButton;
+    
+    /// <summary>
+    /// This field stores the button of to quit the game.
+    /// </summary>
+    [SerializeField]
     private Button _quitButton;
 
     /// <summary>
@@ -45,6 +51,14 @@ public class GameOverMenu : MultiButtonsMenu
         }
     }
 
+    public Button MainMenuButton
+    {
+        get
+        {
+            return _mainMenuButton;
+        }
+    }
+    
     /// <summary>
     /// This property returns the button of to quit the game.
     /// </summary>
@@ -77,12 +91,32 @@ public class GameOverMenu : MultiButtonsMenu
 
                     if (GameManager.Instance != null)
                     {
-                        GameManager.Instance.StartCoroutine(GameManager.Instance.LoadScene("Corridor"));
+                        GameManager.Instance.StartCoroutine(GameManager.Instance.LoadLevel("Corridor"));
                     }
                 }
             );
         }
 
+        if (MainMenuButton != null)
+        {
+            MainMenuButton.onClick.AddListener(
+                delegate
+                {
+                    if (GameManager.Instance == null)
+                    {
+                        #if UNITY_EDITOR
+                        UnityEditor.EditorApplication.isPlaying = false;
+                        #else
+                        Application.Quit();
+                        #endif
+                    } else
+                    {
+                        GameManager.Instance.StartCoroutine(GameManager.Instance.LoadMainMenu());
+                    }
+                }
+            );
+        }
+        
         if (QuitButton != null)
         {
             QuitButton.onClick.AddListener(

@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: Mantmare
-  _maxHealthValue: 1000
+  _maxHealthValue: 5000
   _attackStandardValue: 100
   _attackMinValue: 100
   _attackMaxValue: 200
@@ -57,16 +57,16 @@ MonoBehaviour:
   _blindnessResistence: 0.25
   _blindnessLevelDecrementSpeed: 1
   _maxCorrosionTime: 5
-  _corrosionDamage: 0
+  _corrosionDamage: 0.01
   _corrosionDamageInterval: 0
   _playerCheckInterval: 0.1
   _rangeToCheck: 100
   _attackRange: 5
   _attackInterval: 2
   _mass: 100
-  _speed: 25
+  _speed: 50
   _canFloat: 1
-  _repulsiveForce: 1000
+  _repulsiveForce: 5000
   _contactDamage: 1
   _width: 12
   _height: 18
@@ -76,6 +76,7 @@ MonoBehaviour:
   _droppedItems: []
   _leftArmTriggerCaster: {fileID: 168086537}
   _headTriggerCaster: {fileID: 1504714008}
+  _spitSpawnPoint: {fileID: 6152262756119618067}
   _leg1: {fileID: 7930299390200221721}
   _leg2: {fileID: 5332826027994526913}
   _arm1: {fileID: 7687888095896367148}
@@ -94,6 +95,37 @@ MonoBehaviour:
   _stage3ArmsColor: {r: 0.99215686, g: 0.14509805, b: 0.14509805, a: 1}
   _stage3BustColor: {r: 0.99215686, g: 0.14509805, b: 0.14509805, a: 1}
   _stage3HeadColor: {r: 0.99215686, g: 0.14509805, b: 0.14509805, a: 1}
+--- !u!1 &5892334093044853596
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6152262756119618067}
+  m_Layer: 0
+  m_Name: SpitSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6152262756119618067
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5892334093044853596}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.5, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7447066384003706287}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &4427917879341470854
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1513,6 +1545,11 @@ CapsuleCollider2D:
   m_Offset: {x: 1.5, y: 0}
   m_Size: {x: 4, y: 1}
   m_Direction: 1
+--- !u!4 &7447066384003706287 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -2726273499295057623, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}
+  m_PrefabInstance: {fileID: 4427917879341470854}
+  m_PrefabAsset: {fileID: 0}
 --- !u!212 &7687888095896367148 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: -2899259724117269334, guid: 6c74219a9e96aa44fad31d82c8295909, type: 3}

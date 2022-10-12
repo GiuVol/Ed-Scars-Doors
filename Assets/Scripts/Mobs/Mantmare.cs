@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class Mantmare : GenericMob
 {
+    private const float Attack1Power = 5;
+    private const float Attack2Power = 2.5f;
+    private const float Attack3Power = 7.5f;
+
     #region Animator Consts
 
     private const string FlyCycleStateName = "FlyCycle";
@@ -47,12 +51,21 @@ public class Mantmare : GenericMob
         }
     }
 
+    protected override Vector3 BlindnessEffectPositionOffset => new Vector3(0, _height / 2, 0);
+
+    protected override Vector3 CorrosionEffectPositionOffset => new Vector3(0, _height / 2, 0);
+    
     protected override void SetupBars()
     {
         if (HealthBarResource != null)
         {
-            HealthBar = Instantiate(HealthBarResource, GameObject.FindObjectOfType<Canvas>().transform);
-            HealthBar.InitializeStatic(Health.MaxHealth);
+            Canvas canvas = GameObject.FindObjectOfType<Canvas>();
+
+            if (canvas != null)
+            {
+                HealthBar = Instantiate(HealthBarResource, GameObject.FindObjectOfType<Canvas>().transform);
+                HealthBar.InitializeStatic(Health.MaxHealth);
+            }
         }
     }
 
@@ -189,14 +202,18 @@ public class Mantmare : GenericMob
         {
             bool isOnScreen = false;
 
+            Camera camera = Camera.main;
             Vector3 position = transform.position;
 
-            if (position.x >= Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).x + (_width / 2) &&
-                position.x <= Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x - (_width / 2) &&
-                position.y >= Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).y &&
-                position.y <= Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height)).y - (_height))
+            if (camera != null)
             {
-                isOnScreen = true;
+                if (position.x >= camera.ScreenToWorldPoint(new Vector2(0, 0)).x + (_width / 2) &&
+                    position.x <= camera.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x - (_width / 2) &&
+                    position.y >= camera.ScreenToWorldPoint(new Vector2(0, 0)).y &&
+                    position.y <= camera.ScreenToWorldPoint(new Vector2(0, Screen.height)).y - (_height))
+                {
+                    isOnScreen = true;
+                }
             }
 
             return isOnScreen;
@@ -226,7 +243,10 @@ public class Mantmare : GenericMob
     /// </summary>
     [SerializeField]
     private TriggerCaster _headTriggerCaster;
-    
+
+    [SerializeField]
+    private Transform _spitSpawnPoint;
+
     #endregion
 
     #region Graphics
@@ -372,8 +392,10 @@ public class Mantmare : GenericMob
             return color;
         }
     }
-    
+
     #endregion
+
+    private AudioClipHandler _noisesClipHandler;
 
     protected new void Start()
     {
@@ -389,6 +411,9 @@ public class Mantmare : GenericMob
         }
 
         InvokeRepeating("UpdateRandomWanderPosition", 0, 3);
+
+        _noisesClipHandler = AudioClipHandler.PlayAudio("Audio/MantmareNoises", 1, transform.position, true);
+        _noisesClipHandler.transform.parent = transform;
     }
 
     #region Random points on screen
@@ -438,6 +463,16 @@ public class Mantmare : GenericMob
         Vector2 localSpaceYVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
         float normalizedYSpeed = localSpaceYVelocity.y / (_speed / _attachedRigidbody.drag);
 
+        if (normalizedXSpeed < .2f)
+        {
+            normalizedXSpeed = 0;
+        }
+
+        if (normalizedYSpeed < .2f)
+        {
+            normalizedYSpeed = 0;
+        }
+        
         AnimController.SetFloat(HorizontalSpeedParameterName, normalizedXSpeed);
         AnimController.SetFloat(VerticalSpeedParameterName, normalizedYSpeed);
 
@@ -507,6 +542,11 @@ public class Mantmare : GenericMob
     /// <param name="rotate">If this value is true, Mantmare will rotate towards the position to reach</param>
     private void ReachPosition(Vector3 positionToReach, float speed = 0, bool rotate = false)
     {
+        if (Vector3.Distance(transform.position, positionToReach) < 2f)
+        {
+            return;
+        }
+
         if (speed <= 0)
         {
             speed = _speed;
@@ -539,8 +579,6 @@ public class Mantmare : GenericMob
     /// <param name="playerTransform"></param>
     private void RandomWander(Transform playerTransform)
     {
-        AnimController.SetBool(WanderParameterName, true);
-
         if (playerTransform == null)
         {
             return;
@@ -572,10 +610,10 @@ public class Mantmare : GenericMob
         switch (decidedPattern)
         {
             case 1:
-                yield return Pattern1(target);
+                yield return Pattern3(target);
                 break;
             case 2:
-                yield return Pattern2(target);
+                yield return Pattern3(target);
                 break;
             case 3:
                 yield return Pattern3(target);
@@ -593,18 +631,23 @@ public class Mantmare : GenericMob
     /// </summary>
     private IEnumerator Pattern1(PlayerController target)
     {
-        Vector2 targetPosition = target.transform.position + 
-                                 target.transform.right * _attackRange - 
-                                 Vector3.up * _height / 2;
+        if (target == null)
+        {
+            yield break;
+        }
 
+        Vector2 targetPosition;
         float distance;
 
         do
         {
+            targetPosition = target.transform.position +
+                                 target.transform.right * _attackRange -
+                                 Vector3.up * _height / 2;
             distance = Vector2.Distance(transform.position, targetPosition);
-            ReachPosition(targetPosition, _speed, true);
+            ReachPosition(targetPosition, 80, true);
             yield return null;
-        } while (distance > 2);
+        } while (distance > 5);
 
         _attachedRigidbody.velocity = Vector3.zero;
 
@@ -624,11 +667,28 @@ public class Mantmare : GenericMob
 
         AnimController.SetTrigger(StartAttack1ParameterName);
 
-        _leftArmTriggerCaster.TriggerFunction = collider => InflictDamage(collider, 70);
+        if (_leftArmTriggerCaster != null)
+        {
+            foreach (Collider2D collider in _leftArmTriggerCaster.GetComponents<Collider2D>())
+            {
+                collider.enabled = false;
+            }
+        }
 
-        yield return new WaitForSeconds(TimeMultiplierByStage);
+        yield return new WaitForSeconds(.5f);
+
+        if (_leftArmTriggerCaster != null)
+        {
+            _leftArmTriggerCaster.TriggerFunction = collider => InflictDamage(collider, Attack1Power);
+
+            foreach (Collider2D collider in _leftArmTriggerCaster.GetComponents<Collider2D>())
+            {
+                collider.enabled = true;
+            }
+        }
 
         AnimController.SetTrigger(EndAttack1ParameterName);
+        AudioClipHandler.PlayAudio("Audio/Slash", 1, transform.position);
 
         yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName(Attack1EndStateName));
 
@@ -642,6 +702,11 @@ public class Mantmare : GenericMob
     /// </summary>
     private IEnumerator Pattern2(PlayerController target)
     {
+        if (target == null)
+        {
+            yield break;
+        }
+
         Vector3 leftScreenPosition = 
             Camera.main.ScreenToWorldPoint(new Vector3(Mathf.RoundToInt((1f / 8f) * Screen.width), 
                                            0, 
@@ -669,11 +734,13 @@ public class Mantmare : GenericMob
                 endScreenPosition = rightScreenPosition;
             }
 
-            Vector3 patternStartPosition =
-                new Vector3(startScreenPosition.x, target.transform.position.y - _height / 2.5f);
+            Vector3 patternStartPosition = (target != null) ? 
+                new Vector3(startScreenPosition.x, target.transform.position.y) : 
+                new Vector3(startScreenPosition.x, transform.position.y);
             
-            Vector3 patternEndPosition =
-                new Vector3(endScreenPosition.x, target.transform.position.y - _height / 2.5f);
+            Vector3 patternEndPosition = (target != null) ? 
+                new Vector3(endScreenPosition.x, target.transform.position.y) : 
+                new Vector3(endScreenPosition.x, transform.position.y);
 
             float distance;
 
@@ -704,14 +771,32 @@ public class Mantmare : GenericMob
 
             AnimController.SetTrigger(StopChargingAttack2ParameterName);
 
+            if (_headTriggerCaster != null)
+            {
+                foreach (Collider2D collider in _headTriggerCaster.GetComponents<Collider2D>())
+                {
+                    collider.enabled = false;
+                }
+            }
+            
             yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName(Attack2BoostStateName));
 
-            _headTriggerCaster.TriggerFunction = collider => InflictDamage(collider, 50);
-            
+            if (_headTriggerCaster != null)
+            {
+                _headTriggerCaster.TriggerFunction = collider => InflictDamage(collider, Attack2Power);
+                
+                foreach (Collider2D collider in _headTriggerCaster.GetComponents<Collider2D>())
+                {
+                    collider.enabled = true;
+                }
+            }
+
+            AudioClipHandler.PlayAudio("Audio/Whoosh2", 1, transform.position);
+
             do
             {
                 distance = Vector3.Distance(transform.position, patternEndPosition);
-                ReachPosition(patternEndPosition, 50);
+                ReachPosition(patternEndPosition, 150);
                 yield return null;
             } while (distance > 2);
 
@@ -719,6 +804,10 @@ public class Mantmare : GenericMob
             AnimController.SetTrigger(EndAttack2ParameterName);
 
             yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName(Attack2EndStateName));
+
+            yield return new WaitForSeconds(.1f);
+
+            AudioClipHandler.PlayAudio("Audio/Whoosh", 1, transform.position);
             
             yield return new WaitUntil(() => !AnimController.GetCurrentAnimatorStateInfo(0).IsName(Attack2EndStateName));
 
@@ -731,14 +820,19 @@ public class Mantmare : GenericMob
     /// </summary>
     private IEnumerator Pattern3(PlayerController target)
     {
+        if (target == null)
+        {
+            yield break;
+        }
+
         Vector2 leftScreenPosition =
-            Camera.main.ScreenToWorldPoint(new Vector3(Mathf.RoundToInt((2f / 8f) * Screen.width),
-                                           Mathf.RoundToInt((7f / 8f) * Screen.height),
+            Camera.main.ScreenToWorldPoint(new Vector3(Mathf.RoundToInt((1f / 8f) * Screen.width),
+                                           Mathf.RoundToInt((7.5f / 8f) * Screen.height),
                                            0)) - (Vector3.up * _height);
 
         Vector2 rightScreenPosition =
-            Camera.main.ScreenToWorldPoint(new Vector3(Mathf.RoundToInt((6f / 8f) * Screen.width),
-                                           Mathf.RoundToInt((7f / 8f) * Screen.height),
+            Camera.main.ScreenToWorldPoint(new Vector3(Mathf.RoundToInt((7f / 8f) * Screen.width),
+                                           Mathf.RoundToInt((7.5f / 8f) * Screen.height),
                                            0)) - (Vector3.up * _height);
 
         Vector3 patternStartPosition;
@@ -761,7 +855,7 @@ public class Mantmare : GenericMob
         do
         {
             distance = Vector2.Distance(transform.position, patternStartPosition);
-            ReachPosition(patternStartPosition, _speed);
+            ReachPosition(patternStartPosition);
             yield return null;
         } while (distance > 2);
 
@@ -781,15 +875,95 @@ public class Mantmare : GenericMob
 
         transform.rotation = desiredRotation;
 
-        AnimController.SetTrigger(StartAttack3ParameterName);
+        int iterations;
+        
+        switch (MantmareStageByHealth)
+        {
+            case 1:
+                iterations = 2;
+                break;
+            case 2:
+                iterations = 3;
+                break;
+            case 3:
+                iterations = 4;
+                break;
+            default:
+                iterations = 3;
+                break;
+        }
+        
+        for (int spitCounter = 0; spitCounter < iterations; spitCounter++)
+        {
+            if (target == null)
+            {
+                yield break;
+            }
 
-        yield return new WaitForSeconds(2 * TimeMultiplierByStage);
+            AnimController.SetTrigger(StartAttack3ParameterName);
 
-        AnimController.SetTrigger(EndAttack3ParameterName);
+            AudioClipHandler preparingSpitClip = AudioClipHandler.PlayAudio("Audio/SpawnestEggGrowing", 1, transform.position, true);
 
-        yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName(Attack3EndStateName));
+            yield return new WaitForSeconds(1 * TimeMultiplierByStage);
 
-        yield return new WaitUntil(() => !AnimController.GetCurrentAnimatorStateInfo(0).IsName(Attack3EndStateName));
+            if (preparingSpitClip != null)
+            {
+                preparingSpitClip.StopClip();
+            }
+
+            AudioClipHandler.PlayAudio("Audio/SpawnestEggHatching", 1, transform.position);
+            AnimController.SetTrigger(EndAttack3ParameterName);
+
+            int numberOfProjectiles;
+
+            switch (MantmareStageByHealth)
+            {
+                case 1:
+                    numberOfProjectiles = 3;
+                    break;
+                case 2:
+                    numberOfProjectiles = 4;
+                    break;
+                case 3:
+                    numberOfProjectiles = 5;
+                    break;
+                default:
+                    numberOfProjectiles = 3;
+                    break;
+            }
+            
+            if (_spitSpawnPoint != null)
+            {
+                for (int projectilesCounter = 0; projectilesCounter < numberOfProjectiles; projectilesCounter++)
+                {
+                    if (target != null)
+                    {
+                        Projectile resource =
+                            Resources.Load<Projectile>(Projectile.ProjectileResourcesPath + Projectile.MantmareSpitName);
+
+                        Projectile projectile = Instantiate(resource, _spitSpawnPoint.transform.position, desiredRotation);
+
+                        Rigidbody2D projectileRigidbody = projectile.GetComponentInParent<Rigidbody2D>();
+
+                        if (projectileRigidbody != null)
+                        {
+                            Vector3 forceDirection = (target.transform.position - _spitSpawnPoint.transform.position);
+                            forceDirection.z = 0;
+                            float forceIncrement = projectilesCounter * 2;
+                            float forceFactor = Random.Range(1 + forceIncrement, 2 + forceIncrement);
+                            projectileRigidbody.AddForce(forceDirection * forceFactor, ForceMode2D.Impulse);
+                        }
+                    } else
+                    {
+                        yield break;
+                    }
+                }
+            }
+
+            yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName(Attack3EndStateName));
+
+            yield return new WaitUntil(() => !AnimController.GetCurrentAnimatorStateInfo(0).IsName(Attack3EndStateName));
+        }
     }
     
     /// <summary>
@@ -827,7 +1001,18 @@ public class Mantmare : GenericMob
 
     protected override IEnumerator Die()
     {
-        StopCoroutine(_attackCoroutine);
+        if (_noisesClipHandler != null)
+        {
+            _noisesClipHandler.StopClip();
+            _noisesClipHandler = null;
+        }
+
+        AudioClipHandler.PlayAudio("Audio/DyingMantmare", 0, transform.position);
+
+        if (_attackCoroutine != null)
+        {
+            StopCoroutine(_attackCoroutine);
+        }
 
         AnimController.SetTrigger(DieParameterName);
 
@@ -873,11 +1058,19 @@ public class Mantmare : GenericMob
         {
             return;
         }
-        
-        Vector3 offsettedPosition = new Vector3(transform.position.x, player.transform.position.y);
-        Vector2 conjunctionLine = (player.transform.position - offsettedPosition).normalized;
 
-        player.GetComponent<Rigidbody2D>().AddForce(conjunctionLine * _repulsiveForce);
+        Vector3 offsettedPosition = new Vector3(transform.position.x, player.transform.position.y, player.transform.position.z);
+        Vector3 conjunctionLine = (player.transform.position - offsettedPosition);
+        conjunctionLine.z = 0;
+        conjunctionLine.Normalize();
+
+        Rigidbody2D playerRigidbody = player.GetComponent<Rigidbody2D>();
+
+        if (playerRigidbody != null)
+        {
+            playerRigidbody.AddForce(conjunctionLine * _repulsiveForce);
+        }
+
         player.Health.Decrease(_contactDamage);
     }
 }

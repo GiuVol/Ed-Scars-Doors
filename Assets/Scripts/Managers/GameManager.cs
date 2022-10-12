@@ -142,7 +142,7 @@ public class GameManager : MonoBehaviour
     /// <param name="sceneName">The name of the scene to load</param>
     /// <param name="timeToWait">The time to wait before to load the scene</param>
     /// <returns></returns>
-    public IEnumerator LoadScene(string sceneName, float timeToWait = 0)
+    public IEnumerator LoadLevel(string sceneName, float timeToWait = 0, NullableVector3 playerPosition = null, NullableVector3 cameraPosition = null)
     {
         if (timeToWait > 0)
         {
@@ -156,10 +156,25 @@ public class GameManager : MonoBehaviour
             yield break;
         }
 
+        if (Player != null)
+        {
+            Player.gameObject.SetActive(false);
+        }
+
         AsyncOperation sceneLoadingOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
         float activationProgress;
 
         UI.LoadSceneLoadingInfo();
+
+        Canvas canvas = UI.CurrentCanvas;
+
+        if (canvas != null)
+        {
+            foreach (Transform transform in canvas.transform)
+            {
+                Destroy(transform.gameObject);
+            }
+        }
 
         while (!sceneLoadingOperation.isDone)
         {
@@ -175,31 +190,40 @@ public class GameManager : MonoBehaviour
 
         UI.UnloadSceneLoadingInfo();
 
-        Vector3 playerPosition = Vector3.zero;
-        Vector3 cameraPosition = Vector3.zero;
-
         GameObject playerSpawn = GameObject.Find(PlayerStartPositionName);
         GameObject cameraSpawn = GameObject.Find(CameraStartPositionName);
         
         if (playerSpawn != null)
         {
-            playerPosition = playerSpawn.transform.position;
+            if (playerPosition == null)
+            {
+                playerPosition = playerSpawn.transform.position;
+            }
 
             if (cameraSpawn != null)
             {
-                cameraPosition = cameraSpawn.transform.position;
+                if (cameraPosition == null)
+                {
+                    cameraPosition = cameraSpawn.transform.position;
+                }
             }
         }
 
-        PlayerController playerController = 
-            Instantiate(Resources.Load<PlayerController>(PlayerResourcesPath), playerPosition, Quaternion.identity);
+        if (Player != null)
+        {
+            Player.transform.position = playerPosition;
+            Player.gameObject.SetActive(true);
+        } else
+        {
+            Player = Instantiate(Resources.Load<PlayerController>(PlayerResourcesPath), playerPosition, Quaternion.identity);
+            Player.Setup();
+            DontDestroyOnLoad(Player.gameObject);
+        }
+
         CameraController cameraController = 
             Instantiate(Resources.Load<CameraController>(CameraResourcesPath), cameraPosition, Quaternion.identity);
 
-        cameraController.Target = playerController.transform;
-
-        Player = playerController;
-        Player.Setup();
+        cameraController.Target = Player.transform;
         MainCamera = cameraController.CameraComponent;
 
         GameObject astarManagerPrefab = Resources.Load<GameObject>("AI/AstarGrid");
@@ -220,7 +244,7 @@ public class GameManager : MonoBehaviour
 
             if (proceduralGridMover != null)
             {
-                proceduralGridMover.target = playerController.transform;
+                proceduralGridMover.target = Player.transform;
             }
         }
 
@@ -233,5 +257,67 @@ public class GameManager : MonoBehaviour
         }
 
         UI.LoadHUD();
+    }
+
+    /// <summary>
+    /// This method loads the scene named <c>sceneName</c>, loading player and camera prefabs too.
+    /// </summary>
+    /// <param name="sceneName">The name of the scene to load</param>
+    /// <param name="timeToWait">The time to wait before to load the scene</param>
+    /// <returns></returns>
+    public IEnumerator LoadMainMenu()
+    {
+        int buildIndex = SceneUtility.GetBuildIndexByScenePath("Empty");
+
+        if (buildIndex < 0)
+        {
+            yield break;
+        }
+
+        if (Player != null)
+        {
+            Destroy(Player.gameObject);
+            Player = null;
+        }
+
+        AsyncOperation sceneLoadingOperation = SceneManager.LoadSceneAsync("Empty", LoadSceneMode.Single);
+        float activationProgress;
+
+        UI.LoadSceneLoadingInfo();
+
+        while (!sceneLoadingOperation.isDone)
+        {
+            activationProgress = Mathf.Clamp01(sceneLoadingOperation.progress / .9f);
+
+            if (UI.SceneLoadingInfo != null)
+            {
+                UI.SceneLoadingInfo.text = (Mathf.RoundToInt(activationProgress * 100f)).ToString() + "%";
+            }
+
+            yield return null;
+        }
+
+        UI.UnloadSceneLoadingInfo();
+
+        Canvas canvas = UI.CurrentCanvas;
+
+        if (canvas == null)
+        {
+            yield break;
+        }
+
+        foreach (Transform transform in canvas.transform)
+        {
+            Destroy(transform.gameObject);
+        }
+
+        UI.LoadMainMenu();
+        AudioManager.PlayOst("Audio/Ost/MainMenuOst");
+
+        if (MainCamera == null)
+        {
+            MainCamera = new GameObject("Camera", typeof(Camera), typeof(AudioListener)).GetComponent<Camera>();
+            MainCamera.backgroundColor = Color.black;
+        }
     }
 }

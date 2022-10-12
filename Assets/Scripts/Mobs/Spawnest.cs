@@ -35,6 +35,10 @@ public class Spawnest : GenericMob
     protected override Vector3 BlindnessBarPositionOffset => new Vector3(0, _height + 1, 0);
 
     protected override Vector3 CorrosionBarPositionOffset => new Vector3(0, _height + 2, 0);
+
+    protected override Vector3 BlindnessEffectPositionOffset => new Vector3(0, _height / 2, 0);
+
+    protected override Vector3 CorrosionEffectPositionOffset => new Vector3(0, _height / 2, 0);
     
     /// <summary>
     /// Stores how many flydiers spawned by this nest can be alive at the same time;

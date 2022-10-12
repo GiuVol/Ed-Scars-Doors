@@ -44,6 +44,10 @@ public class Flydier : GenericMob
     protected override Vector3 BlindnessBarPositionOffset => new Vector3(0, _height + 1, 0);
 
     protected override Vector3 CorrosionBarPositionOffset => new Vector3(0, _height + 2, 0);
+
+    protected override Vector3 BlindnessEffectPositionOffset => new Vector3(0, _height / 2, 0);
+
+    protected override Vector3 CorrosionEffectPositionOffset => new Vector3(0, _height / 2, 0);
     
     /// <summary>
     /// Specifies if the flydier should strictly follow the patrol points.
@@ -360,7 +364,7 @@ public class Flydier : GenericMob
         #endregion
         
         Projectile resource =
-            Resources.Load<Projectile>(Projectile.ProjectileResourcesPath + Projectile.NormalProjectileName);
+            Resources.Load<Projectile>(Projectile.ProjectileResourcesPath + Projectile.PoisonStingName);
 
         AudioClipHandler.PlayAudio("Audio/Slash2", 0, transform.position);
         
@@ -384,7 +388,10 @@ public class Flydier : GenericMob
     {
         AnimController.SetTrigger(DieParameterName);
 
-        _flyAudioClip.StopClip();
+        if (_flyAudioClip != null)
+        {
+            _flyAudioClip.StopClip();
+        }
 
         AudioClipHandler.PlayAudio("Audio/DyingFlydier", 0, transform.position);
         

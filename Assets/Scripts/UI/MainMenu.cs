@@ -16,6 +16,17 @@ public class MainMenu : MultiButtonsMenu
         }
     }
 
+    [SerializeField]
+    private Button _quitButton;
+
+    public Button QuitButton
+    {
+        get
+        {
+            return _quitButton;
+        }
+    }
+    
     private void Start()
     {
         SelectedButtonIndex = 1;

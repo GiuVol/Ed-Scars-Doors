@@ -12,6 +12,9 @@ public abstract class EventTrigger : MonoBehaviour
     [SerializeField]
     private int _maxNumberOfContacts;
 
+    [SerializeField]
+    private bool _disabled;
+    
     #endregion
 
     private int _numberOfContacts;
@@ -26,8 +29,23 @@ public abstract class EventTrigger : MonoBehaviour
         }
     }
 
+    public bool Disabled
+    {
+        get; set;
+    }
+
+    private void Start()
+    {
+        Disabled = _disabled;
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (Disabled)
+        {
+            return;
+        }
+
         if (collision.gameObject.layer != LayerMask.NameToLayer(PlayerController.PlayerLayerName))
         {
             return;

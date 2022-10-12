@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class NullableVector3
 {
     /// <summary>
@@ -17,16 +18,19 @@ public class NullableVector3
     /// <summary>
     /// The x component of the vector.
     /// </summary>
+    [SerializeField]
     private float _x;
 
     /// <summary>
     /// The y component of the vector.
     /// </summary>
+    [SerializeField]
     private float _y;
 
     /// <summary>
     /// The z component of the vector.
     /// </summary>
+    [SerializeField]
     private float _z;
 
     /// <summary>

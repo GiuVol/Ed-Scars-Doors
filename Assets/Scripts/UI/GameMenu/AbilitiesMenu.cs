@@ -169,6 +169,7 @@ public class AbilitiesMenu : UIListMenu, ITabContent
                         delegate
                         {
                             player.UnequipAbility(ability);
+                            AudioClipHandler.PlayAudio("Audio/PressButton");
                             UpdateElements();
                         }
                     );
@@ -183,6 +184,7 @@ public class AbilitiesMenu : UIListMenu, ITabContent
                             try
                             {
                                 player.EquipAbility(ability);
+                                AudioClipHandler.PlayAudio("Audio/PressButton");
                             } 
                             catch (UnequippableAbilityException ex)
                             {
@@ -191,6 +193,7 @@ public class AbilitiesMenu : UIListMenu, ITabContent
                                     return;
                                 }
 
+                                AudioClipHandler.PlayAudio("Audio/Disabled");
                                 UIPrompt prompt = Instantiate(_uiPromptPrefab, gameObject.transform);
 
                                 if (prompt == null)
@@ -205,6 +208,7 @@ public class AbilitiesMenu : UIListMenu, ITabContent
                                     delegate {
                                         UIManager.Instance.GameMenu.HasControl = true;
                                         HasControl = true;
+                                        AudioClipHandler.PlayAudio("Audio/PressButton");
                                     }, true));
                             }
                             finally

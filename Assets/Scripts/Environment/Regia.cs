@@ -250,6 +250,22 @@ public class Regia : MonoBehaviour
         }
 
         _initialized = true;
+
+        ElegantManSpawner[] emSpawners = FindObjectsOfType<ElegantManSpawner>();
+
+        if (emSpawners.Length > 0)
+        {
+            int selectedSpawner = UnityEngine.Random.Range(0, emSpawners.Length);
+
+            for (int i = 0; i < emSpawners.Length; i++)
+            {
+                if (i != selectedSpawner)
+                {
+                    emSpawners[i].Disabled = true;
+                    Destroy(emSpawners[i].gameObject);
+                }
+            }
+        }
     }
 
     void LateUpdate()

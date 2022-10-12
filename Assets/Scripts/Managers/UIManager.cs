@@ -154,19 +154,35 @@ public class UIManager : MonoBehaviour
             MainMenu = Instantiate(mainMenuResource, CurrentCanvas.transform);
         }
 
-        if (MainMenu != null && MainMenu.PlayDemoButton != null)
+        if (MainMenu != null)
         {
-            MainMenu.PlayDemoButton.onClick.AddListener(
-                delegate {
-                    Destroy(MainMenu.gameObject);
-                    MainMenu = null;
+            if (MainMenu.PlayDemoButton != null)
+            {
+                MainMenu.PlayDemoButton.onClick.AddListener(
+                    delegate {
+                        Destroy(MainMenu.gameObject);
+                        MainMenu = null;
 
-                    if (GameManager.Instance != null)
-                    {
-                        GameManager.Instance.StartCoroutine(GameManager.Instance.LoadScene("Corridor"));
+                        if (GameManager.Instance != null)
+                        {
+                            GameManager.Instance.StartCoroutine(GameManager.Instance.LoadLevel("Corridor"));
+                        }
                     }
-                }
-                );
+                    );
+            }
+
+            if (MainMenu.QuitButton != null)
+            {
+                MainMenu.QuitButton.onClick.AddListener(
+                    delegate {
+                        #if UNITY_EDITOR
+                        UnityEditor.EditorApplication.isPlaying = false;
+                        #else
+                        Application.Quit();
+                        #endif
+                    }
+                    );
+            }
         }
     }
 

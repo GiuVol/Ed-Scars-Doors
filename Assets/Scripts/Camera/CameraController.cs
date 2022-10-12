@@ -162,7 +162,7 @@ public class CameraController : MonoBehaviour
         _edgeCollider.transform.parent = transform;
         _edgeCollider.transform.localPosition = Vector3.zero;
         _edgeCollider.enabled = false;
-        _edgeCollider.gameObject.AddComponent<ScreenBoundriesCollisionManager>();
+        CustomUtilities.SetLayerRecursively(_edgeCollider.gameObject, LayerMask.NameToLayer(GameFormulas.ScreenBoundriesLayerName));
 
         #region Debug
 

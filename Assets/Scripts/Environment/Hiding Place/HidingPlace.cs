@@ -15,6 +15,9 @@ public class HidingPlace : MonoBehaviour
     [SerializeField]
     private float _timeNeededToGetOut;
 
+    [SerializeField]
+    private float _maxHidingTime;
+    
     #endregion
 
     private PlayerController _player;
@@ -26,6 +29,14 @@ public class HidingPlace : MonoBehaviour
     private DynamicUIComponent _uiHideMessage;
 
     private UIBar _hideButtonHoldingBar;
+
+    public float MaxHidingTime
+    {
+        get
+        {
+            return _maxHidingTime;
+        }
+    }
 
     public float HideButtonHoldingProgress
     {

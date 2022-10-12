@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +10,19 @@ public class ControlsMenu : MonoBehaviour
     private Image _controlsImageArea;
 
     [SerializeField]
+    private Image _previousArrowImage;
+
+    [SerializeField]
+    private Image _nextArrowImage;
+
+    [SerializeField]
+    private TextMeshProUGUI _titleArea;
+    
+    [SerializeField]
     private List<Sprite> _controlsSheets;
+
+    [SerializeField]
+    private List<string> _sheetsTitles;
 
     private List<Sprite> ControlsSheets
     {
@@ -21,6 +34,27 @@ public class ControlsMenu : MonoBehaviour
             }
 
             return _controlsSheets;
+        }
+    }
+
+    private int NumberOfSheets
+    {
+        get
+        {
+            return ControlsSheets.Count;
+        }
+    }
+
+    private List<string> SheetsTitles
+    {
+        get
+        {
+            if (_sheetsTitles == null)
+            {
+                _sheetsTitles = new List<string>();
+            }
+
+            return _sheetsTitles;
         }
     }
 
@@ -94,27 +128,115 @@ public class ControlsMenu : MonoBehaviour
             _controlsImageArea.color = new Color(1, 1, 1, 0);
         }
 
+        if (_previousArrowImage != null)
+        {
+            if (_previousArrowImage.sprite == null)
+            {
+                _previousArrowImage.color = new Color(1, 1, 1, 0);
+            }
+        }
+
+        if (_nextArrowImage != null)
+        {
+            if (_nextArrowImage.sprite == null)
+            {
+                _nextArrowImage.color = new Color(1, 1, 1, 0);
+            }
+        }
+        
         SelectedSheetIndex = 1;
+        UpdateArrows();
     }
 
     private void Update()
     {
         if (InputHandler.Left("Down"))
         {
-            AudioClipHandler.PlayAudio("Audio/SelectTab", 0, transform.position);
-            SelectedSheetIndex--;
+            if (SelectedSheetIndex > 1)
+            {
+                AudioClipHandler.PlayAudio("Audio/SelectTab", 0, transform.position);
+                SelectedSheetIndex--;
+                UpdateArrows();
+
+                if (SheetsTitles.Count >= SelectedSheetIndex)
+                {
+                    if (_titleArea != null)
+                    {
+                        _titleArea.text = SheetsTitles[SelectedSheetIndex - 1];
+                    }
+                }
+            } else
+            {
+                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
+            }
         }
 
         if (InputHandler.Right("Down"))
         {
-            AudioClipHandler.PlayAudio("Audio/SelectTab", 0, transform.position);
-            SelectedSheetIndex++;
+            if (SelectedSheetIndex < NumberOfSheets)
+            {
+                AudioClipHandler.PlayAudio("Audio/SelectTab", 0, transform.position);
+                SelectedSheetIndex++;
+                UpdateArrows();
+
+                if (SheetsTitles.Count >= SelectedSheetIndex)
+                {
+                    if (_titleArea != null)
+                    {
+                        _titleArea.text = SheetsTitles[SelectedSheetIndex - 1];
+                    }
+                }
+            } else
+            {
+                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
+            }
         }
 
         if (InputHandler.OpenMenu("Down"))
         {
             AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
             Destroy(gameObject);
+        }
+    }
+
+    private void UpdateArrows()
+    {
+        if (SelectedSheetIndex <= 1)
+        {
+            if (_previousArrowImage != null)
+            {
+                _previousArrowImage.color = new Color(1, 1, 1, 0);
+            }
+        } else
+        {
+            if (_previousArrowImage != null)
+            {
+                if (_previousArrowImage.sprite == null)
+                {
+                    _previousArrowImage.color = new Color(1, 1, 1, 0);
+                } else
+                {
+                    _previousArrowImage.color = new Color(1, 1, 1, 1);
+                }
+            }
+        }
+
+        if (SelectedSheetIndex >= NumberOfSheets)
+        {
+            if (_nextArrowImage != null)
+            {
+                _nextArrowImage.color = new Color(1, 1, 1, 0);
+            }
+        } else
+        {
+            if (_nextArrowImage.sprite == null)
+            {
+                _nextArrowImage.color = new Color(1, 1, 1, 0);
+            }
+            else
+            {
+                _nextArrowImage.color = new Color(1, 1, 1, 1);
+            }
         }
     }
 

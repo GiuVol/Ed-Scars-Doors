@@ -782,7 +782,6 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
         _isAttacking = false;
         _canAttack = true;
 
-        CustomUtilities.SetLayerRecursively(gameObject, LayerMask.NameToLayer(MobLayerName));
         SetupLayers();
         SetupBars();
     }
@@ -854,6 +853,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// </summary>
     protected virtual void SetupLayers()
     {
+        CustomUtilities.SetLayerRecursively(gameObject, LayerMask.NameToLayer(MobLayerName));
         LayersToIgnore.Add(LayerMask.NameToLayer(MobLayerName));
     }
 

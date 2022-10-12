@@ -7,7 +7,9 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 {
     public const int MaxNumberOfEquippableAbilities = 4;
 
-    private const float MaxHiddenTime = 10;
+    private const float DashTime = .5f;
+
+    private const float MaxHiddenTime = 150;
     private const float MinHidingRefreshTime = 2;
     private const float MaxHidingRefreshTime = 5;
 
@@ -105,7 +107,28 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     /// <summary>
     /// The current gravity scale of the attached rigidbody.
     /// </summary>
-    public float CurrentGravityScale { get; set; }
+    public float CurrentGravityScale
+    {
+        get
+        {
+            float gravityScale = 0;
+
+            if (MovementController != null)
+            {
+                gravityScale = MovementController.GravityScale;
+            }
+
+            return gravityScale;
+        }
+
+        set
+        {
+            if (MovementController != null)
+            {
+                MovementController.GravityScale = value;
+            }
+        }
+    }
 
     /// <summary>
     /// The current time that elapses between different series of jumps.
@@ -128,6 +151,9 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     public int CurrentNumberOfJumpsAllowedInAir { get; set; }
 
     #endregion
+
+    [SerializeField]
+    private LayerMask _groundCheckMask;
 
     /// <summary>
     /// Returns whether the character can be controlled through player's inpput or not.
@@ -347,7 +373,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     {
         get
         {
-            return Vector3.zero;
+            return new Vector3(0, 5, 0);
         }
     }
 
@@ -380,7 +406,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
     {
         get
         {
-            return Vector3.zero;
+            return new Vector3(0, 5, 0);
         }
     }
 
@@ -394,7 +420,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             return Vector3.one;
         }
     }
-    
+
     #endregion
 
     #region Data
@@ -576,6 +602,8 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         HasControl = true;
         
         MovementController = gameObject.GetComponent<MovementController2D>();
+        MovementController.Setup(_groundCheckMask);
+        CurrentGravityScale = StandardGravityScale;
 
         Health = gameObject.GetComponent<HealthComponent>();
         Stats = gameObject.GetComponent<StatsComponent>();
@@ -648,9 +676,12 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             _hiddenTime = 0;
         }
 
-        if (_hiddenTime >= MaxHiddenTime)
+        if (CurrentHidingPlace != null)
         {
-            GetOutOfHiding();
+            if (_hiddenTime >= Mathf.Min(MaxHiddenTime, CurrentHidingPlace.MaxHidingTime))
+            {
+                GetOutOfHiding();
+            }
         }
     }
 
@@ -665,8 +696,6 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
             MovementController.HandleMovementWithSpeed(horizontalInput, movementSpeed);
         }
-
-        MovementController.GravityScale = CurrentGravityScale;
 
         _timeToWaitToJump = Mathf.Max(_timeToWaitToJump - Time.fixedDeltaTime, 0);
         _timeToWaitToHide = Mathf.Max(_timeToWaitToHide - Time.fixedDeltaTime, 0);
@@ -726,7 +755,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         Vector2 jumpDirection = Vector2.up;
         MovementController.GiveImpulse(jumpDirection, CurrentJumpForce);
 
-        AudioClipHandler.PlayAudio("Audio/CartoonJump", 0, transform.position);
+        AudioClipHandler.PlayAudio("Audio/Whoosh", 0, transform.position);
 
         if (!isGrounded)
         {
@@ -762,8 +791,8 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
         #endregion
 
-        Health.SetInvincibilityTemporarily(1);
-        Status.SetImmunityTemporarily(1);
+        //Health.SetInvincibilityTemporarily(1);
+        //Status.SetImmunityTemporarily(1);
 
         yield return new WaitUntil(() => !MovementController.IsGrounded);
         
@@ -786,12 +815,18 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             yield break;
         }
 
-        Health.SetInvincibilityTemporarily(1);
-        Status.SetImmunityTemporarily(1);
+        CanDash = false;
         
         MovementController.GiveImpulse(transform.right, CurrentDashForce);
+        AudioClipHandler.PlayAudio("Audio/Whoosh", 0, transform.position);
 
-        CanDash = false;
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(PlayerLayerName), LayerMask.NameToLayer(GenericMob.MobLayerName));
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(PlayerLayerName), LayerMask.NameToLayer(GenericMob.MobProjectileLayerName));
+
+        yield return new WaitForSeconds(DashTime);
+
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(PlayerLayerName), LayerMask.NameToLayer(GenericMob.MobLayerName), false);
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(PlayerLayerName), LayerMask.NameToLayer(GenericMob.MobProjectileLayerName), false);
 
         yield return new WaitForSeconds(CurrentDashInterval);
 

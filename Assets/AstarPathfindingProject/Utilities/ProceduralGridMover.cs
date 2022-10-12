@@ -168,6 +168,12 @@ namespace Pathfinding {
 
 		/// <summary>Async method for moving the graph</summary>
 		IEnumerator UpdateGraphCoroutine () {
+
+            if (target == null)
+            {
+				yield break;
+            }
+
 			// Find the direction that we want to move the graph in.
 			// Calcuculate this in graph space (where a distance of one is the size of one node)
 			Vector3 dir = PointToGraphSpace(target.position) - PointToGraphSpace(graph.center);

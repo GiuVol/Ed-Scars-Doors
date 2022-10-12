@@ -46,6 +46,14 @@ public class GeneralMenu : MultiButtonsMenu, ITabContent
             _restartDemoButton.onClick.AddListener(
                 delegate
                 {
+                    if (GameManager.Instance != null)
+                    {
+                        if (GameManager.Instance.Player != null)
+                        {
+                            Destroy(GameManager.Instance.Player.gameObject);
+                        }
+                    }
+
                     if (UIManager.Instance == null)
                     {
                         return;
@@ -60,7 +68,7 @@ public class GeneralMenu : MultiButtonsMenu, ITabContent
 
                     if (GameManager.Instance != null)
                     {
-                        GameManager.Instance.StartCoroutine(GameManager.Instance.LoadScene("Corridor"));
+                        GameManager.Instance.StartCoroutine(GameManager.Instance.LoadLevel("Corridor"));
                     }
                 }
             );
