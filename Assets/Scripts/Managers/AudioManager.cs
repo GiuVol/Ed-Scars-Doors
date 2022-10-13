@@ -40,6 +40,9 @@ public class AudioManager : MonoBehaviour
 
     public void PlayOst(AudioClip clip)
     {
+        //Just for audio mixing, must delete this row!
+        return;
+
         if (clip == null)
         {
             return;
@@ -68,6 +71,9 @@ public class AudioManager : MonoBehaviour
     
     public void PlayAmbience(AudioClip clip)
     {
+        //Just for audio mixing, must delete this row!
+        return;
+
         if (clip == null)
         {
             return;
