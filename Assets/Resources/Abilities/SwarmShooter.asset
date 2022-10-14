@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abf450fc8891f534b9612333cce8e670, type: 3}
   m_Name: SwarmShooter
   m_EditorClassIdentifier: 
-  Name: Swarm Shooter
+  Name: Corrosion Shooter
   Description: With this, insects will help you corroding enemies.
-  ProjectileName: SwarmProjectile
+  ProjectileName: CorrosionProjectile
