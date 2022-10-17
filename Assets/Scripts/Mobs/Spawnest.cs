@@ -224,7 +224,7 @@ public class Spawnest : GenericMob
 
         #endregion
 
-        AudioClipHandler _eggGrowingClip = AudioClipHandler.PlayAudio("Audio/SpawnestEggGrowing", .5f, transform.position, true);
+        AudioClipHandler _eggGrowingClip = AudioClipHandler.PlayAudio("Audio/SpawnestEggGrowing", .75f, transform.position, true, .1f);
 
         if (_eggGrowingClip != null)
         {
@@ -241,7 +241,7 @@ public class Spawnest : GenericMob
             yield return null;
         }
 
-        AudioClipHandler.PlayAudio("Audio/SpawnestEggHatching", 0, transform.position, false, .6f);
+        AudioClipHandler.PlayAudio("Audio/SpawnestEggHatching", .75f, transform.position, false, .1f);
         
         if (_eggGrowingClip != null)
         {
@@ -287,7 +287,7 @@ public class Spawnest : GenericMob
 
         AnimController.SetTrigger(DieParameterName);
 
-        AudioClipHandler.PlayAudio("Audio/SpawnestDying", .5f, transform.position);
+        AudioClipHandler.PlayAudio("Audio/SpawnestDying", .75f, transform.position, false, .9f);
 
         yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName(DieStateName));
 

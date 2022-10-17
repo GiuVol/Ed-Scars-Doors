@@ -112,7 +112,7 @@ public class Flydier : GenericMob
 
         InvokeRepeating("UpdateXOffset", 0, 5);
 
-        _flyAudioClip = AudioClipHandler.PlayAudio("Audio/FlyNoise", .5f, transform.position, true, 1);
+        _flyAudioClip = AudioClipHandler.PlayAudio("Audio/FlyNoise", .75f, transform.position, true, .2f);
         _flyAudioClip.transform.parent = transform;
     }
 
@@ -366,7 +366,7 @@ public class Flydier : GenericMob
         Projectile resource =
             Resources.Load<Projectile>(Projectile.ProjectileResourcesPath + Projectile.PoisonStingName);
 
-        AudioClipHandler.PlayAudio("Audio/Slash2", 0, transform.position);
+        AudioClipHandler.PlayAudio("Audio/Slash2", .75f, transform.position, false, .5f);
         
         Projectile projectile = Instantiate(resource, spawnPosition, desiredRotation);
 
@@ -393,7 +393,7 @@ public class Flydier : GenericMob
             _flyAudioClip.StopClip();
         }
 
-        AudioClipHandler.PlayAudio("Audio/DyingFlydier", 0, transform.position);
+        AudioClipHandler.PlayAudio("Audio/DyingFlydier", .75f, transform.position, false, .7f);
         
         yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName(DieStateName));
 
