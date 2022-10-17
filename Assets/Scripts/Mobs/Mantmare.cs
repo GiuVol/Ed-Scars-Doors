@@ -412,7 +412,7 @@ public class Mantmare : GenericMob
 
         InvokeRepeating("UpdateRandomWanderPosition", 0, 3);
 
-        _noisesClipHandler = AudioClipHandler.PlayAudio("Audio/MantmareNoises", .75f, transform.position, true);
+        _noisesClipHandler = AudioClipHandler.PlayAudio("Audio/MantmareNoises", 1, transform.position, true);
         _noisesClipHandler.transform.parent = transform;
     }
 
@@ -688,7 +688,7 @@ public class Mantmare : GenericMob
         }
 
         AnimController.SetTrigger(EndAttack1ParameterName);
-        AudioClipHandler.PlayAudio("Audio/Slash", .75f, transform.position);
+        AudioClipHandler.PlayAudio("Audio/Slash", 1, transform.position);
 
         yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName(Attack1EndStateName));
 
@@ -791,7 +791,7 @@ public class Mantmare : GenericMob
                 }
             }
 
-            AudioClipHandler.PlayAudio("Audio/Whoosh2", .75f, transform.position);
+            AudioClipHandler.PlayAudio("Audio/Whoosh2", 1, transform.position);
 
             do
             {
@@ -807,7 +807,7 @@ public class Mantmare : GenericMob
 
             yield return new WaitForSeconds(.1f);
 
-            AudioClipHandler.PlayAudio("Audio/Whoosh", .75f, transform.position);
+            AudioClipHandler.PlayAudio("Audio/Whoosh", 1, transform.position);
             
             yield return new WaitUntil(() => !AnimController.GetCurrentAnimatorStateInfo(0).IsName(Attack2EndStateName));
 
@@ -902,7 +902,7 @@ public class Mantmare : GenericMob
 
             AnimController.SetTrigger(StartAttack3ParameterName);
 
-            AudioClipHandler preparingSpitClip = AudioClipHandler.PlayAudio("Audio/SpawnestEggGrowing", .75f, transform.position, false, .25f);
+            AudioClipHandler preparingSpitClip = AudioClipHandler.PlayAudio("Audio/SpawnestEggGrowing", 1, transform.position, false, .25f);
 
             yield return new WaitForSeconds(1 * TimeMultiplierByStage);
 
@@ -911,7 +911,7 @@ public class Mantmare : GenericMob
                 preparingSpitClip.StopClip();
             }
 
-            AudioClipHandler.PlayAudio("Audio/SpawnestEggHatching", .75f, transform.position, false, 0);
+            AudioClipHandler.PlayAudio("Audio/SpawnestEggHatching", 1, transform.position, false, 0);
             AnimController.SetTrigger(EndAttack3ParameterName);
 
             int numberOfProjectiles;

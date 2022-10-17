@@ -51,7 +51,7 @@ public class Crawler : GenericMob
 
         AnimController = GetComponentInChildren<Animator>();
 
-        _crawlAudioClip = AudioClipHandler.PlayAudio("Audio/Crawl", .75f, transform.position, true, 1);
+        _crawlAudioClip = AudioClipHandler.PlayAudio("Audio/Crawl", 1, transform.position, true, 1);
         _crawlAudioClip.transform.parent = transform;
     }
 
@@ -275,7 +275,7 @@ public class Crawler : GenericMob
             _crawlAudioClip.StopClip();
         }
 
-        AudioClipHandler.PlayAudio("Audio/DyingCrawler", .75f, transform.position, false, .1f);
+        AudioClipHandler.PlayAudio("Audio/DyingCrawler", 1, transform.position, false, .1f);
         
         yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName(DieStateName));
 

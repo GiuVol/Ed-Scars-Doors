@@ -755,7 +755,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         Vector2 jumpDirection = Vector2.up;
         MovementController.GiveImpulse(jumpDirection, CurrentJumpForce);
 
-        AudioClipHandler.PlayAudio("Audio/Whoosh", .2f, transform.position, false, .2f);
+        AudioClipHandler.PlayAudio("Audio/Whoosh", 1, transform.position, false, .2f);
 
         if (!isGrounded)
         {
@@ -818,7 +818,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         CanDash = false;
         
         MovementController.GiveImpulse(transform.right, CurrentDashForce);
-        AudioClipHandler.PlayAudio("Audio/Whoosh", .2f, transform.position, false, .2f);
+        AudioClipHandler.PlayAudio("Audio/Whoosh", 1, transform.position, false, .2f);
 
         Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(PlayerLayerName), LayerMask.NameToLayer(GenericMob.MobLayerName));
         Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(PlayerLayerName), LayerMask.NameToLayer(GenericMob.MobProjectileLayerName));
@@ -862,7 +862,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
                 if (chargingClip == null)
                 {
-                    chargingClip = AudioClipHandler.PlayAudio("Audio/Charging", 0, transform.position, false, .2f);
+                    chargingClip = AudioClipHandler.PlayAudio("Audio/Charging", 1, transform.position, false, .2f);
                 }
             }
         }
@@ -874,7 +874,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
         Projectile projectile = 
             Instantiate(currentProjectileAsset, ProjectilesSpawnPoint.position, transform.rotation);
-        AudioClipHandler.PlayAudio("Audio/Fireball", 0, transform.position, false, .05f);
+        AudioClipHandler.PlayAudio("Audio/Fireball", 1, transform.position, false, .05f);
 
         projectile.AttackerAttack = Stats.Attack.CurrentValue;
 
