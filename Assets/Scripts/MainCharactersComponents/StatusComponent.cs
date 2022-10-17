@@ -4,6 +4,7 @@ using UnityEngine;
 public class StatusComponent : MonoBehaviour
 {
     private const float MinBlindnessLevelDecrementSpeed = .5f;
+    private const float StandardBlindnessCooldownTime = 5;
 
     #region Blindness
 
@@ -28,6 +29,20 @@ public class StatusComponent : MonoBehaviour
     /// The greater this value is, the faster the <c>CurrentBlindnessLevel</c> will decrease.
     /// </summary>
     public float BlindnessLevelDecrementSpeed { get; private set; }
+
+    [SerializeField]
+    private bool _useCustomBlindnessCooldownTime;
+
+    [SerializeField]
+    private float _customBlindnessCooldownTime;
+
+    private float BlindnessCooldownTime
+    {
+        get
+        {
+            return _useCustomBlindnessCooldownTime ? _customBlindnessCooldownTime : StandardBlindnessCooldownTime;
+        }
+    }
 
     /// <summary>
     /// This value represents whether the character is blinded or not.
@@ -194,7 +209,7 @@ public class StatusComponent : MonoBehaviour
     /// </summary>
     private IEnumerator InflictBlindness()
     {
-        if (IsImmune)
+        if (!CanBeBlinded || IsImmune)
         {
             yield break;
         }
@@ -224,6 +239,9 @@ public class StatusComponent : MonoBehaviour
         yield return new WaitUntil(() => CurrentBlindnesslevel == 0);
 
         IsBlinded = false;
+
+        yield return new WaitForSeconds(BlindnessCooldownTime);
+
         CanBeBlinded = true;
     }
 
@@ -233,7 +251,7 @@ public class StatusComponent : MonoBehaviour
     /// <param name="increment">The desired increment</param>
     public void IncreaseBlindnessLevel(float increment)
     {
-        if (CanBeBlinded == false || IsImmune)
+        if (!CanBeBlinded || IsImmune)
         {
             return;
         }
