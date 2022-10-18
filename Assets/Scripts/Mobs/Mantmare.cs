@@ -902,7 +902,7 @@ public class Mantmare : GenericMob
 
             AnimController.SetTrigger(StartAttack3ParameterName);
 
-            AudioClipHandler preparingSpitClip = AudioClipHandler.PlayAudio("Audio/SpawnestEggGrowing", 1, transform.position, true);
+            AudioClipHandler preparingSpitClip = AudioClipHandler.PlayAudio("Audio/SpawnestEggGrowing", 1, transform.position, false, .25f);
 
             yield return new WaitForSeconds(1 * TimeMultiplierByStage);
 
@@ -911,7 +911,7 @@ public class Mantmare : GenericMob
                 preparingSpitClip.StopClip();
             }
 
-            AudioClipHandler.PlayAudio("Audio/SpawnestEggHatching", 1, transform.position);
+            AudioClipHandler.PlayAudio("Audio/SpawnestEggHatching", 1, transform.position, false, 0);
             AnimController.SetTrigger(EndAttack3ParameterName);
 
             int numberOfProjectiles;
@@ -1007,7 +1007,7 @@ public class Mantmare : GenericMob
             _noisesClipHandler = null;
         }
 
-        AudioClipHandler.PlayAudio("Audio/DyingMantmare", 0, transform.position);
+        AudioClipHandler.PlayAudio("Audio/DyingMantmare", 0, transform.position, false, .1f);
 
         if (_attackCoroutine != null)
         {
