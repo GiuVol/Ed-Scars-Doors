@@ -366,7 +366,7 @@ public class Flydier : GenericMob
         Projectile resource =
             Resources.Load<Projectile>(Projectile.ProjectileResourcesPath + Projectile.PoisonStingName);
 
-        AudioClipHandler.PlayAudio("Audio/Slash2", 0, transform.position, false, .5f);
+        AudioClipHandler.PlayAudio("Audio/Slash2", 1, transform.position, false, .5f);
         
         Projectile projectile = Instantiate(resource, spawnPosition, desiredRotation);
 
