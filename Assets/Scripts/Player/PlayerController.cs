@@ -687,14 +687,25 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
     void FixedUpdate()
     {
-        AttachedAnimator.SetBool(BlindedParameterName, Status.IsBlinded);
-
         if (HasControl && !Status.IsBlinded)
         {
             float horizontalInput = InputHandler.HorizontalInput;
             float movementSpeed = InputHandler.Run() ? CurrentRunSpeed : CurrentWalkSpeed;
 
             MovementController.HandleMovementWithSpeed(horizontalInput, movementSpeed);
+        }
+
+        if (AttachedAnimator != null)
+        {
+            if (MovementController != null && MovementController.AttachedRigidbody != null)
+            {
+                Vector2 localSpaceVelocity = transform.InverseTransformDirection(MovementController.AttachedRigidbody.velocity);
+                float normalizedSpeed = localSpaceVelocity.x / (CurrentRunSpeed);
+
+                AttachedAnimator.SetFloat(SpeedParameterName, normalizedSpeed);
+            }
+
+            AttachedAnimator.SetBool(BlindedParameterName, Status.IsBlinded);
         }
 
         _timeToWaitToJump = Mathf.Max(_timeToWaitToJump - Time.fixedDeltaTime, 0);
@@ -708,14 +719,6 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         {
             _timePassedBeingCaught = Mathf.Clamp(_timePassedBeingCaught + Time.fixedDeltaTime, 0, float.MaxValue - 100);
             _timePassedBeingUnnoticed = 0;
-        }
-
-        if (AttachedAnimator != null && MovementController != null && MovementController.AttachedRigidbody != null)
-        {
-            Vector2 localSpaceVelocity = transform.InverseTransformDirection(MovementController.AttachedRigidbody.velocity);
-            float normalizedSpeed = localSpaceVelocity.x / (CurrentRunSpeed);
-
-            AttachedAnimator.SetFloat(SpeedParameterName, normalizedSpeed);
         }
     }
 
