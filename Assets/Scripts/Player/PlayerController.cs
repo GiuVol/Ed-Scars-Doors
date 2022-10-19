@@ -609,7 +609,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         Stats = gameObject.GetComponent<StatsComponent>();
         Status = gameObject.GetComponent<StatusComponent>();
 
-        Health.Setup(100, Die, 
+        Health.Setup(250, Die, 
                      delegate {
                          ChangeColorTemporarily(Color.green, .25f); 
                      }, 
@@ -617,7 +617,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
                          ChangeColorTemporarily(Color.red, .25f); 
                      });
         Stats.Setup(100, 50, 500, 100, 50, 500);
-        Status.Setup(100, 0, 1, 20, .1f, 10, 3, delegate { StartBlindness(); }, delegate { StartCorrosion(); });
+        Status.Setup(10, .5f, 3, .5f, 10, .05f, 5, delegate { StartBlindness(); }, delegate { StartCorrosion(); });
 
         CanDash = true;
         CanShoot = true;
