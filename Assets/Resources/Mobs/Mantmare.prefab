@@ -46,19 +46,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: Mantmare
-  _maxHealthValue: 5000
+  _maxHealthValue: 1175
   _attackStandardValue: 100
   _attackMinValue: 100
   _attackMaxValue: 200
-  _defenceStandardValue: 250
-  _defenceMinValue: 200
-  _defenceMaxValue: 300
+  _defenceStandardValue: 105
+  _defenceMinValue: 100
+  _defenceMaxValue: 150
   _maxBlindnessLevel: 10
-  _blindnessResistence: 0.25
-  _blindnessLevelDecrementSpeed: 1
-  _maxCorrosionTime: 5
-  _corrosionDamage: 0.01
-  _corrosionDamageInterval: 0
+  _blindnessResistence: 0.9
+  _blindnessDuration: 3
+  _blindnessLevelDecrementSpeed: 0.56
+  _maxCorrosionTime: 10
+  _corrosionDamage: 0.05
+  _corrosionDamageInterval: 5
   _playerCheckInterval: 0.1
   _rangeToCheck: 100
   _attackRange: 5

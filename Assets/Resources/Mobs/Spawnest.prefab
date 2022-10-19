@@ -1859,7 +1859,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: Spawnest
-  _maxHealthValue: 1000
+  _maxHealthValue: 570
   _attackStandardValue: 0
   _attackMinValue: 0
   _attackMaxValue: 0
@@ -1867,11 +1867,12 @@ MonoBehaviour:
   _defenceMinValue: 50
   _defenceMaxValue: 150
   _maxBlindnessLevel: 10
-  _blindnessResistence: 1
-  _blindnessLevelDecrementSpeed: 0
-  _maxCorrosionTime: 0
-  _corrosionDamage: 0
-  _corrosionDamageInterval: 0
+  _blindnessResistence: 0.6
+  _blindnessDuration: 3
+  _blindnessLevelDecrementSpeed: 2
+  _maxCorrosionTime: 10
+  _corrosionDamage: 0.05
+  _corrosionDamageInterval: 5
   _playerCheckInterval: 2.5
   _rangeToCheck: 50
   _attackRange: 20
