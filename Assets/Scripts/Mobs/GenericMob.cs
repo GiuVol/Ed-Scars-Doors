@@ -86,6 +86,9 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     [SerializeField]
     private float _blindnessResistence;
 
+    [SerializeField]
+    private float _blindnessDuration;
+
     /// <summary>
     /// How fast the blindness level must decrease.
     /// </summary>
@@ -822,7 +825,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
         if (Status != null)
         {
             Status.Setup(_maxBlindnessLevel, _blindnessResistence, _blindnessLevelDecrementSpeed, 
-                         _maxCorrosionTime, _corrosionDamage, _corrosionDamageInterval, 
+                         _maxCorrosionTime, _corrosionDamage, _corrosionDamageInterval, _blindnessDuration,
                          delegate { StartBlindness(); }, delegate { StartCorrosion(); });
         }
     }

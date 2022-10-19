@@ -114,10 +114,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e979d6368159db5458fc58c235cf0aea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BasePower: 50
+  BasePower: 45
   Speed: 1
   DistanceToLast: 50
   AdditionalEffects:
   - Type: 0
     Value: 5
   MaxChargeTime: 0
+  _impactSound: {fileID: 0}
+  _dontDestroy: 0
+  _useRigidbody: 0

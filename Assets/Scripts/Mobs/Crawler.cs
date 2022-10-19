@@ -4,6 +4,7 @@ using UnityEngine;
 public class Crawler : GenericMob
 {
     private const float MaxSpeed = 7;
+    private const int BasePower = 40;
     
     /// <summary>
     /// Consts useful for the Animator's handling.
@@ -221,7 +222,7 @@ public class Crawler : GenericMob
         {
             _headCaster.TriggerFunction = collider => {
                 AudioClipHandler.PlayAudio("Audio/Damage", 0, transform.position, false, .1f);
-                InflictDamage(collider, 20); 
+                InflictDamage(collider, BasePower); 
             };
         }
 

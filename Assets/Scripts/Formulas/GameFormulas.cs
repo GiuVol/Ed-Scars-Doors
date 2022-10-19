@@ -2,8 +2,13 @@ using UnityEngine;
 
 public class GameFormulas
 {
-    private const float MinDamageMultiplier = .1f;
-    private const float MaxDamageMultiplier = 10;
+    private const float MinDecreaseMultiplier = .1f;
+    private const float MaxDecreaseMultiplier = 10;
+
+    private const float MaxIncrease = .1f;
+    private const float MinIncrease = 10;
+
+    private const int Exponent = 1;
 
     private const float SecondsToDoublePowerWithCharge = 5;
 
@@ -20,22 +25,31 @@ public class GameFormulas
         power = Mathf.Max(power, 0);
         attackerAttack = Mathf.Max(attackerAttack, 0);
         targetDefence = Mathf.Max(targetDefence, 0);
+        float difference = attackerAttack - targetDefence;
 
-        float multiplier;
+        float floatDamage;
 
-        if (attackerAttack < targetDefence)
+        if (difference < 0)
         {
-            multiplier = attackerAttack / (targetDefence + 1);
-            multiplier = Mathf.Clamp(multiplier, MinDamageMultiplier, MaxDamageMultiplier);
-        } else
+            float decreaseMultiplier;
+            decreaseMultiplier = attackerAttack / (targetDefence + 1);
+
+            decreaseMultiplier = Mathf.Clamp(decreaseMultiplier, MinDecreaseMultiplier, MaxDecreaseMultiplier);
+            floatDamage = power * decreaseMultiplier;
+        }
+        else if (difference == 0)
+        {
+            floatDamage = power;
+        }
+        else
         {
             int desiredBase = 3;
-            multiplier = Mathf.Max(attackerAttack - targetDefence, 0) + desiredBase;
-            multiplier = Mathf.Log(multiplier, desiredBase);
-            multiplier = Mathf.Clamp(multiplier, MinDamageMultiplier, MaxDamageMultiplier);
+            float increase = Mathf.Max(difference, 0) + desiredBase;
+            increase = Mathf.Log(increase, desiredBase);
+            increase = Mathf.Clamp(increase, MinIncrease, MaxIncrease);
+            floatDamage = power + Mathf.Pow(increase, Exponent);
         }
 
-        float floatDamage = power * multiplier;
         int intDamage = Mathf.FloorToInt(floatDamage);
 
         return intDamage;

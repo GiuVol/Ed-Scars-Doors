@@ -189,7 +189,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e979d6368159db5458fc58c235cf0aea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BasePower: 40
+  BasePower: 45
   Speed: 1
   DistanceToLast: 50
   AdditionalEffects:
