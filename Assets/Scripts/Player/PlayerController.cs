@@ -617,7 +617,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
                          ChangeColorTemporarily(Color.red, .25f); 
                      });
         Stats.Setup(100, 50, 500, 100, 50, 500);
-        Status.Setup(100, 0, 1, 20, .1f, 10, delegate { StartBlindness(); }, delegate { StartCorrosion(); });
+        Status.Setup(100, 0, 1, 20, .1f, 10, 3, delegate { StartBlindness(); }, delegate { StartCorrosion(); });
 
         CanDash = true;
         CanShoot = true;

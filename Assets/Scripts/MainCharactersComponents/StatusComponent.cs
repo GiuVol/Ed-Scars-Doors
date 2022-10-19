@@ -25,6 +25,8 @@ public class StatusComponent : MonoBehaviour
     /// </summary>
     public float BlindnessResistence { get; private set; }
 
+    public float BlindnessDuration { get; private set; }
+    
     /// <summary>
     /// The greater this value is, the faster the <c>CurrentBlindnessLevel</c> will decrease.
     /// </summary>
@@ -145,7 +147,7 @@ public class StatusComponent : MonoBehaviour
     /// <param name="onCorrodedDelegate">
     /// A method that will be called when the character is corroded.
     /// </param>
-    public void Setup(float maxBlindnesslevel, float blindnessResistence, 
+    public void Setup(float maxBlindnesslevel, float blindnessResistence, float blindnessDuration, 
                       float blindnessLevelDecrementSpeed, float maxCorrosionTime, 
                       float corrosionDamage, float corrosionDamageInterval, 
                       OnBlinded onBlindedDelegate = null, OnCorroded onCorrodedDelegate = null)
@@ -161,6 +163,7 @@ public class StatusComponent : MonoBehaviour
         
         MaxBlindnesslevel = maxBlindnesslevel;
         BlindnessResistence = blindnessResistence;
+        BlindnessDuration = blindnessDuration;
         BlindnessLevelDecrementSpeed = blindnessLevelDecrementSpeed;
         OnBlindedDelegate = onBlindedDelegate;
 
@@ -235,6 +238,8 @@ public class StatusComponent : MonoBehaviour
         */
 
         #endregion
+
+        yield return new WaitForSeconds(BlindnessDuration);
 
         yield return new WaitUntil(() => CurrentBlindnesslevel == 0);
 
