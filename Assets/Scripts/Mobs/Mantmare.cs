@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class Mantmare : GenericMob
 {
-    private const float Attack1Power = 5;
-    private const float Attack2Power = 2.5f;
-    private const float Attack3Power = 7.5f;
+    private const float Attack1Power = 40;
+    private const float Attack2Power = 45;
 
     #region Animator Consts
 
@@ -610,10 +609,10 @@ public class Mantmare : GenericMob
         switch (decidedPattern)
         {
             case 1:
-                yield return Pattern3(target);
+                yield return Pattern1(target);
                 break;
             case 2:
-                yield return Pattern3(target);
+                yield return Pattern2(target);
                 break;
             case 3:
                 yield return Pattern3(target);
