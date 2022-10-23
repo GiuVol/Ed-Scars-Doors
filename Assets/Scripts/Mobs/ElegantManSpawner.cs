@@ -8,7 +8,7 @@ public class ElegantManSpawner : EventTrigger
     [SerializeField]
     private Transform _spawnPoint;
 
-    protected override IEnumerator Action()
+    protected override IEnumerator Action(PlayerController player)
     {
         if (_spawnPoint == null)
         {

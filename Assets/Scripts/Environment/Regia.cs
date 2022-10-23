@@ -95,12 +95,6 @@ public class Regia : MonoBehaviour
     private List<CameraPresetValue> _cameraValues;
 
     /// <summary>
-    /// The y threshold that implies player's death if surpassed.
-    /// </summary>
-    [SerializeField]
-    private float _yDeathThreshold;
-
-    /// <summary>
     /// The ost of the level.
     /// </summary>
     [SerializeField]
@@ -278,11 +272,6 @@ public class Regia : MonoBehaviour
         if (CameraValues.Count > 0)
         {
             HandleCamera(_playerController.transform.position.x);
-        }
-
-        if (_playerController.transform.position.y < _yDeathThreshold)
-        {
-            _playerController.Health.DecreasePercentage(1);
         }
     }
 

@@ -191,7 +191,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BasePower: 45
   Speed: 1
-  DistanceToLast: 50
+  DistanceToLast: 25
   AdditionalEffects:
   - Type: 1
     Value: 5

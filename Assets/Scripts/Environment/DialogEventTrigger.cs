@@ -13,7 +13,7 @@ public class DialogEventTrigger : EventTrigger
     [SerializeField]
     private bool _setTimeScaleToZero;
 
-    protected override IEnumerator Action()
+    protected override IEnumerator Action(PlayerController player)
     {
         UIPrompt promptResource = Resources.Load<UIPrompt>(_promptResourcePath);
 
@@ -32,7 +32,6 @@ public class DialogEventTrigger : EventTrigger
             yield break;
         }
 
-        PlayerController player = GameManager.Instance.Player;
         Canvas canvas = GameManager.Instance.UI.CurrentCanvas;
 
         GameManager.Instance.UI.PromptIsLoaded = true;

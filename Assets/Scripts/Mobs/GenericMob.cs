@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStatusable
+public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStatusable, IPatroller
 {
     public const string MobLayerName = "Mob";
     public const string MobProjectileLayerName = "MobProjectile";

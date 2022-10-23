@@ -72,15 +72,16 @@ public class PatrolPointsGroup : MonoBehaviour
     /// <summary>
     /// The mob who is covering this patrol points group.
     /// </summary>
-    private GenericMob _subscriber;
+    private IPatroller _subscriber;
 
     /// <summary>
     /// Property to access in a controlled way to the subscriber.
     /// </summary>
-    public GenericMob Subscriber
+    public IPatroller Subscriber
     {
         get
         {
+            /*
             if (_subscriber != null)
             {
                 if (_subscriber.Health.CurrentHealth <= 0)
@@ -88,6 +89,7 @@ public class PatrolPointsGroup : MonoBehaviour
                     _subscriber = null;
                 }
             }
+            */
 
             return _subscriber;
         }
