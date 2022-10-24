@@ -1034,9 +1034,15 @@ public class Mantmare : GenericMob
             yield return new WaitForFixedUpdate();
         }
 
-        Destroy(gameObject);
+        CameraController camera = GameObject.FindObjectOfType<CameraController>();
 
-        yield break;
+        if (camera != null)
+        {
+            camera.LockBoundries = false;
+            camera.Unlock();
+        }
+
+        Destroy(gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
