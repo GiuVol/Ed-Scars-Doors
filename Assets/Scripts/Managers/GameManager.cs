@@ -122,16 +122,22 @@ public class GameManager : MonoBehaviour
     {
         if (!UI.MainMenuIsLoaded && !UI.PromptIsLoaded)
         {
-            if (InputHandler.ToggleHUD("Down"))
+            if (Player != null)
             {
-                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
-                UI.SwitchHUD();
-            }
+                if (Player.Health.CurrentHealth > 0)
+                {
+                    if (InputHandler.ToggleHUD("Down"))
+                    {
+                        AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
+                        UI.SwitchHUD();
+                    }
 
-            if (!UI.GameMenuIsLoaded && InputHandler.OpenMenu("Down"))
-            {
-                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
-                UI.LoadGameMenu();
+                    if (!UI.GameMenuIsLoaded && InputHandler.OpenMenu("Down"))
+                    {
+                        AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
+                        UI.LoadGameMenu();
+                    }
+                }
             }
         }
     }

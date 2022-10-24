@@ -81,16 +81,6 @@ public class PatrolPointsGroup : MonoBehaviour
     {
         get
         {
-            /*
-            if (_subscriber != null)
-            {
-                if (_subscriber.Health.CurrentHealth <= 0)
-                {
-                    _subscriber = null;
-                }
-            }
-            */
-
             return _subscriber;
         }
 

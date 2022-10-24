@@ -177,6 +177,8 @@ public class MovingPlatform : MonoBehaviour, IPatroller
     {
         AttachedRigidbody = GetComponent<Rigidbody2D>();
         AttachedRigidbody.gravityScale = 0;
+
+        PPGroup = _patrolPointsGroup;
     }
     
     void FixedUpdate()
