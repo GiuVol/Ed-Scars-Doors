@@ -116,7 +116,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BasePower: 50
   Speed: 1
-  DistanceToLast: 100
+  DistanceToLast: 35
   AdditionalEffects: []
   MaxChargeTime: 1
   _impactSound: {fileID: 8300000, guid: 0080d6915062ce34d9e15a18834d80dc, type: 3}
+  _dontDestroy: 0
+  _useRigidbody: 0

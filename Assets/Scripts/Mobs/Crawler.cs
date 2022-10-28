@@ -58,6 +58,19 @@ public class Crawler : GenericMob
 
     private void FixedUpdate()
     {
+        Camera camera = Camera.main;
+
+        if (camera != null)
+        {
+            if (Vector2.Distance(camera.transform.position, transform.position) > 100)
+            {
+                return;
+            }
+        } else
+        {
+            return;
+        }
+
         UpdateBars();
 
         Vector2 localSpaceVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);

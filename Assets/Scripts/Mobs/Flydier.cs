@@ -126,6 +126,20 @@ public class Flydier : GenericMob
 
     private void FixedUpdate()
     {
+        Camera camera = Camera.main;
+
+        if (camera != null)
+        {
+            if (Vector2.Distance(camera.transform.position, transform.position) > 100)
+            {
+                return;
+            }
+        }
+        else
+        {
+            return;
+        }
+        
         UpdateBars();
 
         Vector2 localSpaceVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
@@ -140,9 +154,12 @@ public class Flydier : GenericMob
             return;
         }
 
-        if (_remainsOnPattern && CanPatrol)
+        if (_remainsOnPattern)
         {
-            FollowPattern(_player);
+            if (CanPatrol)
+            {
+                FollowPattern(_player);
+            }
         } else
         {
             if (_player == null)
@@ -192,7 +209,7 @@ public class Flydier : GenericMob
     {
         if (!CanPatrol)
         {
-            if (!IsInvoking("SearchForPatrolPoints"))
+            if (!IsInvoking("SearchForPatrolPoints") && _remainsOnPattern)
             {
                 InvokeRepeating("SearchForPatrolPoints", 0, 2f);
             }

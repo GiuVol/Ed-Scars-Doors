@@ -18,6 +18,7 @@ public class GameFormulas
     public const string ItemLayerName = "Item";
     public const string CollidesWithGroundOnlyLayerName = "CollidesWithGroundOnly";
     public const string DoorLayerName = "Door";
+    public const string TeleportLayerName = "Teleport";
     public const string ScreenBoundriesLayerName = "ScreenBoundries";
 
     public static int Damage(float power, float attackerAttack, float targetDefence)

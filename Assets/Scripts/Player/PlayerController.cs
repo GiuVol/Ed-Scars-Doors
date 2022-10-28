@@ -307,6 +307,8 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
     private Door _currentDoor;
 
+    private Teleport _currentTeleport;
+    
     /// <summary>
     /// Structure that stores the abilities currently equipped by the player.
     /// </summary>
@@ -664,6 +666,11 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             if (_currentDoor != null && InputHandler.Interact("Down"))
             {
                 _currentDoor.CrossDoor();
+            }
+
+            if (_currentTeleport != null && InputHandler.Interact("Down"))
+            {
+                _currentTeleport.TeleportToPosition();
             }
         }
 
@@ -1272,6 +1279,16 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             if (door != null)
             {
                 _currentDoor = door;
+            }
+        }
+
+        if (col.gameObject.layer == LayerMask.NameToLayer(GameFormulas.TeleportLayerName))
+        {
+            Teleport teleport = col.GetComponent<Teleport>();
+
+            if (teleport != null)
+            {
+                _currentTeleport = teleport;
             }
         }
     }

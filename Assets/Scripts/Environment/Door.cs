@@ -1,9 +1,11 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Door : MonoBehaviour
 {
     private const string EnterMessageResourcesPath = "UI/EnterMessage";
+    private const string CantOpenDoorMessage = "UI/CantOpenDoorMessage";
 
     [SerializeField]
     private string _sceneToLoadName;
@@ -23,7 +25,15 @@ public class Door : MonoBehaviour
     [SerializeField]
     private NullableVector3 _desiredCameraPosition;
 
-    private DynamicUIComponent _uiEnterMessage;
+    private DynamicUIComponent _uiMessage;
+
+    private bool Disabled
+    {
+        get
+        {
+            return (_locked || GameManager.Instance == null || SceneUtility.GetBuildIndexByScenePath(_sceneToLoadName) < 0);
+        }
+    }
     
     void Start()
     {
@@ -33,14 +43,22 @@ public class Door : MonoBehaviour
 
         if (currentCanvas != null)
         {
-            DynamicUIComponent enterMessageResource = Resources.Load<DynamicUIComponent>(EnterMessageResourcesPath);
+            DynamicUIComponent messageResource = null;
 
-            if (enterMessageResource != null)
+            if (Disabled)
             {
-                _uiEnterMessage = Instantiate(enterMessageResource, currentCanvas.transform);
-                _uiEnterMessage.InitializeDynamic(transform, Vector3.zero);
+                messageResource = Resources.Load<DynamicUIComponent>(CantOpenDoorMessage);
+            } else
+            {
+                messageResource = Resources.Load<DynamicUIComponent>(EnterMessageResourcesPath);
+            }
 
-                _uiEnterMessage.gameObject.SetActive(false);
+            if (messageResource != null)
+            {
+                _uiMessage = Instantiate(messageResource, currentCanvas.transform);
+                _uiMessage.InitializeDynamic(transform, Vector3.zero);
+
+                _uiMessage.gameObject.SetActive(false);
             }
         }
     }
@@ -49,8 +67,9 @@ public class Door : MonoBehaviour
     {
         int buildIndex = SceneUtility.GetBuildIndexByScenePath(_sceneToLoadName);
 
-        if (_locked || GameManager.Instance == null || buildIndex < 0)
+        if (Disabled)
         {
+            AudioClipHandler.PlayAudio("Audio/Disabled", 0, null, false, .15f);
             return;
         }
 
@@ -62,12 +81,12 @@ public class Door : MonoBehaviour
 
     private void EnableEnterMessage(bool enabled)
     {
-        if (_uiEnterMessage == null)
+        if (_uiMessage == null)
         {
             return;
         }
 
-        _uiEnterMessage.gameObject.SetActive(enabled);
+        _uiMessage.gameObject.SetActive(enabled);
     }
 
     private void OnTriggerEnter2D(Collider2D col)

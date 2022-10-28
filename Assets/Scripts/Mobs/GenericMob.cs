@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStatusable
+public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStatusable, IPatroller
 {
     public const string MobLayerName = "Mob";
     public const string MobProjectileLayerName = "MobProjectile";
@@ -363,6 +363,9 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
         {
             PPGroup = orderedPPGroups.ToList()[0];
             CancelInvoke("SearchForPatrolPoints");
+        } else
+        {
+            Debug.Log(gameObject.name + " PPG not found");
         }
 
         return foundResults;
@@ -1121,6 +1124,14 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
         if (CorrosionBar != null)
         {
             Destroy(CorrosionBar.gameObject);
+        }
+
+        if (PPGroup != null)
+        {
+            if (PPGroup.Subscriber != null)
+            {
+                PPGroup.Subscriber = null;
+            }
         }
         
         yield return StartCoroutine(Die());

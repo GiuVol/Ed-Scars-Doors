@@ -13,7 +13,10 @@ public class DialogEventTrigger : EventTrigger
     [SerializeField]
     private bool _setTimeScaleToZero;
 
-    protected override IEnumerator Action()
+    [SerializeField]
+    private bool _returnToMainMenu;
+
+    protected override IEnumerator Action(PlayerController player)
     {
         UIPrompt promptResource = Resources.Load<UIPrompt>(_promptResourcePath);
 
@@ -32,7 +35,6 @@ public class DialogEventTrigger : EventTrigger
             yield break;
         }
 
-        PlayerController player = GameManager.Instance.Player;
         Canvas canvas = GameManager.Instance.UI.CurrentCanvas;
 
         GameManager.Instance.UI.PromptIsLoaded = true;
@@ -52,7 +54,35 @@ public class DialogEventTrigger : EventTrigger
                                                               Time.timeScale = 1;
                                                           }
                                                           GameManager.Instance.UI.PromptIsLoaded = false;
-                                                          player.HasControl = true; 
+                                                          player.HasControl = true;
+
+                                                          if (_returnToMainMenu)
+                                                          {
+                                                              if (GameManager.Instance != null)
+                                                              {
+                                                                  if (GameManager.Instance.Player != null)
+                                                                  {
+                                                                      Destroy(GameManager.Instance.Player.gameObject);
+                                                                  }
+                                                              }
+
+                                                              if (UIManager.Instance == null)
+                                                              {
+                                                                  return;
+                                                              }
+
+                                                              UIManager.Instance.ClearCanvas();
+
+                                                              foreach (Transform canvasChildTransform in UIManager.Instance.CurrentCanvas.transform)
+                                                              {
+                                                                  Destroy(canvasChildTransform.gameObject);
+                                                              }
+
+                                                              if (GameManager.Instance != null)
+                                                              {
+                                                                  GameManager.Instance.StartCoroutine(GameManager.Instance.LoadMainMenu());
+                                                              }
+                                                          }
                                                       }, 
                                                       true));
     }

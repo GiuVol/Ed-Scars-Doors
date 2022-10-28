@@ -84,6 +84,22 @@ public class Spawnest : GenericMob
     [SerializeField]
     private float _dangerDistance;
 
+    [SerializeField]
+    private List<Flydier> _flydiersSpawnedAtStart;
+
+    private List<Flydier> FlydiersSpawnedAtStart
+    {
+        get
+        {
+            if (_flydiersSpawnedAtStart == null)
+            {
+                _flydiersSpawnedAtStart = new List<Flydier>();
+            }
+
+            return _flydiersSpawnedAtStart;
+        }
+    }
+
     /// <summary>
     /// Stores how long the spawnest should be farther from the player than the danger distance before it stops escaping.
     /// </summary>
@@ -143,10 +159,35 @@ public class Spawnest : GenericMob
         _maxSpawnableFlydiers = Mathf.Max(_maxSpawnableFlydiers, 1);
 
         ChangeEggScale(0);
+
+        if (FlydiersSpawnedAtStart.Count > 0)
+        {
+            foreach (Flydier newFlydier in FlydiersSpawnedAtStart)
+            {
+                newFlydier.Spawner = this;
+                newFlydier.RemainsOnPattern = _flydiersRemainOnPattern;
+
+                SpawnedFlydiers.Add(newFlydier);
+            }
+        }
     }
 
     private void FixedUpdate()
     {
+        Camera camera = Camera.main;
+
+        if (camera != null)
+        {
+            if (Vector2.Distance(camera.transform.position, transform.position) > 100)
+            {
+                return;
+            }
+        }
+        else
+        {
+            return;
+        }
+        
         UpdateBars();
 
         Vector2 localSpaceVelocity = transform.InverseTransformDirection(_attachedRigidbody.velocity);
@@ -238,7 +279,7 @@ public class Spawnest : GenericMob
             currentScaleFactor += Time.fixedDeltaTime * Mathf.Clamp(_eggGrowingSpeed, .01f, .5f);
             ChangeEggScale(Mathf.Clamp(currentScaleFactor, 0, EggMaxScale));
 
-            yield return null;
+            yield return new WaitForFixedUpdate();
         }
 
         AudioClipHandler.PlayAudio("Audio/SpawnestEggHatching", 1, transform.position, false, .1f);

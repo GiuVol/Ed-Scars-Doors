@@ -51,13 +51,25 @@ public abstract class EventTrigger : MonoBehaviour
             return;
         }
 
+        PlayerController player = collision.GetComponentInChildren<PlayerController>();
+
+        if (player == null)
+        {
+            player = collision.GetComponentInParent<PlayerController>();
+
+            if (player == null)
+            {
+                return;
+            }
+        }
+
         if (_currentEvent == null)
         {
-            _currentEvent = StartCoroutine(HandleEvent());
+            _currentEvent = StartCoroutine(HandleEvent(player));
         }
     }
 
-    private IEnumerator HandleEvent()
+    private IEnumerator HandleEvent(PlayerController player)
     {
         if (Expired)
         {
@@ -67,7 +79,7 @@ public abstract class EventTrigger : MonoBehaviour
 
         _numberOfContacts++;
 
-        yield return StartCoroutine(Action());
+        yield return StartCoroutine(Action(player));
 
         if (Expired)
         {
@@ -78,5 +90,5 @@ public abstract class EventTrigger : MonoBehaviour
         _currentEvent = null;
     }
 
-    protected abstract IEnumerator Action();
+    protected abstract IEnumerator Action(PlayerController player);
 }

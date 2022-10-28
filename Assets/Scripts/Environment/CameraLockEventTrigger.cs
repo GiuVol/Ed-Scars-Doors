@@ -19,7 +19,7 @@ public class CameraLockEventTrigger : EventTrigger
 
     #endregion
 
-    protected override IEnumerator Action()
+    protected override IEnumerator Action(PlayerController player)
     {
         CameraController cameraController = GameObject.FindObjectOfType<CameraController>();
         Regia regia = GameObject.FindObjectOfType<Regia>();
