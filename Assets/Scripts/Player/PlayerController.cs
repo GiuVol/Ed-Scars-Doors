@@ -765,7 +765,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         Vector2 jumpDirection = Vector2.up;
         MovementController.GiveImpulse(jumpDirection, CurrentJumpForce);
 
-        AudioClipHandler.PlayAudio("Audio/Whoosh", 1, transform.position, false, .2f);
+        AudioClipHandler.PlayAudio("Audio/Whoosh", 1, transform.position, false, 1);
 
         if (!isGrounded)
         {
@@ -828,7 +828,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
         CanDash = false;
         
         MovementController.GiveImpulse(transform.right, CurrentDashForce);
-        AudioClipHandler.PlayAudio("Audio/Whoosh", 1, transform.position, false, .2f);
+        AudioClipHandler.PlayAudio("Audio/Whoosh", 1, transform.position, false, 1);
 
         Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(PlayerLayerName), LayerMask.NameToLayer(GenericMob.MobLayerName));
         Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(PlayerLayerName), LayerMask.NameToLayer(GenericMob.MobProjectileLayerName));
@@ -872,7 +872,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
                 if (chargingClip == null)
                 {
-                    chargingClip = AudioClipHandler.PlayAudio("Audio/Charging", 1, transform.position, false, .2f);
+                    chargingClip = AudioClipHandler.PlayAudio("Audio/Charging", 1, transform.position, false, 1);
                 }
             }
         }
@@ -884,7 +884,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
         Projectile projectile = 
             Instantiate(currentProjectileAsset, ProjectilesSpawnPoint.position, transform.rotation);
-        AudioClipHandler.PlayAudio("Audio/Fireball", 1, transform.position, false, .05f);
+        AudioClipHandler.PlayAudio("Audio/Fireball", 1, transform.position, false, .75f);
 
         projectile.AttackerAttack = Stats.Attack.CurrentValue;
 
@@ -929,7 +929,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             yield break;
         }
 
-        AudioClipHandler.PlayAudio("Audio/Hide", 0, transform.position);
+        AudioClipHandler.PlayAudio("Audio/Hide", 0, transform.position, false, 1);
 
         float currentTime = 0;
         float timeItTakesToFade = .1f;
@@ -972,7 +972,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             yield break;
         }
 
-        AudioClipHandler.PlayAudio("Audio/Hide", 0, transform.position);
+        AudioClipHandler.PlayAudio("Audio/Hide", 0, transform.position, false, 1);
         
         float currentTime = 0;
         float timeItTakesToVisible = .1f;
@@ -1258,12 +1258,12 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
                 {
                     if (itemData is UsableItem)
                     {
-                        AudioClipHandler.PlayAudio("Audio/CollectedItem", 0, transform.position);
+                        AudioClipHandler.PlayAudio("Audio/CollectedItem", 0, transform.position, false, .2f);
                         Inventory.AddItem((UsableItem) itemData, 1);
                     }
                     else if (itemData is CollectableItem)
                     {
-                        AudioClipHandler.PlayAudio("Audio/CollectedItem2", 0, transform.position);
+                        AudioClipHandler.PlayAudio("Audio/CollectedItem2", 0, transform.position, false, 1);
                         Collection.AddItem((CollectableItem) itemData, 1);
                     }
                 }

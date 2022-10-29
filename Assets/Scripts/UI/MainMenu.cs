@@ -38,11 +38,11 @@ public class MainMenu : MultiButtonsMenu
         {
             if (SelectedButtonIndex > 1)
             {
-                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position, false, .5f);
                 SelectedButtonIndex--;
             } else
             {
-                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position, false, .8f);
             }
         }
 
@@ -50,11 +50,11 @@ public class MainMenu : MultiButtonsMenu
         {
             if (SelectedButtonIndex < NumberOfButtons)
             {
-                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position, false, .5f);
                 SelectedButtonIndex++;
             } else
             {
-                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position, false, .8f);
             }
         }
 
@@ -64,10 +64,10 @@ public class MainMenu : MultiButtonsMenu
             {
                 if (SelectedButtonInfo.Disabled)
                 {
-                    AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position, false, 1, false);
+                    AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position, false, .8f, false);
                 } else
                 {
-                    AudioClipHandler.PlayAudio("Audio/PressButton", 0, transform.position, false, 1, false);
+                    AudioClipHandler.PlayAudio("Audio/PressButton", 0, transform.position, false, .5f, false);
                     SelectedButton.onClick.Invoke();
                 }
             }

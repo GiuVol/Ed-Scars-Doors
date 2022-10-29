@@ -64,12 +64,12 @@ public class CollectionMenu : UIListMenu, ITabContent
         {
             if (SelectedElementIndex > 1)
             {
-                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position, false, .5f);
                 SelectedElementIndex--;
             }
             else
             {
-                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position, false, .8f);
             }
         }
 
@@ -77,12 +77,12 @@ public class CollectionMenu : UIListMenu, ITabContent
         {
             if (SelectedElementIndex < NumberOfElements)
             {
-                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position, false, .5f);
                 SelectedElementIndex++;
             }
             else
             {
-                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position, false, .8f);
             }
         }
     }

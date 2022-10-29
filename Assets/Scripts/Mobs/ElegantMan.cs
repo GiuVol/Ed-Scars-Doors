@@ -158,7 +158,7 @@ public class ElegantMan : GenericMob
         if (_armTriggerCaster != null)
         {
             _armTriggerCaster.TriggerFunction = collider => {
-                AudioClipHandler.PlayAudio("Audio/Damage", 0, transform.position, false, .15f);
+                AudioClipHandler.PlayAudio("Audio/Damage", 0, transform.position, false, .4f);
                 InflictDamage(collider, 1);
             };
 

@@ -7,6 +7,6 @@ public class FootstepSoundPlayer : MonoBehaviour
 
     public void PlayStepSound()
     {
-        AudioClipHandler.PlayAudio(_footstepClip, 1, transform.position, false, .4f);
+        AudioClipHandler.PlayAudio(_footstepClip, 1, transform.position, false, .5f);
     }
 }

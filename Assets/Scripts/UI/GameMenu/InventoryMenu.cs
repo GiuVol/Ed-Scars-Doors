@@ -30,12 +30,12 @@ public class InventoryMenu : UIListMenu, ITabContent
         {
             if (SelectedElementIndex > 1)
             {
-                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position, false, .5f);
                 SelectedElementIndex--;
             }
             else
             {
-                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position, false, .8f);
             }
         }
 
@@ -43,11 +43,11 @@ public class InventoryMenu : UIListMenu, ITabContent
         {
             if (SelectedElementIndex < NumberOfElements)
             {
-                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position, false, .5f);
                 SelectedElementIndex++;
             } else
             {
-                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position, false, .8f);
             }
         }
 
@@ -145,7 +145,7 @@ public class InventoryMenu : UIListMenu, ITabContent
                         try
                         {
                             item.Use(player);
-                            AudioClipHandler.PlayAudio("Audio/PressButton");
+                            AudioClipHandler.PlayAudio("Audio/PressButton", 0, transform.position, false, .5f);
                             player.Inventory.RemoveIstances(item, 1);
                             UpdateElements();
                         }
@@ -156,7 +156,7 @@ public class InventoryMenu : UIListMenu, ITabContent
                                 return;
                             }
 
-                            AudioClipHandler.PlayAudio("Audio/Disabled");
+                            AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position, false, .8f);
                             UIPrompt prompt = Instantiate(_uiPromptPrefab, gameObject.transform);
 
                             if (prompt == null)
@@ -171,7 +171,7 @@ public class InventoryMenu : UIListMenu, ITabContent
                                 delegate {
                                     UIManager.Instance.GameMenu.HasControl = true;
                                     HasControl = true;
-                                    AudioClipHandler.PlayAudio("Audio/PressButton");
+                                    AudioClipHandler.PlayAudio("Audio/PressButton", 0, transform.position, false, .5f);
                                 }, true));
                         }
                     }

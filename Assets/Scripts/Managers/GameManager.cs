@@ -128,13 +128,13 @@ public class GameManager : MonoBehaviour
                 {
                     if (InputHandler.ToggleHUD("Down"))
                     {
-                        AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
+                        AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position, false, .5f);
                         UI.SwitchHUD();
                     }
 
                     if (!UI.GameMenuIsLoaded && InputHandler.OpenMenu("Down"))
                     {
-                        AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
+                        AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position, false, .5f);
                         UI.LoadGameMenu();
                     }
                 }

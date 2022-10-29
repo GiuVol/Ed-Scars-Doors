@@ -23,11 +23,11 @@ public class GameMenuOperationSelector : UIOperationSelector
         {
             if (SelectedOperationIndex > 1)
             {
-                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position, false, .5f);
                 SelectedOperationIndex--;
             } else
             {
-                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position, false, .8f);
             }
         }
 
@@ -35,11 +35,11 @@ public class GameMenuOperationSelector : UIOperationSelector
         {
             if (SelectedOperationIndex < NumberOfOperations)
             {
-                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position, false, .5f);
                 SelectedOperationIndex++;
             } else
             {
-                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position, false, .8f);
             }
         }
 
