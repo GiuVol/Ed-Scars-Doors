@@ -132,7 +132,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3557633824526010682, guid: e1ceefd32e809814e84d829b5cc29e31, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 3557633824526010682, guid: e1ceefd32e809814e84d829b5cc29e31, type: 3}
       propertyPath: m_LocalPosition.x
@@ -173,6 +173,10 @@ PrefabInstance:
     - target: {fileID: 3557633824526010682, guid: e1ceefd32e809814e84d829b5cc29e31, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4569218275868494013, guid: e1ceefd32e809814e84d829b5cc29e31, type: 3}
+      propertyPath: _maxHidingTime
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7357046571653230351, guid: e1ceefd32e809814e84d829b5cc29e31, type: 3}
       propertyPath: m_Name
@@ -263,7 +267,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &309844530
 BoxCollider2D:
@@ -535,7 +539,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8000721435426117639, guid: c0872219c08c6dd4e89cf5103818fa46, type: 3}
       propertyPath: m_RootOrder
-      value: 10
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 8000721435426117639, guid: c0872219c08c6dd4e89cf5103818fa46, type: 3}
       propertyPath: m_LocalPosition.x
@@ -688,7 +692,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &947013501
 GameObject:
@@ -799,7 +803,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &961980867
 GameObject:
@@ -830,7 +834,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1052047825
 PrefabInstance:
@@ -1029,6 +1033,7 @@ MonoBehaviour:
     dinanzi a te.'
   _promptResourcePath: UI/DialogPrompt
   _setTimeScaleToZero: 1
+  _returnToMainMenu: 0
 --- !u!61 &1228021439
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1120,7 +1125,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1244591960
 GameObject:
@@ -1164,6 +1169,7 @@ MonoBehaviour:
   - 'Hope: Prova a fare due passi.'
   _promptResourcePath: UI/DialogPrompt
   _setTimeScaleToZero: 1
+  _returnToMainMenu: 0
 --- !u!61 &1244591962
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1255,7 +1261,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1262092852
 PrefabInstance:
@@ -1377,6 +1383,7 @@ MonoBehaviour:
     le frecce direzionali e seleziona quella che pi\xF9 preferisci. "
   _promptResourcePath: UI/DialogPrompt
   _setTimeScaleToZero: 1
+  _returnToMainMenu: 0
 --- !u!61 &1338365975
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1468,7 +1475,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1359499644
 GameObject:
@@ -1510,6 +1517,7 @@ MonoBehaviour:
     Ctrl. "
   _promptResourcePath: UI/DialogPrompt
   _setTimeScaleToZero: 1
+  _returnToMainMenu: 0
 --- !u!61 &1359499646
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1601,7 +1609,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1374965254
 GameObject:
@@ -1627,12 +1635,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1374965254}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 28, z: 0}
+  m_LocalPosition: {x: 0, y: 25.7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1525642740
 GameObject:
@@ -1743,7 +1751,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1590545764
 GameObject:
@@ -1784,6 +1792,7 @@ MonoBehaviour:
     utile pi\xF9 avanti..."
   _promptResourcePath: UI/DialogPrompt
   _setTimeScaleToZero: 1
+  _returnToMainMenu: 0
 --- !u!61 &1590545766
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1875,7 +1884,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 15
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1635885432
 PrefabInstance:
@@ -1890,7 +1899,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2180543457260714897, guid: adba0c44185a67540b390e932d446137, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 625
       objectReference: {fileID: 0}
     - target: {fileID: 2180543457260714897, guid: adba0c44185a67540b390e932d446137, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1994,6 +2003,7 @@ MonoBehaviour:
     conduce verso il primo mondo da esplorare. '
   _promptResourcePath: UI/DialogPrompt
   _setTimeScaleToZero: 1
+  _returnToMainMenu: 0
 --- !u!61 &1767424002
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2085,7 +2095,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 16
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1832496013
 PrefabInstance:
@@ -2377,7 +2387,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &2076596344
 BoxCollider2D:
@@ -2516,37 +2526,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 26
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2135531266
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2135531267}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2135531267
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2135531266}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 249.7, y: 32.5, z: 2.929803}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 27
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &8000721435494440448
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2572,7 +2551,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8000721435426117639, guid: c0872219c08c6dd4e89cf5103818fa46, type: 3}
       propertyPath: m_RootOrder
-      value: 9
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8000721435426117639, guid: c0872219c08c6dd4e89cf5103818fa46, type: 3}
       propertyPath: m_LocalPosition.x
