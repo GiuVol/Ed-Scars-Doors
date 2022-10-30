@@ -52,12 +52,12 @@ public class AbilitiesMenu : UIListMenu, ITabContent
         {
             if (SelectedElementIndex > 1)
             {
-                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position, false, .5f);
                 SelectedElementIndex--;
             }
             else
             {
-                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position, false, .8f);
             }
         }
 
@@ -65,12 +65,12 @@ public class AbilitiesMenu : UIListMenu, ITabContent
         {
             if (SelectedElementIndex < NumberOfElements)
             {
-                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position, false, .5f);
                 SelectedElementIndex++;
             }
             else
             {
-                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position, false, .8f);
             }
         }
 
@@ -169,7 +169,7 @@ public class AbilitiesMenu : UIListMenu, ITabContent
                         delegate
                         {
                             player.UnequipAbility(ability);
-                            AudioClipHandler.PlayAudio("Audio/PressButton");
+                            AudioClipHandler.PlayAudio("Audio/PressButton", 0, transform.position, false, .5f);
                             UpdateElements();
                         }
                     );
@@ -184,7 +184,7 @@ public class AbilitiesMenu : UIListMenu, ITabContent
                             try
                             {
                                 player.EquipAbility(ability);
-                                AudioClipHandler.PlayAudio("Audio/PressButton");
+                                AudioClipHandler.PlayAudio("Audio/PressButton", 0, transform.position, false, .5f);
                             } 
                             catch (UnequippableAbilityException ex)
                             {
@@ -193,7 +193,7 @@ public class AbilitiesMenu : UIListMenu, ITabContent
                                     return;
                                 }
 
-                                AudioClipHandler.PlayAudio("Audio/Disabled");
+                                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position, false, .8f);
                                 UIPrompt prompt = Instantiate(_uiPromptPrefab, gameObject.transform);
 
                                 if (prompt == null)
@@ -208,7 +208,7 @@ public class AbilitiesMenu : UIListMenu, ITabContent
                                     delegate {
                                         UIManager.Instance.GameMenu.HasControl = true;
                                         HasControl = true;
-                                        AudioClipHandler.PlayAudio("Audio/PressButton");
+                                        AudioClipHandler.PlayAudio("Audio/PressButton", 0, transform.position, false, .5f);
                                     }, true));
                             }
                             finally

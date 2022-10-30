@@ -131,7 +131,7 @@ public class GameOverMenu : MultiButtonsMenu
             );
         }
 
-        AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
+        AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position, false, .5f);
         SelectedButtonIndex = 1;
     }
 
@@ -141,12 +141,12 @@ public class GameOverMenu : MultiButtonsMenu
         {
             if (SelectedButtonIndex > 1)
             {
-                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position, false, .5f);
                 SelectedButtonIndex--;
             }
             else
             {
-                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position, false, .8f);
             }
         }
 
@@ -154,12 +154,12 @@ public class GameOverMenu : MultiButtonsMenu
         {
             if (SelectedButtonIndex < NumberOfButtons)
             {
-                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position, false, .5f);
                 SelectedButtonIndex++;
             }
             else
             {
-                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position, false, .8f);
             }
         }
 
@@ -169,10 +169,10 @@ public class GameOverMenu : MultiButtonsMenu
             {
                 if (SelectedButtonInfo.Disabled)
                 {
-                    AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
+                    AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position, false, .8f);
                 } else
                 {
-                    AudioClipHandler.PlayAudio("Audio/PressButton", 0, transform.position, false, 1, false);
+                    AudioClipHandler.PlayAudio("Audio/PressButton", 0, transform.position, false, .5f, false);
                     SelectedButton.onClick.Invoke();
                 }
             }

@@ -229,7 +229,7 @@ public class Crawler : GenericMob
 
         yield return new WaitForSeconds(animationDuration * AttackDamagingPhasePercentage);
 
-        AudioClipHandler.PlayAudio("Audio/Slash", 0, transform.position, false, .2f);
+        AudioClipHandler.PlayAudio("Audio/Slash", 0, transform.position, false, .1f);
 
         if (_headCaster != null)
         {
@@ -289,7 +289,7 @@ public class Crawler : GenericMob
             _crawlAudioClip.StopClip();
         }
 
-        AudioClipHandler.PlayAudio("Audio/DyingCrawler", 1, transform.position, false, .1f);
+        AudioClipHandler.PlayAudio("Audio/DyingCrawler", 1, transform.position, false, 1);
         
         yield return new WaitUntil(() => AnimController.GetCurrentAnimatorStateInfo(0).IsName(DieStateName));
 

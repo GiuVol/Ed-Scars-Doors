@@ -44,7 +44,7 @@ public class HealingPotion : UsableItem
 
         if (player.Health.CurrentHealth != oldHealthValue)
         {
-            AudioClipHandler.PlayAudio("Audio/Healing", 0, player.transform.position);
+            AudioClipHandler.PlayAudio("Audio/Healing", 0, player.transform.position, false, .4f);
         }
     }
 }

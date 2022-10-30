@@ -154,7 +154,7 @@ public class ControlsMenu : MonoBehaviour
         {
             if (SelectedSheetIndex > 1)
             {
-                AudioClipHandler.PlayAudio("Audio/SelectTab", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/SelectTab", 0, transform.position, false, .5f);
                 SelectedSheetIndex--;
                 UpdateArrows();
 
@@ -167,7 +167,7 @@ public class ControlsMenu : MonoBehaviour
                 }
             } else
             {
-                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position, false, .8f);
             }
         }
 
@@ -175,7 +175,7 @@ public class ControlsMenu : MonoBehaviour
         {
             if (SelectedSheetIndex < NumberOfSheets)
             {
-                AudioClipHandler.PlayAudio("Audio/SelectTab", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/SelectTab", 0, transform.position, false, .5f);
                 SelectedSheetIndex++;
                 UpdateArrows();
 
@@ -188,13 +188,13 @@ public class ControlsMenu : MonoBehaviour
                 }
             } else
             {
-                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position, false, .8f);
             }
         }
 
         if (InputHandler.CloseMenu("Down"))
         {
-            AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
+            AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position, false, .5f);
             Destroy(gameObject);
         }
     }

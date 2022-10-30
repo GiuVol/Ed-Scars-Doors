@@ -29,7 +29,7 @@ public class GameMenu : UITabMenu
         {
             if (SelectedTab > 1)
             {
-                AudioClipHandler.PlayAudio("Audio/SelectTab", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/SelectTab", 0, transform.position, false, .5f);
                 SelectedTab--;
             }
         }
@@ -38,14 +38,14 @@ public class GameMenu : UITabMenu
         {
             if (SelectedTab < NumberOfTabs)
             {
-                AudioClipHandler.PlayAudio("Audio/SelectTab", 0, transform.position);
+                AudioClipHandler.PlayAudio("Audio/SelectTab", 0, transform.position, false, .5f);
                 SelectedTab++;
             }
         }
 
         if (InputHandler.CloseMenu("Down"))
         {
-            AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
+            AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position, false, .5f);
             GameManager.Instance.UI.UnloadGameMenu();
         }
     }

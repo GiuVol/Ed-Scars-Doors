@@ -34,7 +34,7 @@ public class GeneralMenu : MultiButtonsMenu, ITabContent
 
                     if (UIManager.Instance.CurrentCanvas != null && controlsMenuResource != null)
                     {
-                        AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
+                        AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position, false, .5f);
                         ControlsMenu controlsMenu = Instantiate(controlsMenuResource, UIManager.Instance.CurrentCanvas.transform);
                     }
                 }
@@ -99,12 +99,12 @@ public class GeneralMenu : MultiButtonsMenu, ITabContent
             {
                 if (SelectedButtonIndex > 1)
                 {
-                    AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
+                    AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position, false, .5f);
                     SelectedButtonIndex--;
                 }
                 else
                 {
-                    AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
+                    AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position, false, .8f);
                 }
             }
 
@@ -112,12 +112,12 @@ public class GeneralMenu : MultiButtonsMenu, ITabContent
             {
                 if (SelectedButtonIndex < NumberOfButtons)
                 {
-                    AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position);
+                    AudioClipHandler.PlayAudio("Audio/SelectButton", 0, transform.position, false, .5f);
                     SelectedButtonIndex++;
                 }
                 else
                 {
-                    AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
+                    AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position, false, .8f);
                 }
             }
 
@@ -127,10 +127,10 @@ public class GeneralMenu : MultiButtonsMenu, ITabContent
                 {
                     if (SelectedButtonInfo.Disabled)
                     {
-                        AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position);
+                        AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position, false, .8f);
                     } else
                     {
-                        AudioClipHandler.PlayAudio("Audio/PressButton", 0, transform.position);
+                        AudioClipHandler.PlayAudio("Audio/PressButton", 0, transform.position, false, .5f);
                         SelectedButton.onClick.Invoke();
                     }
                 }

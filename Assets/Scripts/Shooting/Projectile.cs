@@ -345,7 +345,7 @@ public class Projectile : MonoBehaviour
     /// <param name="collided">The <c>GameObject</c> with which the projectile collided</param>
     private void Hit(GameObject collided)
     {
-        AudioClipHandler.PlayAudio(_impactSound, 1, collided.transform.position, false, .2f);
+        AudioClipHandler.PlayAudio(_impactSound, 1, collided.transform.position, false, .8f);
 
         float basePower = Power;
         float attackerAttack = Mathf.Max(AttackerAttack, 1);
