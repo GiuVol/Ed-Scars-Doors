@@ -15,13 +15,16 @@ public class UIPrompt : MonoBehaviour
     /// The background of the prompt.
     /// </summary>
     [SerializeField]
-    private Image background;
+    private Image _background;
 
     /// <summary>
     /// The text component of the prompt.
     /// </summary>
     [SerializeField]
-    private TextMeshProUGUI textComponent;
+    private TextMeshProUGUI _textComponent;
+
+    [SerializeField]
+    private AudioClip _clipToPlay;
 
     /// <summary>
     /// Method that prompts several messages on the screen.
@@ -36,7 +39,7 @@ public class UIPrompt : MonoBehaviour
                                   bool needsPlayerInput = false, 
                                   float refreshTime = 1)
     {
-        if (textComponent == null)
+        if (_textComponent == null)
         {
             Destroy(gameObject);
             yield break;
@@ -44,17 +47,18 @@ public class UIPrompt : MonoBehaviour
 
         foreach (string promptMessage in promptMessages)
         {
-            textComponent.text = promptMessage;
+            _textComponent.text = promptMessage;
 
             if (needsPlayerInput)
             {
                 yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Return));
+                AudioClipHandler.PlayAudio(_clipToPlay, 0, null, false, .5f);
             } else
             {
                 yield return new WaitForSecondsRealtime(refreshTime);
             }
 
-            textComponent.text = "";
+            _textComponent.text = "";
 
             yield return new WaitForEndOfFrame();
         }

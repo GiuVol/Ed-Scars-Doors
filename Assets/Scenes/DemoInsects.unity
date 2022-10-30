@@ -917,6 +917,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4569218275868494013, guid: e1ceefd32e809814e84d829b5cc29e31, type: 3}
+      propertyPath: _maxHidingTime
+      value: 25
+      objectReference: {fileID: 0}
     - target: {fileID: 7357046571653230351, guid: e1ceefd32e809814e84d829b5cc29e31, type: 3}
       propertyPath: m_Name
       value: White Wardrobe
@@ -1256,9 +1260,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4569218275868494013, guid: e1ceefd32e809814e84d829b5cc29e31, type: 3}
+      propertyPath: _maxHidingTime
+      value: 25
+      objectReference: {fileID: 0}
     - target: {fileID: 7357046571653230351, guid: e1ceefd32e809814e84d829b5cc29e31, type: 3}
       propertyPath: m_Name
-      value: White Wardrobe (1)
+      value: White Wardrobe2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e1ceefd32e809814e84d829b5cc29e31, type: 3}

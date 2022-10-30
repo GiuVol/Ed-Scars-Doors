@@ -187,8 +187,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df84fbef217237943a27d089a60fa264, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  background: {fileID: 3929667283523132971}
-  textComponent: {fileID: 3929667282373095724}
+  _background: {fileID: 3929667283523132971}
+  _textComponent: {fileID: 3929667282373095724}
+  _clipToPlay: {fileID: 8300000, guid: ccbb016b68b4df54ea47fd08c7c5b06a, type: 3}
 --- !u!1 &3929667283523132973
 GameObject:
   m_ObjectHideFlags: 0
