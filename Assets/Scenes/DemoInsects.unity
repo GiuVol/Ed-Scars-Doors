@@ -2335,6 +2335,8 @@ MonoBehaviour:
     _cameraOffset: {x: 8, y: 8}
   _ostClip: {fileID: 8300000, guid: c516f3bbdd132054b9f49b137cdf3021, type: 3}
   _ambienceClip: {fileID: 8300000, guid: 0362d99126a364646a49049bd83fa214, type: 3}
+  _ostVolume: 0.5
+  _ambienceVolume: 0.1
 --- !u!4 &870675303
 Transform:
   m_ObjectHideFlags: 0

@@ -128,6 +128,28 @@ public class Regia : MonoBehaviour
         }
     }
 
+    [SerializeField]
+    private float _ostVolume;
+
+    public float OstVolume
+    {
+        get
+        {
+            return _ostVolume;
+        }
+    }
+
+    [SerializeField]
+    private float _ambienceVolume;
+
+    public float AmbienceVolume
+    {
+        get
+        {
+            return _ambienceVolume;
+        }
+    }
+
     #endregion
 
     /// <summary>

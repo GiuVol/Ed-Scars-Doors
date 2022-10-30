@@ -258,8 +258,8 @@ public class GameManager : MonoBehaviour
 
         if (regia != null)
         {
-            AudioManager.PlayOst(regia.OstClip, .7f);
-            AudioManager.PlayAmbience(regia.AmbienceClip, .7f);
+            AudioManager.PlayOst(regia.OstClip, regia.OstVolume);
+            AudioManager.PlayAmbience(regia.AmbienceClip, regia.AmbienceVolume);
         }
 
         UI.LoadHUD();
