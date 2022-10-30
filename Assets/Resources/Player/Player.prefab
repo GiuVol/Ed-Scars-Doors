@@ -2218,6 +2218,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _footstepClip: {fileID: 8300000, guid: 07b2bdef7afe92c44bf0d3efbaddf262, type: 3}
+  _volume: 0.25
 --- !u!1 &6043684958203652041
 GameObject:
   m_ObjectHideFlags: 0
@@ -3292,9 +3293,9 @@ MonoBehaviour:
   StandardJumpForce: 50
   StandardDashForce: 100
   StandardGravityScale: 10
-  StandardJumpInterval: 0.01
-  StandardDashInterval: 0.4
-  StandardShootInterval: 0.05
+  StandardJumpInterval: 0.1
+  StandardDashInterval: 1
+  StandardShootInterval: 0.25
   StandardNumberOfJumpsAllowedInAir: 1
   ProjectilesSpawnPoint: {fileID: 4271066013651996183}
   HealthBarTarget: {fileID: 0}

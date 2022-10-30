@@ -32,13 +32,13 @@ public class AudioManager : MonoBehaviour
         }
     }
     
-    public void PlayOst(string clipResourcePath)
+    public void PlayOst(string clipResourcePath, float volume = 1)
     {
         AudioClip clipResource = Resources.Load<AudioClip>(clipResourcePath);
-        PlayOst(clipResource);
+        PlayOst(clipResource, volume);
     }
 
-    public void PlayOst(AudioClip clip)
+    public void PlayOst(AudioClip clip, float volume = 1)
     {
         if (clip == null)
         {
@@ -60,13 +60,13 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void PlayAmbience(string clipResourcePath)
+    public void PlayAmbience(string clipResourcePath, float volume = 1)
     {
         AudioClip clipResource = Resources.Load<AudioClip>(clipResourcePath);
-        PlayAmbience(clipResource);
+        PlayAmbience(clipResource, volume);
     }
     
-    public void PlayAmbience(AudioClip clip)
+    public void PlayAmbience(AudioClip clip, float volume = 1)
     {
         if (clip == null)
         {

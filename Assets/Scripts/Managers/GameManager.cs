@@ -112,7 +112,7 @@ public class GameManager : MonoBehaviour
         UI = gameObject.AddComponent<UIManager>();
         UI.Setup();
         UI.LoadMainMenu();
-        AudioManager.PlayOst("Audio/Ost/MainMenuOst");
+        AudioManager.PlayOst("Audio/Ost/MainMenuOst", .7f);
 
         MainCamera = new GameObject("Camera", typeof(Camera), typeof(AudioListener)).GetComponent<Camera>();
         MainCamera.backgroundColor = Color.black;
@@ -258,8 +258,8 @@ public class GameManager : MonoBehaviour
 
         if (regia != null)
         {
-            AudioManager.PlayOst(regia.OstClip);
-            AudioManager.PlayAmbience(regia.AmbienceClip);
+            AudioManager.PlayOst(regia.OstClip, .7f);
+            AudioManager.PlayAmbience(regia.AmbienceClip, .7f);
         }
 
         UI.LoadHUD();
@@ -318,7 +318,7 @@ public class GameManager : MonoBehaviour
         }
 
         UI.LoadMainMenu();
-        AudioManager.PlayOst("Audio/Ost/MainMenuOst");
+        AudioManager.PlayOst("Audio/Ost/MainMenuOst", .7f);
 
         if (MainCamera == null)
         {
