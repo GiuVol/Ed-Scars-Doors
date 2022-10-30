@@ -116,11 +116,6 @@ public class Crawler : GenericMob
     {
         if (!CanPatrol)
         {
-            if (!IsInvoking("SearchForPatrolPoints"))
-            {
-                InvokeRepeating("SearchForPatrolPoints", 0, 2f);
-            }
-
             return;
         }
 

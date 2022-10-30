@@ -8,6 +8,17 @@ public class ElegantManSpawner : EventTrigger
     [SerializeField]
     private Transform _spawnPoint;
 
+    [SerializeField]
+    private PatrolPointsGroup _ppGroup;
+
+    private void Start()
+    {
+        if (_ppGroup != null)
+        {
+            _ppGroup.gameObject.SetActive(false);
+        }
+    }
+
     protected override IEnumerator Action(PlayerController player)
     {
         if (_spawnPoint == null)
@@ -19,7 +30,13 @@ public class ElegantManSpawner : EventTrigger
 
         if (elegantManResource != null)
         {
-            Instantiate(elegantManResource, _spawnPoint.position, Quaternion.identity);
+            ElegantMan elegantMan = Instantiate(elegantManResource, _spawnPoint.position, Quaternion.identity);
+
+            if (_ppGroup != null)
+            {
+                _ppGroup.gameObject.SetActive(true);
+                elegantMan.PPGroup = _ppGroup;
+            }
         }
     }
 }
