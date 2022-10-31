@@ -114,6 +114,8 @@ public class GameManager : MonoBehaviour
         UI.LoadMainMenu();
         AudioManager.PlayOst("Audio/Ost/MainMenuOst", .7f);
 
+        gameObject.AddComponent<InputHandler>();
+
         MainCamera = new GameObject("Camera", typeof(Camera), typeof(AudioListener)).GetComponent<Camera>();
         MainCamera.backgroundColor = Color.black;
     }

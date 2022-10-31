@@ -1170,7 +1170,7 @@ MonoBehaviour:
     Shift puoi correre.'
   - 'Hope: Prova a fare due passi.'
   _promptResourcePath: UI/DialogPrompt
-  _setTimeScaleToZero: 1
+  _setTimeScaleToZero: 0
   _returnToMainMenu: 0
 --- !u!61 &1244591962
 BoxCollider2D:

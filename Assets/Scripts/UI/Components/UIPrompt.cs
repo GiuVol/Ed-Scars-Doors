@@ -51,7 +51,7 @@ public class UIPrompt : MonoBehaviour
 
             if (needsPlayerInput)
             {
-                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Return));
+                yield return new WaitUntil(() => InputHandler.Submit("Down"));
                 AudioClipHandler.PlayAudio(_clipToPlay, 0, null, false, .5f);
             } else
             {
