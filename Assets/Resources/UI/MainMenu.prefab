@@ -66,10 +66,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Play Demo
+  m_text: Gioca la demo
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 2289f2d6b26334745ad656a032a20095, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 2289f2d6b26334745ad656a032a20095, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 03392e97f946c3d458be8b70a7823faa, type: 2}
+  m_sharedMaterial: {fileID: 6551023600280814591, guid: 03392e97f946c3d458be8b70a7823faa, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -129,7 +129,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: -765.8861, y: 0, z: -759.0171, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -201,9 +201,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Press directional keys to select an option,
-
-    Press ENTER to confirm.'
+  m_text: "Usa le frecce direzionali per selezionare un'opzione, \npremi INVIO per
+    confermare."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2289f2d6b26334745ad656a032a20095, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 2289f2d6b26334745ad656a032a20095, type: 2}
@@ -460,12 +459,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'New Game
-
-'
+  m_text: Nuovo gioco
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 2289f2d6b26334745ad656a032a20095, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 2289f2d6b26334745ad656a032a20095, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 03392e97f946c3d458be8b70a7823faa, type: 2}
+  m_sharedMaterial: {fileID: 6551023600280814591, guid: 03392e97f946c3d458be8b70a7823faa, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -525,7 +522,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: -762.45154, y: 0, z: -759.0171, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1161,10 +1158,12 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Quit
+  m_text: 'Esci
+
+'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 2289f2d6b26334745ad656a032a20095, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 2289f2d6b26334745ad656a032a20095, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 03392e97f946c3d458be8b70a7823faa, type: 2}
+  m_sharedMaterial: {fileID: 6551023600280814591, guid: 03392e97f946c3d458be8b70a7823faa, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1224,7 +1223,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: -765.8861, y: 0, z: -765.886, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
