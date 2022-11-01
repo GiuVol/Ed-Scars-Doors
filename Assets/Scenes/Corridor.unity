@@ -967,13 +967,13 @@ MonoBehaviour:
   - _xPosition: 303
     _cameraSize: 12.5
     _cameraOffset: {x: 2, y: 2}
-  - _xPosition: 365
+  - _xPosition: 570
     _cameraSize: 12.5
     _cameraOffset: {x: 2, y: 2}
   - _xPosition: 625
     _cameraSize: 20
     _cameraOffset: {x: 2, y: 2}
-  - _xPosition: 685
+  - _xPosition: 670
     _cameraSize: 12.5
     _cameraOffset: {x: 2, y: 2}
   _ostClip: {fileID: 8300000, guid: 1feae9b3d4fe77a46a901990e6df8ab5, type: 3}
