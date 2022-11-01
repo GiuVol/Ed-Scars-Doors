@@ -1517,6 +1517,8 @@ MonoBehaviour:
   - "Hope: Nel combattimento, oltre all'offensiva \xE8 importante evitare gli attacchi,
     puoi eseguire uno scatto nel momento giusto per evitare i colpi nemici, premendo
     Ctrl. "
+  - "Hope: Tieni per\xF2 bene a mente che dopo aver eseguito uno scatto dovrai aspettare
+    un po' prima di compierne un altro."
   _promptResourcePath: UI/DialogPrompt
   _setTimeScaleToZero: 1
   _returnToMainMenu: 0
