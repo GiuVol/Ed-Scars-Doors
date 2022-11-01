@@ -50,9 +50,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df84fbef217237943a27d089a60fa264, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _background: {fileID: 0}
-  _textComponent: {fileID: 0}
-  _clipToPlay: {fileID: 0}
+  _background: {fileID: 1703466549540775376}
+  _textComponent: {fileID: 557424330767694871}
+  _clipToPlay: {fileID: 8300000, guid: ccbb016b68b4df54ea47fd08c7c5b06a, type: 3}
 --- !u!1 &4151616131578910142
 GameObject:
   m_ObjectHideFlags: 0
@@ -223,13 +223,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 50
-  m_fontSizeBase: 50
+  m_fontSize: 40
+  m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 3
+  m_fontStyle: 1
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535

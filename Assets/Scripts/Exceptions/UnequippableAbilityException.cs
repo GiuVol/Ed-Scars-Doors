@@ -18,13 +18,13 @@ public class UnequippableAbilityException : Exception
             switch (_type)
             {
                 case UnequippableAbilityExceptionType.NumberExceeded:
-                    message = "You have already reached the max number of equipped abilities!";
+                    message = "Hai già raggiunto il massimo numero di abilità equipaggiabili!";
                     break;
                 case UnequippableAbilityExceptionType.DuplicateType:
-                    message = "An ability of this type is already equipped!";
+                    message = "Un'abilità di questo tipo è già equipaggiata!";
                     break;
                 default:
-                    message = "You can't equip this ability now!";
+                    message = "Non puoi equipaggiare questa abilità ora!";
                     break;
             }
 
