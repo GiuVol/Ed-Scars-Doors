@@ -580,6 +580,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CrawlerPatroller10
       objectReference: {fileID: 0}
+    - target: {fileID: 5851813648816403978, guid: 4f852c754b98e164b9ff938d3328b6d7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7414438674281615904, guid: 4f852c754b98e164b9ff938d3328b6d7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 31.1
@@ -2168,6 +2172,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 7274946845165830120, guid: 624296c9d355ea84b840a8ca5e8c5ab7, type: 3}
+      propertyPath: _attackRange
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 7569444491664252042, guid: 624296c9d355ea84b840a8ca5e8c5ab7, type: 3}
       propertyPath: m_RootOrder
       value: 31
@@ -5379,6 +5387,8 @@ MonoBehaviour:
   _disabled: 0
   _spawnPoint: {fileID: 1634682658}
   _ppGroup: {fileID: 467524825}
+  _startTutorial: 1
+  _promptResourcePath: UI/DialogPrompt
 --- !u!61 &1683615713
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -5674,6 +5684,8 @@ MonoBehaviour:
   _disabled: 0
   _spawnPoint: {fileID: 61307447}
   _ppGroup: {fileID: 46627444}
+  _startTutorial: 1
+  _promptResourcePath: UI/DialogPrompt
 --- !u!61 &1998306759
 BoxCollider2D:
   m_ObjectHideFlags: 0
