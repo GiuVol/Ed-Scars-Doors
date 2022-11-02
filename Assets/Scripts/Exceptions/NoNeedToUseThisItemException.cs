@@ -6,7 +6,7 @@ public class NoNeedToUseThisItemException : Exception
     {
         get
         {
-            return "There is no need to use this item now!";
+            return "Non c'è bisogno di usare questo strumento ora!";
         }
     }
 

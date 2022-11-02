@@ -210,7 +210,7 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     /// <summary>
     /// Property to access to the patrol points group in a controlled way.
     /// </summary>
-    protected PatrolPointsGroup PPGroup
+    public PatrolPointsGroup PPGroup
     {
         get
         {
@@ -363,9 +363,6 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
         {
             PPGroup = orderedPPGroups.ToList()[0];
             CancelInvoke("SearchForPatrolPoints");
-        } else
-        {
-            Debug.Log(gameObject.name + " PPG not found");
         }
 
         return foundResults;
@@ -735,7 +732,11 @@ public abstract class GenericMob : MonoBehaviour, IHealthable, IStatsable, IStat
     {
         Setup();
 
-        PPGroup = _patrolPointsGroup;
+        if (PPGroup == null)
+        {
+            PPGroup = _patrolPointsGroup;
+        }
+
         InvokeRepeating("UpdatePlayer", 0, Mathf.Max(_playerCheckInterval, .1f));
     }
 

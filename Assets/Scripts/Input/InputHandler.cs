@@ -1,7 +1,26 @@
+using System.Collections;
 using UnityEngine;
 
-public class InputHandler
+public class InputHandler : MonoBehaviour
 {
+    private static InputHandler _instance;
+
+    private static InputHandler Instance
+    {
+        get
+        {
+            return _instance;
+        }
+
+        set
+        {
+            if (_instance == null)
+            {
+                _instance = value;
+            }
+        }
+    }
+
     /// <summary>
     /// Returns the horizontal input.
     /// </summary>
@@ -49,7 +68,17 @@ public class InputHandler
     /// </returns>
     public static bool Left(string pressType = "")
     {
-        return ButtonPressed("Left", pressType);
+        bool pressed = ButtonPressed("Left", pressType);
+
+        if (pressType == "Down")
+        {
+            if (Instance != null)
+            {
+                pressed = pressed || (Instance.HorizontalAxisToButton == -1);
+            }
+        }
+
+        return pressed;
     }
 
     /// <summary>
@@ -63,7 +92,17 @@ public class InputHandler
     /// </returns>
     public static bool Right(string pressType = "")
     {
-        return ButtonPressed("Right", pressType);
+        bool pressed = ButtonPressed("Right", pressType);
+
+        if (pressType == "Down")
+        {
+            if (Instance != null)
+            {
+                pressed = pressed || (Instance.HorizontalAxisToButton == 1);
+            }
+        }
+
+        return pressed;
     }
 
     /// <summary>
@@ -77,7 +116,17 @@ public class InputHandler
     /// </returns>
     public static bool Down(string pressType = "")
     {
-        return ButtonPressed("Down", pressType);
+        bool pressed = ButtonPressed("Down", pressType);
+
+        if (pressType == "Down")
+        {
+            if (Instance != null)
+            {
+                pressed = pressed || (Instance.VerticalAxisToButton == -1);
+            }
+        }
+
+        return pressed;
     }
 
     /// <summary>
@@ -91,7 +140,17 @@ public class InputHandler
     /// </returns>
     public static bool Up(string pressType = "")
     {
-        return ButtonPressed("Up", pressType);
+        bool pressed = ButtonPressed("Up", pressType);
+
+        if (pressType == "Down")
+        {
+            if (Instance != null)
+            {
+                pressed = pressed || (Instance.VerticalAxisToButton == 1);
+            }
+        }
+
+        return pressed;
     }
     
     /// <summary>
@@ -233,5 +292,176 @@ public class InputHandler
         }
 
         return buttonPressed;
+    }
+
+    private float _horizontalAxisForButtonConversion;
+
+    private bool _horizontalAlreadyPressed;
+
+    private float _verticalAxisForButtonConversion;
+
+    private bool _verticalAlreadyPressed;
+    
+    private int _horizontalAxisToButton;
+
+    private int HorizontalAxisToButton
+    {
+        get
+        {
+            int actualValue;
+
+            if (_horizontalAxisToButton >= .5f)
+            {
+                actualValue = 1;
+            } else if (_horizontalAxisToButton <= -.5f)
+            {
+                actualValue = -1;
+            } else
+            {
+                actualValue = 0;
+            }
+
+            return actualValue;
+        }
+
+        set
+        {
+            _horizontalAxisToButton = value;
+            _horizontalAxisToButton = HorizontalAxisToButton;
+        }
+    }
+
+    private int _verticalAxisToButton;
+
+    private int VerticalAxisToButton
+    {
+        get
+        {
+            int actualValue;
+
+            if (_verticalAxisToButton >= .5f)
+            {
+                actualValue = 1;
+            }
+            else if (_verticalAxisToButton <= -.5f)
+            {
+                actualValue = -1;
+            }
+            else
+            {
+                actualValue = 0;
+            }
+
+            return actualValue;
+        }
+
+        set
+        {
+            _verticalAxisToButton = value;
+            _verticalAxisToButton = VerticalAxisToButton;
+        }
+    }
+    
+    private void Start()
+    {
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+    }
+
+    private void Update()
+    {
+        _horizontalAxisForButtonConversion = HorizontalInput;
+        _verticalAxisForButtonConversion = VerticalInput;
+
+        if (!_horizontalAlreadyPressed)
+        {
+            if (Mathf.Abs(_horizontalAxisForButtonConversion) > .75f)
+            {
+                SetHorizontalPressed(_horizontalAxisForButtonConversion);
+            }
+        }
+
+        if (!_verticalAlreadyPressed)
+        {
+            if (Mathf.Abs(_verticalAxisForButtonConversion) > .75f)
+            {
+                SetVerticalPressed(_verticalAxisForButtonConversion);
+            }
+        }
+    }
+
+    private void SetHorizontalPressed(float input)
+    {
+        StartCoroutine(SetHorizontalPressedCoroutine(input));
+    }
+
+    private IEnumerator SetHorizontalPressedCoroutine(float input)
+    {
+        int orientation;
+
+        if (input >= .5f)
+        {
+            orientation = 1;
+        } else if (input <= -.5f)
+        {
+            orientation = -1;
+        } else
+        {
+            yield break;
+        }
+
+        _horizontalAlreadyPressed = true;
+        HorizontalAxisToButton = orientation;
+
+        yield return new WaitForEndOfFrame();
+
+        HorizontalAxisToButton = 0;
+
+        yield return new WaitUntil(() => _horizontalAxisForButtonConversion == 0);
+
+        _horizontalAlreadyPressed = false;
+
+        yield break;
+    }
+
+    private void SetVerticalPressed(float input)
+    {
+        StartCoroutine(SetVerticalPressedCoroutine(input));
+    }
+
+    private IEnumerator SetVerticalPressedCoroutine(float input)
+    {
+        int orientation;
+
+        if (input >= .5f)
+        {
+            orientation = 1;
+        }
+        else if (input <= -.5f)
+        {
+            orientation = -1;
+        }
+        else
+        {
+            yield break;
+        }
+
+        _verticalAlreadyPressed = true;
+        VerticalAxisToButton = orientation;
+
+        yield return new WaitForEndOfFrame();
+
+        VerticalAxisToButton = 0;
+
+        yield return new WaitUntil(() => _verticalAxisForButtonConversion == 0);
+
+        _verticalAlreadyPressed = false;
+
+        yield break;
     }
 }

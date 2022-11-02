@@ -134,11 +134,11 @@ MonoBehaviour:
   _nextArrowImage: {fileID: 8738557334252240720}
   _titleArea: {fileID: 8738557333719865173}
   _controlsSheets:
-  - {fileID: 21300000, guid: 45f3db41e3dec6b498449956cc76875a, type: 3}
-  - {fileID: 21300000, guid: 419033bb8a186644581d900e7d7af778, type: 3}
+  - {fileID: 21300000, guid: c4a3f441d8edacc4c9f81b75b401c6bc, type: 3}
+  - {fileID: 21300000, guid: 89737e0b25406fb4b9debdbaa5d109c8, type: 3}
   _sheetsTitles:
-  - Keyboard
-  - PS4 Controller
+  - Tastiera
+  - Controller PS4
 --- !u!1 &2401198881295672679
 GameObject:
   m_ObjectHideFlags: 0

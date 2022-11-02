@@ -129,7 +129,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: -391.52924, y: 0, z: -398.39807, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -201,10 +201,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Play again
+  m_text: Riprova
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 2289f2d6b26334745ad656a032a20095, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 2289f2d6b26334745ad656a032a20095, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 03392e97f946c3d458be8b70a7823faa, type: 2}
+  m_sharedMaterial: {fileID: 6551023600280814591, guid: 03392e97f946c3d458be8b70a7823faa, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -264,7 +264,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: -618.20416, y: 0, z: -621.6384, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -847,10 +847,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Return to main menu
+  m_text: Vai al menu iniziale
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 2289f2d6b26334745ad656a032a20095, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 2289f2d6b26334745ad656a032a20095, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 03392e97f946c3d458be8b70a7823faa, type: 2}
+  m_sharedMaterial: {fileID: 6551023600280814591, guid: 03392e97f946c3d458be8b70a7823faa, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -910,7 +910,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -461.12683, y: 0, z: -461.1272, w: 0}
+  m_margin: {x: -619.1123, y: 0, z: -619.11255, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -982,10 +982,12 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Quit
+  m_text: 'Esci
+
+'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 2289f2d6b26334745ad656a032a20095, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 2289f2d6b26334745ad656a032a20095, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 03392e97f946c3d458be8b70a7823faa, type: 2}
+  m_sharedMaterial: {fileID: 6551023600280814591, guid: 03392e97f946c3d458be8b70a7823faa, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1045,7 +1047,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: -614.76965, y: 0, z: -618.2041, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

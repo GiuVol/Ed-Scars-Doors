@@ -116,7 +116,50 @@ public class ElegantMan : GenericMob
                     StartCoroutine(HandleAttack(_player));
                 }
             }
+        } else
+        {
+            Patrol();
         }
+    }
+
+    private void Patrol()
+    {
+        if (!CanPatrol)
+        {
+            return;
+        }
+
+        Vector2 moveDirection = (CurrentPatrolPoint.position - transform.position).normalized;
+        moveDirection.y = 0;
+        Vector2 lookDirection = moveDirection;
+
+        float distance = Vector2.Distance(transform.position, CurrentPatrolPoint.position);
+
+        #region Moving
+
+        if (distance > 1.5f)
+        {
+            _attachedRigidbody.AddForce(moveDirection * _mass * _speed);
+        }
+        else
+        {
+            IncreasePatrolPoint();
+        }
+
+        #endregion
+
+        #region Rotating
+
+        if (lookDirection.x > 0)
+        {
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+        else if (lookDirection.x < 0)
+        {
+            transform.rotation = Quaternion.Euler(0, -180, 0);
+        }
+
+        #endregion
     }
 
     protected override IEnumerator Attack(PlayerController target)

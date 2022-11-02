@@ -50,8 +50,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df84fbef217237943a27d089a60fa264, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  background: {fileID: 1703466549540775376}
-  textComponent: {fileID: 557424330767694871}
+  _background: {fileID: 1703466549540775376}
+  _textComponent: {fileID: 557424330767694871}
+  _clipToPlay: {fileID: 8300000, guid: ccbb016b68b4df54ea47fd08c7c5b06a, type: 3}
 --- !u!1 &4151616131578910142
 GameObject:
   m_ObjectHideFlags: 0
@@ -197,8 +198,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 2289f2d6b26334745ad656a032a20095, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 2289f2d6b26334745ad656a032a20095, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 03392e97f946c3d458be8b70a7823faa, type: 2}
+  m_sharedMaterial: {fileID: 6551023600280814591, guid: 03392e97f946c3d458be8b70a7823faa, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -222,13 +223,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 60
-  m_fontSizeBase: 60
+  m_fontSize: 40
+  m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 3
+  m_fontStyle: 1
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535

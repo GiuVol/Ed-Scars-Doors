@@ -48,6 +48,7 @@ public class AudioManager : MonoBehaviour
         StopOst();
 
         OstSource.clip = clip;
+        OstSource.volume = volume;
         OstSource.loop = true;
         OstSource.Play();
     }
@@ -76,6 +77,7 @@ public class AudioManager : MonoBehaviour
         StopAmbience();
 
         AmbienceSource.clip = clip;
+        AmbienceSource.volume = volume;
         AmbienceSource.loop = true;
         AmbienceSource.Play();
     }

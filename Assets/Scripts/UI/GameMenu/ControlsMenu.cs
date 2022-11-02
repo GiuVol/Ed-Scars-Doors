@@ -102,6 +102,16 @@ public class ControlsMenu : MonoBehaviour
                     _controlsImageArea.color = new Color(1, 1, 1, 0);
                 }
             }
+
+            UpdateArrows();
+
+            if (SheetsTitles.Count >= SelectedSheetIndex)
+            {
+                if (_titleArea != null)
+                {
+                    _titleArea.text = SheetsTitles[SelectedSheetIndex - 1];
+                }
+            }
         }
     }
 
@@ -145,7 +155,6 @@ public class ControlsMenu : MonoBehaviour
         }
         
         SelectedSheetIndex = 1;
-        UpdateArrows();
     }
 
     private void Update()
@@ -156,15 +165,6 @@ public class ControlsMenu : MonoBehaviour
             {
                 AudioClipHandler.PlayAudio("Audio/SelectTab", 0, transform.position, false, .5f);
                 SelectedSheetIndex--;
-                UpdateArrows();
-
-                if (SheetsTitles.Count >= SelectedSheetIndex)
-                {
-                    if (_titleArea != null)
-                    {
-                        _titleArea.text = SheetsTitles[SelectedSheetIndex - 1];
-                    }
-                }
             } else
             {
                 AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position, false, .8f);
@@ -177,15 +177,6 @@ public class ControlsMenu : MonoBehaviour
             {
                 AudioClipHandler.PlayAudio("Audio/SelectTab", 0, transform.position, false, .5f);
                 SelectedSheetIndex++;
-                UpdateArrows();
-
-                if (SheetsTitles.Count >= SelectedSheetIndex)
-                {
-                    if (_titleArea != null)
-                    {
-                        _titleArea.text = SheetsTitles[SelectedSheetIndex - 1];
-                    }
-                }
             } else
             {
                 AudioClipHandler.PlayAudio("Audio/Disabled", 0, transform.position, false, .8f);

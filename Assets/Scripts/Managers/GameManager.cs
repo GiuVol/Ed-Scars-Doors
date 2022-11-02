@@ -97,6 +97,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public string LastLevelLoaded { get; private set; }
+
     private void Start()
     {
         if (_instance != null)
@@ -109,6 +111,8 @@ public class GameManager : MonoBehaviour
 
         DontDestroyOnLoad(this);
 
+        gameObject.AddComponent<InputHandler>();
+        
         UI = gameObject.AddComponent<UIManager>();
         UI.Setup();
         UI.LoadMainMenu();
@@ -161,6 +165,8 @@ public class GameManager : MonoBehaviour
         {
             yield break;
         }
+
+        LastLevelLoaded = sceneName;
 
         if (Player != null)
         {
@@ -258,8 +264,8 @@ public class GameManager : MonoBehaviour
 
         if (regia != null)
         {
-            AudioManager.PlayOst(regia.OstClip, .7f);
-            AudioManager.PlayAmbience(regia.AmbienceClip, .7f);
+            AudioManager.PlayOst(regia.OstClip, regia.OstVolume);
+            AudioManager.PlayAmbience(regia.AmbienceClip, regia.AmbienceVolume);
         }
 
         UI.LoadHUD();

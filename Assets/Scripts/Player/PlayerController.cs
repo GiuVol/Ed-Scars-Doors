@@ -1117,7 +1117,7 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             UIManager.Instance.CurrentHUD.ResetBars();
             UIManager.Instance.UnloadHUD();
         }
-        UIManager.Instance.LoadGameOverMenu("Game Over... You lost.");
+        UIManager.Instance.LoadGameOverMenu("Game Over...");
         Destroy(gameObject);
     }
 
