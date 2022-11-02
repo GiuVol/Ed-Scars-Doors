@@ -97,6 +97,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public string LastLevelLoaded { get; private set; }
+
     private void Start()
     {
         if (_instance != null)
@@ -163,6 +165,8 @@ public class GameManager : MonoBehaviour
         {
             yield break;
         }
+
+        LastLevelLoaded = sceneName;
 
         if (Player != null)
         {

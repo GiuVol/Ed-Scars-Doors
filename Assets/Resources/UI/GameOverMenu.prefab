@@ -201,7 +201,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Gioca ancora
+  m_text: Riprova
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 03392e97f946c3d458be8b70a7823faa, type: 2}
   m_sharedMaterial: {fileID: 6551023600280814591, guid: 03392e97f946c3d458be8b70a7823faa, type: 2}
