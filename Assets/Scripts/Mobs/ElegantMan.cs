@@ -308,6 +308,25 @@ public class ElegantMan : GenericMob
 
         _isDisappearing = true;
         StartCoroutine(DisappearCoroutine());
+
+        #region Audio
+
+        if (GameManager.Instance != null)
+        {
+            Regia regia = FindObjectOfType<Regia>();
+
+            if (regia != null)
+            {
+                AudioClip levelOst = regia.OstClip;
+
+                if (GameManager.Instance.AudioManager.OstSource.clip != levelOst)
+                {
+                    GameManager.Instance.AudioManager.PlayOst(levelOst);
+                }
+            }
+        }
+
+        #endregion
     }
 
     private IEnumerator DisappearCoroutine()

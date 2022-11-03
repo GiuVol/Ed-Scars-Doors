@@ -6,6 +6,9 @@ public class ElegantManSpawner : EventTrigger
 {
     private const string ElegantManResourcePath = "Mobs/ElegantMan";
 
+    private const string EMBeginningTrackResourcePath = "Audio/Ost/UncleThemeBeginning";
+    private const string EMTrackResourcePath = "Audio/Ost/UncleTheme";
+
     [SerializeField]
     private Transform _spawnPoint;
 
@@ -17,7 +20,7 @@ public class ElegantManSpawner : EventTrigger
 
     [SerializeField]
     private string _promptResourcePath;
-    
+
     private void Start()
     {
         if (_ppGroup != null)
@@ -45,6 +48,27 @@ public class ElegantManSpawner : EventTrigger
                 elegantMan.PPGroup = _ppGroup;
             }
         }
+
+        #region Audio
+
+        AudioClipHandler trackBeginningClipHandler = AudioClipHandler.PlayAudio(EMBeginningTrackResourcePath, 0, transform.position, false, 1);
+
+        if (trackBeginningClipHandler != null)
+        {
+            AudioSource trackBeginningSource = trackBeginningClipHandler.GetComponent<AudioSource>();
+
+            if (trackBeginningSource != null)
+            {
+                yield return new WaitUntil(() => !trackBeginningClipHandler.GetComponent<AudioSource>().isPlaying);
+            }
+        }
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.AudioManager.PlayOst(EMTrackResourcePath);
+        }
+
+        #endregion
 
         if (_startTutorial)
         {
