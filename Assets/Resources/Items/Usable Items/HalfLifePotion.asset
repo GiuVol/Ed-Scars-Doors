@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2db21b431c1dd1142ac2c548745a18d3, type: 3}
   m_Name: HalfLifePotion
   m_EditorClassIdentifier: 
-  Name: Half Life Potion
-  Description: No, it doesn't refer to the videogame...
-  MenuSprite: {fileID: 0}
+  Name: Pozione half-life
+  Description: "Questa pozione ti far\xE0 recuperare met\xE0 della tua salute massima!"
+  ItemImage: {fileID: 0}
+  ItemIcon: {fileID: 21300000, guid: bc1f2bfb1270f82458ae54a2e7b6c608, type: 3}
   OverworldPrefab: {fileID: 0}
   Holdable: 1
   Cumulative: 1

@@ -12,14 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2db21b431c1dd1142ac2c548745a18d3, type: 3}
   m_Name: MediumPotion
   m_EditorClassIdentifier: 
-  Name: Medium Potion
-  Description: Guess what? Works better than the weak one.
-  MenuSprite: {fileID: 0}
+  Name: Pozione
+  Description: Pozione dalle prestazioni medie.
+  ItemImage: {fileID: 0}
+  ItemIcon: {fileID: 21300000, guid: bc1f2bfb1270f82458ae54a2e7b6c608, type: 3}
   OverworldPrefab: {fileID: 0}
   Holdable: 1
   Cumulative: 1
   UseCustomMaxNumber: 0
   CustomMaxNumberOfHoldableInstances: 0
   UsePercentageIncrement: 0
-  IntegerIncrement: 50
+  IntegerIncrement: 80
   PercentageIncrement: 0

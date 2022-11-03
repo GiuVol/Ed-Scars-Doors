@@ -10,14 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a5d5c38090afe4546bb565707f213659, type: 3}
-  m_Name: Gramophone
+  m_Name: BullSkull
   m_EditorClassIdentifier: 
-  Name: Gramophone
-  Description: This gramophone belonged to Ed's uncle, Will.
-  ItemImage: {fileID: 21300000, guid: 0cf3b47b65606d64d9539e8ad6305c77, type: 3}
-  ItemIcon: {fileID: 0}
+  Name: Teschio di toro
+  Description: "Ah, quanti ne ho visti di teschi cos\xEC!  Guardarlo mi fa sentire
+    come se fossi a casa."
+  ItemImage: {fileID: 21300000, guid: cab208b82e21fab478b13352880781d0, type: 3}
+  ItemIcon: {fileID: 21300000, guid: cab208b82e21fab478b13352880781d0, type: 3}
   OverworldPrefab: {fileID: 0}
   Holdable: 1
   Cumulative: 0
-  UseCustomMaxNumber: 0
-  CustomMaxNumberOfHoldableInstances: 0
+  UseCustomMaxNumber: 1
+  CustomMaxNumberOfHoldableInstances: 1

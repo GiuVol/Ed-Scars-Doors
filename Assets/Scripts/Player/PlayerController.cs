@@ -471,13 +471,11 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
 
                 GenericAbility ability1 = Resources.Load<GenericAbility>("Abilities/DarkShooter");
                 GenericAbility ability2 = Resources.Load<GenericAbility>("Abilities/SwarmShooter");
-                GenericAbility ability3 = Resources.Load<GenericAbility>("Abilities/DoubleJumper");
                 GenericAbility ability4 = Resources.Load<GenericAbility>("Abilities/x2Attack");
                 GenericAbility ability5 = Resources.Load<GenericAbility>("Abilities/x2Defence");
 
                 _obtainedAbilities.Add(ability1);
-                _obtainedAbilities.Add(ability2);
-                _obtainedAbilities.Add(ability3);
+                //_obtainedAbilities.Add(ability2);
                 _obtainedAbilities.Add(ability4);
                 _obtainedAbilities.Add(ability5);
             }
@@ -515,14 +513,6 @@ public class PlayerController : MonoBehaviour, IHealthable, IStatsable, IStatusa
             if (_collection == null)
             {
                 _collection = new Container<CollectableItem>();
-
-                CollectableItem collectable1 = 
-                    Resources.Load<CollectableItem>("Items/Collectable Items/OldScarf");
-                CollectableItem collectable2 =
-                    Resources.Load<CollectableItem>("Items/Collectable Items/Gramophone");
-
-                _collection.AddItem(collectable1, 1);
-                _collection.AddItem(collectable2, 1);
             }
 
             return _collection;

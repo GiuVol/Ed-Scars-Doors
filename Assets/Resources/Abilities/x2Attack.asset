@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c323e2cb60af4344c8b88a2fbc0b2c5a, type: 3}
   m_Name: x2Attack
   m_EditorClassIdentifier: 
-  Name: x2Attack
-  Description: With this abilities your attacks will be unstoppable!
+  Name: Attacco x2
+  Description: "Con questa abilit\xE0 equipaggiata i tuoi colpi saranno micidiali!"
   AttackMultiplier: 2
   DefenceMultiplier: 1

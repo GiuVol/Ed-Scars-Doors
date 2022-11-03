@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c323e2cb60af4344c8b88a2fbc0b2c5a, type: 3}
   m_Name: x2Defence
   m_EditorClassIdentifier: 
-  Name: x2Defence
-  Description: With this abilities you will resist to every attack!
-  AttackMultiplier: 2
-  DefenceMultiplier: 1
+  Name: Difesa x2
+  Description: Sarai in grado di resistere a ogni attacco!
+  AttackMultiplier: 1
+  DefenceMultiplier: 2
