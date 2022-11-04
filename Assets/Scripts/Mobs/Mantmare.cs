@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Mantmare : GenericMob
 {
-    private const float Attack1Power = 40;
-    private const float Attack2Power = 45;
+    private const float Attack1Power = 37;
+    private const float Attack2Power = 40;
 
     #region Animator Consts
 
