@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: Mantmare
-  _maxHealthValue: 1175
+  _maxHealthValue: 2000
   _attackStandardValue: 100
   _attackMinValue: 100
   _attackMaxValue: 200

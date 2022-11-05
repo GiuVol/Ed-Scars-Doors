@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: Flydier
-  _maxHealthValue: 380
+  _maxHealthValue: 300
   _attackStandardValue: 120
   _attackMinValue: 100
   _attackMaxValue: 150
